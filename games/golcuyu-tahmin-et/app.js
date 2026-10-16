@@ -335,11 +335,23 @@ if (typeof document !== 'undefined') {
 
     if (currentGoal.photoUrl) {
       const img = document.createElement('img');
-      img.src = currentGoal.photoUrl;
       img.alt = currentGoal.scorerName;
       img.className = `portrait-img ${levelClass}`;
+      img.referrerPolicy = 'no-referrer';
+      
+      // Wikimedia hotlink korumasını aşmak için hızlı ve güvenilir görsel proxy
+      const srcUrl = currentGoal.photoUrl.startsWith('http')
+        ? `https://images.weserv.nl/?url=${encodeURIComponent(currentGoal.photoUrl)}&w=320&output=jpg`
+        : currentGoal.photoUrl;
+
+      img.src = srcUrl;
       img.onerror = () => {
-        // Resim yüklenemezse pixel SVG üret
+        // İlk hata durumunda doğrudan orijinal URL'yi dene
+        if (img.src !== currentGoal.photoUrl && currentGoal.photoUrl.startsWith('http')) {
+          img.src = currentGoal.photoUrl;
+          return;
+        }
+        // İkisi de olmazsa pixel avatar çiz
         portraitContainerEl.innerHTML = '';
         const svgWrap = document.createElement('div');
         svgWrap.className = `portrait-img ${levelClass}`;
