@@ -355,21 +355,21 @@ main {
   transition: filter 0.6s ease, transform 0.4s ease;
 }
 
-/* İpucu Seviyelerine Göre Filtre */
+/* İpucu Seviyelerine Göre Filtre: Orijinal oyun dengesi */
 .portrait-img.level-0 {
-  filter: blur(28px) grayscale(100%) brightness(30%);
+  filter: blur(14px) contrast(105%);
 }
 
 .portrait-img.level-1 {
-  filter: blur(18px) grayscale(80%) brightness(50%);
+  filter: blur(9px) contrast(102%);
 }
 
 .portrait-img.level-2 {
-  filter: blur(10px) grayscale(40%) brightness(70%);
+  filter: blur(5px);
 }
 
 .portrait-img.level-3, .portrait-img.unlocked {
-  filter: blur(0px) grayscale(0%) brightness(100%);
+  filter: none;
 }
 
 .card-footer {

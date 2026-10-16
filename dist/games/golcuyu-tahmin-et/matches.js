@@ -21,7 +21,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'İtalya',
         nationalityCode: 'IT',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Paolo_Maldini_2010.jpg/300px-Paolo_Maldini_2010.jpg',
+        photoUrl: './portraits/paolo-maldini.jpg',
         description: "50. saniyede gelen vole golüyle Şampiyonlar Ligi finallerinin en erken golünü kaydetti."
       },
       {
@@ -34,7 +34,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Hernan_Crespo_2015.jpg/300px-Hernan_Crespo_2015.jpg',
+        photoUrl: './portraits/hernan-crespo.jpg',
         description: 'Şevçenko’nun pasında ceza sahasında düzgün bir vuruşla farkı ikiye çıkardı.'
       },
       {
@@ -47,7 +47,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Hernan_Crespo_2015.jpg/300px-Hernan_Crespo_2015.jpg',
+        photoUrl: './portraits/hernan-crespo.jpg',
         description: 'Kaká’nın müthiş ara pasında kaleci Dudek’in üstünden enfes bir aşırtma vuruş yaptı.'
       },
       {
@@ -60,7 +60,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'İngiltere',
         nationalityCode: 'ENG',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Steven_Gerrard_2015_%28cropped%29.jpg/300px-Steven_Gerrard_2015_%28cropped%29.jpg',
+        photoUrl: './portraits/steven-gerrard.jpg',
         description: 'Riise’nin ortasında harika bir kafa vuruşuyla Liverpool’un tarihi geri dönüş fitilini ateşledi.'
       },
       {
@@ -73,7 +73,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Çekya',
         nationalityCode: 'CZ',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Vladim%C3%ADr_%C5%A0micer_2011.jpg/300px-Vladim%C3%ADr_%C5%A0micer_2011.jpg',
+        photoUrl: './portraits/vladimir-smicer.jpg',
         description: 'Ceza sahası dışından sert ve yerden vuruşuyla Dida’yı mağlup edip farkı bire indirdi.'
       },
       {
@@ -86,7 +86,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Xabi_Alonso_2018.jpg/300px-Xabi_Alonso_2018.jpg',
+        photoUrl: './portraits/xabi-alonso.jpg',
         description: 'Penaltıyı Dida kurtardı ama dönen topu tamamlayarak skoru 3-3 yaptı.'
       }
     ]
@@ -111,7 +111,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/300px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg',
+        photoUrl: './portraits/lionel-messi.jpg',
         description: 'Di María’nın kazandırdığı penaltıyı sakin bir vuruşla gole çevirdi.'
       },
       {
@@ -124,7 +124,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Angel_Di_Maria_2018.jpg/300px-Angel_Di_Maria_2018.jpg',
+        photoUrl: './portraits/angel-di-maria.jpg',
         description: 'Mac Allister’ın kusursuz pasında gelişine tek vuruşla ağları havalandırdı.'
       },
       {
@@ -137,7 +137,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/300px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg',
+        photoUrl: './portraits/lionel-messi.jpg',
         description: 'Lautaro Martínez’in şutundan dönen topu kale çizgisi içinde tamamladı.'
       },
       {
@@ -150,7 +150,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: '../../assets/portraits/mbappe.jpg',
+        photoUrl: './portraits/kylian-mbappe.jpg',
         description: 'Penaltı noktasından sert vuruşla Martínez’i geçerek Fransa’yı umutlandırdı.'
       },
       {
@@ -163,7 +163,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: '../../assets/portraits/mbappe.jpg',
+        photoUrl: './portraits/kylian-mbappe.jpg',
         description: 'İlk golden sadece 97 saniye sonra ceza sahası köşesinden müthiş bir voleyle skoru eşitledi.'
       },
       {
@@ -176,7 +176,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: '../../assets/portraits/mbappe.jpg',
+        photoUrl: './portraits/kylian-mbappe.jpg',
         description: 'Kendi kazandırdığı penaltıyı gole çevirerek finalde tarihi bir hat-trick yaptı.'
       }
     ]
@@ -201,7 +201,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Oscar_2018.jpg/300px-Oscar_2018.jpg',
+        photoUrl: './portraits/oscar.jpg',
         description: 'Brezilya’nın maçtaki tek golünü son dakikada Neuer’i geçerek kaydetti.'
       },
       {
@@ -214,7 +214,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Thomas_M%C3%BCller_2019.jpg/300px-Thomas_M%C3%BCller_2019.jpg',
+        photoUrl: './portraits/thomas-muller.jpg',
         description: 'Köşe vuruşundan gelen topta bomboş kalarak tarihi hezimeti başlatan golü attı.'
       },
       {
@@ -227,7 +227,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Miroslav_Klose_2014.jpg/300px-Miroslav_Klose_2014.jpg',
+        photoUrl: './portraits/miroslav-klose.jpg',
         description: 'Dünya Kupası tarihindeki 16. golünü atarak turnuva tarihinin en golcü oyuncusu oldu.'
       },
       {
@@ -240,7 +240,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Toni_Kroos_2018.jpg/300px-Toni_Kroos_2018.jpg',
+        photoUrl: './portraits/toni-kroos.jpg',
         description: 'Ceza sahası önünden sol ayağıyla gelişine mükemmel bir vuruş yaptı.'
       },
       {
@@ -253,7 +253,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Toni_Kroos_2018.jpg/300px-Toni_Kroos_2018.jpg',
+        photoUrl: './portraits/toni-kroos.jpg',
         description: 'Topu kapıp Khedira ile verkaç yaparak 69 saniye sonra ikinci golünü attı.'
       },
       {
@@ -266,7 +266,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Sami_Khedira_2018.jpg/300px-Sami_Khedira_2018.jpg',
+        photoUrl: './portraits/sami-khedira.jpg',
         description: 'Özil’in pasında ilk yarım saat dolmadan skoru 0-5 yaptı.'
       },
       {
@@ -279,7 +279,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Andr%C3%A9_Sch%C3%BCrrle_2014.jpg/300px-Andr%C3%A9_Sch%C3%BCrrle_2014.jpg',
+        photoUrl: './portraits/andre-schurrle.jpg',
         description: 'Lahm’ın pasında ceza sahasında tek vuruşla skoru 0-6’ya taşıdı.'
       },
       {
@@ -292,7 +292,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Andr%C3%A9_Sch%C3%BCrrle_2014.jpg/300px-Andr%C3%A9_Sch%C3%BCrrle_2014.jpg',
+        photoUrl: './portraits/andre-schurrle.jpg',
         description: 'Çaprazdan üst direğe çarptırarak jeneriklik bir golle skoru 0-7 yaptı.'
       }
     ]
@@ -317,7 +317,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Arda_Turan_2018.jpg/300px-Arda_Turan_2018.jpg',
+        photoUrl: './portraits/arda-turan.jpg',
         description: 'Hamit Altıntop’un sağdan çevirdiği topu ceza sahası köşesinden yerden köşeye bıraktı.'
       },
       {
@@ -330,7 +330,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Nihat_Kahveci_Besiktas.jpg/300px-Nihat_Kahveci_Besiktas.jpg',
+        photoUrl: './portraits/nihat-kahveci.jpg',
         description: 'Petr Čech’in elinden kaçırdığı ıslak topu filelere göndererek eşitliği sağladı.'
       },
       {
@@ -343,7 +343,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Nihat_Kahveci_Besiktas.jpg/300px-Nihat_Kahveci_Besiktas.jpg',
+        photoUrl: './portraits/nihat-kahveci.jpg',
         description: 'Hamit’in enfes ara pasında ceza yayından üst direğe çarpan muazzam plaseyle Türkiye’yi öne geçirdi.'
       },
       {
@@ -356,7 +356,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Çekya',
         nationalityCode: 'CZ',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Jan_Koller_2011.jpg/300px-Jan_Koller_2011.jpg',
+        photoUrl: './portraits/jan-koller.jpg',
         description: '2.02 boyundaki dev forvet ceza sahasında kafa vuruşuyla Volkan’ı mağlup etti.'
       },
       {
@@ -369,7 +369,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Çekya',
         nationalityCode: 'CZ',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Jaroslav_Plasil_2012.jpg/300px-Jaroslav_Plasil_2012.jpg',
+        photoUrl: './portraits/jaroslav-plasil.jpg',
         description: 'Sionko’nun ortasında arka direkte uçarak dokundu ve farkı ikiye çıkardı.'
       }
     ]
@@ -394,7 +394,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Fabio_Luciano_2009.jpg/300px-Fabio_Luciano_2009.jpg',
+        photoUrl: './portraits/fabio-luciano.jpg',
         description: 'Kornerden gelen topta kafa vuruşuyla skoru 1-1 yaptı.'
       },
       {
@@ -407,7 +407,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Alex_de_Souza_2008.jpg/300px-Alex_de_Souza_2008.jpg',
+        photoUrl: './portraits/alex-de-souza.jpg',
         description: 'Ceza sahasında topla buluşup şık bir vuruşla skoru 2-2’ye getirdi.'
       },
       {
@@ -420,7 +420,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Alex_de_Souza_2008.jpg/300px-Alex_de_Souza_2008.jpg',
+        photoUrl: './portraits/alex-de-souza.jpg',
         description: 'Cordoba’nın atıldığı pozisyonda kazanılan penaltıyı forvet Pancu’nun koruduğu kaleye gole çevirdi.'
       },
       {
@@ -433,7 +433,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Tumer_Metin_2011.jpg/300px-Tumer_Metin_2011.jpg',
+        photoUrl: './portraits/tumer-metin.jpg',
         description: 'Ceza sahası dışından sol ayağıyla yaptığı muhteşem vuruşla Rüştü’yü avladı.'
       },
       {
@@ -446,7 +446,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Norveç',
         nationalityCode: 'NO',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/John_Carew_2010.jpg/300px-John_Carew_2010.jpg',
+        photoUrl: './portraits/john-carew.jpg',
         description: 'Fizik gücüyle ceza sahasına girip sert şutla Beşiktaş’ı yeniden öne geçirdi.'
       },
       {
@@ -459,7 +459,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ibrahim_Akin_2011.jpg/300px-Ibrahim_Akin_2011.jpg',
+        photoUrl: './portraits/ibrahim-akin.jpg',
         description: 'Sol çaprazdan yaptığı aşırtma vuruşla Beşiktaş’ı 2-3 öne taşıdı.'
       },
       {
@@ -472,7 +472,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Koray_Avci_2011.jpg/300px-Koray_Avci_2011.jpg',
+        photoUrl: './portraits/koray-avci.jpg',
         description: 'Uzatma anlarında ceza sahası dışından sert şutla köşeyi bulup 3-4’lük efsane galibiyeti getirdi.'
       }
     ]
@@ -497,7 +497,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Tuncay_%C5%9Eanl%C4%B1_2011.jpg/300px-Tuncay_%C5%9Eanl%C4%B1_2011.jpg',
+        photoUrl: './portraits/tuncay-sanli.jpg',
         description: 'Henüz 9. dakikada ceza sahasında sert şutla perdeyi açan golü attı.'
       },
       {
@@ -510,7 +510,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Ariel_Ortega_2011.jpg/300px-Ariel_Ortega_2011.jpg',
+        photoUrl: './portraits/ariel-ortega.jpg',
         description: 'Arjantinli yıldız ceza sahasında düzgün bir vuruşla farkı ikiye çıkardı.'
       },
       {
@@ -523,7 +523,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Serhat_Akin_2011.jpg/300px-Serhat_Akin_2011.jpg',
+        photoUrl: './portraits/serhat-akin.jpg',
         description: 'Hızlı atakta Mondragón ile karşı karşıya kalıp skoru 3-0 yaptı.'
       },
       {
@@ -536,7 +536,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Serhat_Akin_2011.jpg/300px-Serhat_Akin_2011.jpg',
+        photoUrl: './portraits/serhat-akin.jpg',
         description: 'Sağ kanattan sokulup çaprazdan ikinci golünü kaydetti.'
       },
       {
@@ -549,7 +549,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Ceyhun_Eris_2012.jpg/300px-Ceyhun_Eris_2012.jpg',
+        photoUrl: './portraits/ceyhun-eris.jpg',
         description: 'Ceza sahası dışından sert ve isabetli bir şutla skoru 5-0 yaptı.'
       },
       {
@@ -562,7 +562,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Umit_Ozat_2012.jpg/300px-Umit_Ozat_2012.jpg',
+        photoUrl: './portraits/umit-ozat.jpg',
         description: 'Karambolde topu ağlara göndererek 6-0’lık tarihi skoru belirledi.'
       }
     ]
@@ -587,7 +587,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Sergio_Ramos_2018.jpg/300px-Sergio_Ramos_2018.jpg',
+        photoUrl: './portraits/sergio-ramos.jpg',
         description: '92:48’de Modrić’in kornerinde tarihin en ikonik kafa vuruşlarından birini yaparak skoru 1-1 yaptı.'
       },
       {
@@ -600,7 +600,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Galler',
         nationalityCode: 'GB-WLS',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Gareth_Bale_2015_%28cropped%29.jpg/300px-Gareth_Bale_2015_%28cropped%29.jpg',
+        photoUrl: './portraits/gareth-bale.jpg',
         description: 'Di María’nın müthiş slalomunun ardından kaleciden seken topu kafayla tamamladı.'
       },
       {
@@ -613,7 +613,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Marcelo_2018.jpg/300px-Marcelo_2018.jpg',
+        photoUrl: './portraits/marcelo.jpg',
         description: 'Yorgun Atletico savunmasının arasından geçip ceza sahası dışından şutla skoru 3-1 yaptı.'
       },
       {
@@ -626,7 +626,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Portekiz',
         nationalityCode: 'PT',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Cristiano_Ronaldo_playing_for_Al_Nassr_FC_against_Persepolis%2C_September_2023_%28cropped%29.jpg/300px-Cristiano_Ronaldo_playing_for_Al_Nassr_FC_against_Persepolis%2C_September_2023_%28cropped%29.jpg',
+        photoUrl: './portraits/cristiano-ronaldo.jpg',
         description: 'Kazanılan penaltıyı gole çevirerek o sezonki 17. Şampiyonlar Ligi golünü attı.'
       },
       {
@@ -639,7 +639,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Uruguay',
         nationalityCode: 'UY',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Diego_Godin_2018.jpg/300px-Diego_Godin_2018.jpg',
+        photoUrl: './portraits/diego-godin.jpg',
         description: 'Casillas’ın hatalı çıkışında kafayla aşırarak Atletico’yu öne geçirdi.'
       }
     ]
@@ -664,7 +664,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Zinedine_Zidane_by_Tasnim_03.jpg/300px-Zinedine_Zidane_by_Tasnim_03.jpg',
+        photoUrl: './portraits/zinedine-zidane.jpg',
         description: 'Petit’nin kullandığı köşe vuruşunda sert bir kafa vuruşuyla Taffarel’i geçti.'
       },
       {
@@ -677,7 +677,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Zinedine_Zidane_by_Tasnim_03.jpg/300px-Zinedine_Zidane_by_Tasnim_03.jpg',
+        photoUrl: './portraits/zinedine-zidane.jpg',
         description: 'İlk yarının son anlarında Djorkaeff’in kornerinde yine kafayla farkı ikiye çıkardı.'
       },
       {
@@ -690,7 +690,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Emmanuel_Petit_2014.jpg/300px-Emmanuel_Petit_2014.jpg',
+        photoUrl: './portraits/emmanuel-petit.jpg',
         description: 'Son saniyelerde Dugarry’nin kontra atağında sol ayağıyla köşeye bırakıp kupayı tescilledi.'
       }
     ]
@@ -715,7 +715,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ronaldo_smiling.jpg/300px-Ronaldo_smiling.jpg',
+        photoUrl: './portraits/ronaldo-nazario.jpg',
         description: 'Rivaldo’nun sert şutunda Oliver Kahn’ın sektirdiği topu takip edip filelere gönderdi.'
       },
       {
@@ -728,7 +728,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ronaldo_smiling.jpg/300px-Ronaldo_smiling.jpg',
+        photoUrl: './portraits/ronaldo-nazario.jpg',
         description: 'Kleberson’un pasında Rivaldo’nun harika topuğuyla açılan topu köşeye bırakarak şampiyonluğu ilan etti.'
       }
     ]
@@ -753,7 +753,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İngiltere',
         nationalityCode: 'ENG',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Teddy_Sheringham_2011.jpg/300px-Teddy_Sheringham_2011.jpg',
+        photoUrl: './portraits/teddy-sheringham.jpg',
         description: 'Beckham’ın kornerinde Giggs’in vurduğu topu kale önünde tamamlayarak 90+1’de eşitliği sağladı.'
       },
       {
@@ -766,7 +766,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Norveç',
         nationalityCode: 'NO',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Ole_Gunnar_Solskjaer_2019.jpg/300px-Ole_Gunnar_Solskjaer_2019.jpg',
+        photoUrl: './portraits/ole-gunnar-solskjaer.jpg',
         description: 'Sheringham’ın aşırdığı köşe vuruşunda ayağını uzatarak 90+3’te kupayı getiren tarihi golü attı.'
       },
       {
@@ -779,7 +779,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Mario_Basler_2014.jpg/300px-Mario_Basler_2014.jpg',
+        photoUrl: './portraits/mario-basler.jpg',
         description: 'Henüz 6. dakikada ceza yayından frikikle Schmeichel’ı avlayıp Bayern’i öne geçirmişti.'
       }
     ]
@@ -804,7 +804,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Pedro_Rodr%C3%ADguez_2018.jpg/300px-Pedro_Rodr%C3%ADguez_2018.jpg',
+        photoUrl: './portraits/pedro-rodriguez.jpg',
         description: 'Xavi’nin kusursuz ara pasında Van der Sar’ı ters köşeye yatırarak ilk golü attı.'
       },
       {
@@ -817,7 +817,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/300px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg',
+        photoUrl: './portraits/lionel-messi.jpg',
         description: 'Ceza sahası dışından sol ayağıyla çıkardığı sert şutla skoru 2-1 yaptı.'
       },
       {
@@ -830,7 +830,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/David_Villa_2016.jpg/300px-David_Villa_2016.jpg',
+        photoUrl: './portraits/david-villa.jpg',
         description: 'Ceza yayından köşeye yolladığı müthiş plaseyle kupayı tescilledi.'
       },
       {
@@ -843,7 +843,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İngiltere',
         nationalityCode: 'ENG',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Wayne_Rooney_2017.jpg/300px-Wayne_Rooney_2017.jpg',
+        photoUrl: './portraits/wayne-rooney.jpg',
         description: 'Giggs ile yaptığı harika verkaç sonrası ceza sahasından köşeyi bularak beraberliği getirmişti.'
       }
     ]
@@ -868,7 +868,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Uruguay',
         nationalityCode: 'UY',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Luis_Suarez_2018.jpg/300px-Luis_Suarez_2018.jpg',
+        photoUrl: './portraits/luis-suarez.jpg',
         description: 'Henüz 3. dakikada ceza sahasında kafayla kaleciyi aşırarak inancı başlattı.'
       },
       {
@@ -881,7 +881,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg/300px-Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg',
+        photoUrl: './portraits/lionel-messi.jpg',
         description: 'Neymar’ın düşürülmesiyle kazanılan penaltıyı köşeye vurarak skoru 3-0 yaptı.'
       },
       {
@@ -894,7 +894,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Ronaldinho_in_2019.jpg/300px-Ronaldinho_in_2019.jpg',
+        photoUrl: './portraits/neymar-jr.jpg',
         description: 'Frikikten 90’a gönderdiği enfes topla maçı 4-1’e getirdi.'
       },
       {
@@ -907,7 +907,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Ronaldinho_in_2019.jpg/300px-Ronaldinho_in_2019.jpg',
+        photoUrl: './portraits/neymar-jr.jpg',
         description: 'Suarez’in kazandırdığı penaltıyı gole çevirerek farkı bire indirdi.'
       },
       {
@@ -920,7 +920,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Sergi_Roberto_2018.jpg/300px-Sergi_Roberto_2018.jpg',
+        photoUrl: './portraits/sergi-roberto.jpg',
         description: '94:39’da Neymar’ın ceza sahasına kestiği topa uçarak dokundu ve tarihin en büyük geri dönüşünü tamamladı.'
       },
       {
@@ -933,7 +933,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Uruguay',
         nationalityCode: 'UY',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Edinson_Cavani_2018.jpg/300px-Edinson_Cavani_2018.jpg',
+        photoUrl: './portraits/edinson-cavani.jpg',
         description: 'Kurzawa’nın kafayla indirdiği topa gelişine sert vurarak PSG’nin tek golünü kaydetti.'
       }
     ]
@@ -958,7 +958,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ra%C3%BAl_Gonz%C3%A1lez_2011.jpg/300px-Ra%C3%BAl_Gonz%C3%A1lez_2011.jpg',
+        photoUrl: './portraits/raul-gonzalez.jpg',
         description: 'Carlos’un uzun taç atışında akıllıca araya girerek sol ayakla erken golü buldu.'
       },
       {
@@ -971,7 +971,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Zinedine_Zidane_by_Tasnim_03.jpg/300px-Zinedine_Zidane_by_Tasnim_03.jpg',
+        photoUrl: './portraits/zinedine-zidane.jpg',
         description: 'Gökyüzünden inen topa sol ayağıyla 90’a öyle bir vole vurdu ki futbol tarihinin en estetik golü seçildi.'
       },
       {
@@ -984,7 +984,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Lucio_2010.jpg/300px-Lucio_2010.jpg',
+        photoUrl: './portraits/lucio.jpg',
         description: 'Schneider’in serbest vuruşunda kafayla Cesar’ı mağlup ederek beraberliği sağlamıştı.'
       }
     ]
@@ -1009,7 +1009,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'İtalya',
         nationalityCode: 'IT',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Marco_Materazzi_2012.jpg/300px-Marco_Materazzi_2012.jpg',
+        photoUrl: './portraits/marco-materazzi.jpg',
         description: 'Pirlo’nun köşe vuruşunda çok yükselip harika bir kafa vuruşuyla skoru eşitledi.'
       },
       {
@@ -1022,7 +1022,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Zinedine_Zidane_by_Tasnim_03.jpg/300px-Zinedine_Zidane_by_Tasnim_03.jpg',
+        photoUrl: './portraits/zinedine-zidane.jpg',
         description: 'Buffon’a karşı üst direğin içine çarpan panenka penaltısıyla perdeyi açtı.'
       }
     ]
@@ -1047,7 +1047,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Andr%C3%A9s_Iniesta.jpg/300px-Andr%C3%A9s_Iniesta.jpg',
+        photoUrl: './portraits/andres-iniesta.jpg',
         description: 'Fabregas’ın pasında topu kontrol edip çaprazdan sağ ayakla Stekelenburg’u geçti ve formayı çıkarıp Dani Jarque’yi andı.'
       }
     ]
@@ -1072,7 +1072,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Antoine_Griezmann_2018.jpg/300px-Antoine_Griezmann_2018.jpg',
+        photoUrl: './portraits/antoine-griezmann.jpg',
         description: 'VAR incelemesi sonrası kazanılan penaltıyı soğukkanlılıkla filelere yolladı.'
       },
       {
@@ -1085,7 +1085,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Paul_Pogba_2018.jpg/300px-Paul_Pogba_2018.jpg',
+        photoUrl: './portraits/paul-pogba.jpg',
         description: 'Ceza sahası dışından sol ayağıyla yaptığı plase Subasic’i çaresiz bıraktı.'
       },
       {
@@ -1098,7 +1098,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fransa',
         nationalityCode: 'FR',
-        photoUrl: '../../assets/portraits/mbappe.jpg',
+        photoUrl: './portraits/kylian-mbappe.jpg',
         description: '25 metreden yerden sert vuruşuyla Pele’den sonra Dünya Kupası finalinde gol atan en genç oyuncu oldu.'
       },
       {
@@ -1111,7 +1111,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Hırvatistan',
         nationalityCode: 'HR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Ivan_Perisic_2018.jpg/300px-Ivan_Perisic_2018.jpg',
+        photoUrl: './portraits/ivan-perisic.jpg',
         description: 'Ceza sahası önünde topu düzeltip sol ayağıyla köşeye çok sert bir füze yolladı.'
       },
       {
@@ -1124,7 +1124,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Hırvatistan',
         nationalityCode: 'HR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Mario_Mandzukic_2018.jpg/300px-Mario_Mandzukic_2018.jpg',
+        photoUrl: './portraits/mario-mandzukic.jpg',
         description: 'Lloris’in büyük hatasında baskı yapıp topu doğrudan ağlara gönderdi.'
       }
     ]
@@ -1149,7 +1149,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Mario_Jardel_2011.jpg/300px-Mario_Jardel_2011.jpg',
+        photoUrl: './portraits/mario-jardel.jpg',
         description: 'Hakan Ünsal’ın kazandırdığı penaltıyı Casillas’ı ters köşeye yatırarak gole çevirdi.'
       },
       {
@@ -1162,7 +1162,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Brezilya',
         nationalityCode: 'BR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Mario_Jardel_2011.jpg/300px-Mario_Jardel_2011.jpg',
+        photoUrl: './portraits/mario-jardel.jpg',
         description: 'Fatih Akyel’in sağdan ortasında tek dokunuşla Altın Gol’ü atıp kupayı Türkiye’ye getirdi.'
       },
       {
@@ -1175,7 +1175,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İspanya',
         nationalityCode: 'ES',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ra%C3%BAl_Gonz%C3%A1lez_2011.jpg/300px-Ra%C3%BAl_Gonz%C3%A1lez_2011.jpg',
+        photoUrl: './portraits/raul-gonzalez.jpg',
         description: 'Suat Kaya’nın eline çarpan topta kazanılan penaltıyı Taffarel’i geçerek ağlarla buluşturdu.'
       }
     ]
@@ -1200,7 +1200,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Max_Kruse_2019.jpg/300px-Max_Kruse_2019.jpg',
+        photoUrl: './portraits/max-kruse.jpg',
         description: 'Muric’in düşürülmesiyle kazanılan penaltıyı Muslera’yı ters köşeye yatırarak attı.'
       },
       {
@@ -1213,7 +1213,7 @@ export const MATCHES = [
         position: 'DF',
         nationality: 'Surinam',
         nationalityCode: 'SR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Ryan_Donk_2018.jpg/300px-Ryan_Donk_2018.jpg',
+        photoUrl: './portraits/ryan-donk.jpg',
         description: 'Ömer Bayram’ın kornerinde çok iyi yükselip kafayla köşeye bırakarak skoru 1-1 yaptı.'
       },
       {
@@ -1226,7 +1226,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Kolombiya',
         nationalityCode: 'CO',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Radamel_Falcao_2018.jpg/300px-Radamel_Falcao_2018.jpg',
+        photoUrl: './portraits/radamel-falcao.jpg',
         description: 'Onyekuru’nun kazandırdığı penaltıyı Altay’ın uzanamayacağı köşeye vurarak Galatasaray’ı 1-2 öne geçirdi.'
       },
       {
@@ -1239,7 +1239,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Nijerya',
         nationalityCode: 'NG',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Henry_Onyekuru_2019.jpg/300px-Henry_Onyekuru_2019.jpg',
+        photoUrl: './portraits/henry-onyekuru.jpg',
         description: 'Uzatmanın son anlarında yarı sahadan tek başına fırlayıp Altay’ı geçerek 20 yıllık seriyi bitirdi.'
       }
     ]
@@ -1264,7 +1264,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Türkiye',
         nationalityCode: 'TR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sergen_Yal%C3%A7%C4%B1n_2020.jpg/300px-Sergen_Yal%C3%A7%C4%B1n_2020.jpg',
+        photoUrl: './portraits/sergen-yalcin.jpg',
         description: '89. dakikada Tümer ile verkaç yapıp Mondragón’u mağlup ederek Beşiktaş’a 100. yıl şampiyonluğunu kazandırdı.'
       }
     ]
@@ -1289,7 +1289,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Almanya',
         nationalityCode: 'DE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Thomas_M%C3%BCller_2019.jpg/300px-Thomas_M%C3%BCller_2019.jpg',
+        photoUrl: './portraits/thomas-muller.jpg',
         description: 'Kroos’un ortasında kafayı yere çarptırıp Cech’in üstünden filelere gönderdi.'
       },
       {
@@ -1302,7 +1302,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Fildişi Sahili',
         nationalityCode: 'CI',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Didier_Drogba_2014.jpg/300px-Didier_Drogba_2014.jpg',
+        photoUrl: './portraits/didier-drogba.jpg',
         description: 'Mata’nın kornerinde ön direkte müthiş bir güçle kafayı vurarak Neuer’i avladı.'
       }
     ]
@@ -1327,7 +1327,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Belçika',
         nationalityCode: 'BE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Divock_Origi_2018.jpg/300px-Divock_Origi_2018.jpg',
+        photoUrl: './portraits/divock-origi.jpg',
         description: 'Henderson’un şutundan dönen topu tamamlayarak erken golü buldu.'
       },
       {
@@ -1340,7 +1340,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Hollanda',
         nationalityCode: 'NL',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Georginio_Wijnaldum_2018.jpg/300px-Georginio_Wijnaldum_2018.jpg',
+        photoUrl: './portraits/georginio-wijnaldum.jpg',
         description: 'Alexander-Arnold’un pasında gelişine sert vurarak Ter Stegen’i mağlup etti.'
       },
       {
@@ -1353,7 +1353,7 @@ export const MATCHES = [
         position: 'MF',
         nationality: 'Hollanda',
         nationalityCode: 'NL',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Georginio_Wijnaldum_2018.jpg/300px-Georginio_Wijnaldum_2018.jpg',
+        photoUrl: './portraits/georginio-wijnaldum.jpg',
         description: 'İki dakika sonra Shaqiri’nin ortasında kafayla skoru 3-0’a getirip maçı eşitledi.'
       },
       {
@@ -1366,7 +1366,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Belçika',
         nationalityCode: 'BE',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Divock_Origi_2018.jpg/300px-Divock_Origi_2018.jpg',
+        photoUrl: './portraits/divock-origi.jpg',
         description: '"Corner taken quickly, Origi!" Arnold’un dahi köşe vuruşunda Barcelona savunması uyurken 4. golü attı.'
       }
     ]
@@ -1391,7 +1391,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Maradona-Mundial_86_con_la_copa.JPG/300px-Maradona-Mundial_86_con_la_copa.JPG',
+        photoUrl: './portraits/diego-maradona.jpg',
         description: 'Shilton’la hava topuna çıkıp sol eliyle "Tanrının Eli" olarak anılan efsanevi golü attı.'
       },
       {
@@ -1404,7 +1404,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'Arjantin',
         nationalityCode: 'AR',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Maradona-Mundial_86_con_la_copa.JPG/300px-Maradona-Mundial_86_con_la_copa.JPG',
+        photoUrl: './portraits/diego-maradona.jpg',
         description: 'Kendi yarı sahasından çıkıp 5 İngiliz oyuncuyu ve kaleciyi çalımlayarak "Yüzyılın Golü"nü kaydetti.'
       },
       {
@@ -1417,7 +1417,7 @@ export const MATCHES = [
         position: 'FW',
         nationality: 'İngiltere',
         nationalityCode: 'ENG',
-        photoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Gary_Lineker_2011.jpg/300px-Gary_Lineker_2011.jpg',
+        photoUrl: './portraits/gary-lineker.jpg',
         description: 'Barnes’ın ortasında kafayla farkı bire indirdi.'
       }
     ]
