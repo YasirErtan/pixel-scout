@@ -20,8 +20,8 @@ test('golcuyu-tahmin-et registry is valid and points to local entrypoint', () =>
   assert.equal(STORAGE_KEY, 'pixel-scout:golcuyu-tahmin-et:v1');
 });
 
-test('curated matches dataset has complete metadata, scores and goals', () => {
-  assert.ok(MATCHES.length >= 6, 'Should have at least 6 iconic matches');
+test('curated matches dataset has at least 20 iconic matches with complete metadata, scores and goals', () => {
+  assert.ok(MATCHES.length >= 20, `Should have at least 20 iconic matches, found: ${MATCHES.length}`);
   assert.ok(MATCH_CATEGORIES.length >= 3, 'Should have categories');
 
   for (const match of MATCHES) {
@@ -37,6 +37,8 @@ test('curated matches dataset has complete metadata, scores and goals', () => {
       assert.ok(goal.id, 'Goal must have id');
       assert.ok(typeof goal.minute === 'number', 'Goal must have minute number');
       assert.ok(goal.scorerName, 'Goal must have scorerName');
+      assert.ok(typeof goal.isHome === 'boolean', 'Goal must specify isHome boolean');
+      assert.ok(goal.photoUrl, 'Goal must have photoUrl');
       assert.ok(Array.isArray(goal.aliases) && goal.aliases.length > 0, 'Goal must have aliases');
       assert.ok(['FW', 'MF', 'DF', 'GK'].includes(goal.position), `Invalid position: ${goal.position}`);
       assert.ok(goal.nationality, 'Goal must have nationality');
@@ -47,7 +49,7 @@ test('curated matches dataset has complete metadata, scores and goals', () => {
 });
 
 test('legends database and name normalization work reliably', () => {
-  assert.ok(LEGENDARY_PLAYERS.length >= 30, 'Should have rich legends dataset');
+  assert.ok(LEGENDARY_PLAYERS.length >= 50, `Should have rich legends dataset, found: ${LEGENDARY_PLAYERS.length}`);
 
   assert.equal(normalizeName('Zinédine Zidane'), 'zinedine zidane');
   assert.equal(normalizeName('Nihat Kahveci'), 'nihat kahveci');
