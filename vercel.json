@@ -3,8 +3,5 @@
   "framework": null,
   "buildCommand": "",
   "installCommand": "",
-  "outputDirectory": "dist",
-  "redirects": [
-    { "source": "/", "destination": "/games/", "permanent": false }
-  ]
+  "outputDirectory": "dist"
 }
