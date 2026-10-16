@@ -1,0 +1,11 @@
+research/
+tests/
+scripts/
+templates/
+docs/
+.github/
+.openai/
+.git/
+*.md
+LICENSE
+node_modules/

@@ -1,0 +1,15 @@
+{
+  "name": "pixel-scout",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.mjs",
+    "check": "node scripts/check-public-files.mjs && node --test tests/*.mjs",
+    "game:new": "node scripts/new-game.mjs"
+  }
+}

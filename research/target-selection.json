@@ -1,0 +1,1065 @@
+{
+  "approvedAvailable": 334,
+  "selected": 125,
+  "excludedNames": [
+    "Brian Madjo",
+    "Brayan Madjo",
+    "Malick Thiaw",
+    "Conor Bradley",
+    "Dan Burn",
+    "Ibrahim Mbaye",
+    "Gerónimo Rulli",
+    "Mile Svilar"
+  ],
+  "selectionMethod": "Select125 normal targets: preserve approved starter20 unless excluded by user; rank remaining complete, portrait-approved current squad candidates by EnglishWikipedia30-day pageviews.",
+  "selectedPlayers": [
+    {
+      "id": "yamal",
+      "name": "Lamine Yamal",
+      "league": "LaLiga",
+      "pageviews": 329537
+    },
+    {
+      "id": "haaland",
+      "name": "Erling Haaland",
+      "league": "PL",
+      "pageviews": 318205
+    },
+    {
+      "id": "mbappe",
+      "name": "Kylian Mbappé",
+      "league": "LaLiga",
+      "pageviews": 260206
+    },
+    {
+      "id": "bellingham",
+      "name": "Jude Bellingham",
+      "league": "LaLiga",
+      "pageviews": 214144
+    },
+    {
+      "id": "vinicius",
+      "name": "Vinícius Júnior",
+      "league": "LaLiga",
+      "pageviews": 116498
+    },
+    {
+      "id": "saka",
+      "name": "Bukayo Saka",
+      "league": "PL",
+      "pageviews": 97045
+    },
+    {
+      "id": "van-dijk",
+      "name": "Virgil van Dijk",
+      "league": "PL",
+      "pageviews": 88691
+    },
+    {
+      "id": "de-bruyne",
+      "name": "Kevin De Bruyne",
+      "league": "SerieA",
+      "pageviews": 79060
+    },
+    {
+      "id": "dembele",
+      "name": "Ousmane Dembélé",
+      "league": "Ligue1",
+      "pageviews": 73075
+    },
+    {
+      "id": "palmer",
+      "name": "Cole Palmer",
+      "league": "PL",
+      "pageviews": 63506
+    },
+    {
+      "id": "courtois",
+      "name": "Thibaut Courtois",
+      "league": "LaLiga",
+      "pageviews": 57857
+    },
+    {
+      "id": "donnarumma",
+      "name": "Gianluigi Donnarumma",
+      "league": "PL",
+      "pageviews": 56230
+    },
+    {
+      "id": "dybala",
+      "name": "Paulo Dybala",
+      "league": "SerieA",
+      "pageviews": 53099
+    },
+    {
+      "id": "pedri",
+      "name": "Pedri",
+      "league": "LaLiga",
+      "pageviews": 46229
+    },
+    {
+      "id": "lautaro",
+      "name": "Lautaro Martínez",
+      "league": "SerieA",
+      "pageviews": 44526
+    },
+    {
+      "id": "foden",
+      "name": "Phil Foden",
+      "league": "PL",
+      "pageviews": 42717
+    },
+    {
+      "id": "hakimi",
+      "name": "Achraf Hakimi",
+      "league": "Ligue1",
+      "pageviews": 35209
+    },
+    {
+      "id": "marquinhos",
+      "name": "Marquinhos",
+      "league": "Ligue1",
+      "pageviews": 28988
+    },
+    {
+      "id": "vitinha",
+      "name": "Vitinha",
+      "league": "Ligue1",
+      "pageviews": 25681
+    },
+    {
+      "id": "barella",
+      "name": "Nicolò Barella",
+      "league": "SerieA",
+      "pageviews": 13781
+    },
+    {
+      "id": "espn-231050",
+      "name": "Raphinha",
+      "league": "LaLiga",
+      "pageviews": 244192
+    },
+    {
+      "id": "espn-350661",
+      "name": "Lewis Koumas",
+      "league": "PL",
+      "pageviews": 218100
+    },
+    {
+      "id": "espn-127262",
+      "name": "Jordan Henderson",
+      "league": "PL",
+      "pageviews": 163984
+    },
+    {
+      "id": "espn-76762",
+      "name": "Luka Modric",
+      "league": "SerieA",
+      "pageviews": 142163
+    },
+    {
+      "id": "espn-231828",
+      "name": "Rodri",
+      "league": "LaLiga",
+      "pageviews": 141124
+    },
+    {
+      "id": "espn-274913",
+      "name": "Karim Adeyemi",
+      "league": "LaLiga",
+      "pageviews": 137487
+    },
+    {
+      "id": "espn-397263",
+      "name": "Max Dowman",
+      "league": "PL",
+      "pageviews": 97840
+    },
+    {
+      "id": "espn-285450",
+      "name": "Enzo Fernández",
+      "league": "PL",
+      "pageviews": 90388
+    },
+    {
+      "id": "espn-337970",
+      "name": "Nico Paz",
+      "league": "SerieA",
+      "pageviews": 89711
+    },
+    {
+      "id": "espn-104943",
+      "name": "Andy Robertson",
+      "league": "PL",
+      "pageviews": 85851
+    },
+    {
+      "id": "espn-298008",
+      "name": "Rayan Cherki",
+      "league": "PL",
+      "pageviews": 83830
+    },
+    {
+      "id": "espn-217289",
+      "name": "Gabriel Jesus",
+      "league": "LaLiga",
+      "pageviews": 83512
+    },
+    {
+      "id": "espn-124091",
+      "name": "Bruno Fernandes",
+      "league": "PL",
+      "pageviews": 80155
+    },
+    {
+      "id": "espn-265653",
+      "name": "Morgan Rogers",
+      "league": "PL",
+      "pageviews": 79557
+    },
+    {
+      "id": "espn-402479",
+      "name": "Yan Diomande",
+      "league": "LaLiga",
+      "pageviews": 78727
+    },
+    {
+      "id": "espn-355980",
+      "name": "Jérémy Jacquet",
+      "league": "PL",
+      "pageviews": 76866
+    },
+    {
+      "id": "espn-379588",
+      "name": "Rio Ngumoha",
+      "league": "PL",
+      "pageviews": 76713
+    },
+    {
+      "id": "espn-234878",
+      "name": "Rúben Dias",
+      "league": "PL",
+      "pageviews": 75590
+    },
+    {
+      "id": "espn-257206",
+      "name": "Dominik Szoboszlai",
+      "league": "PL",
+      "pageviews": 75582
+    },
+    {
+      "id": "espn-230945",
+      "name": "Marcus Rashford",
+      "league": "PL",
+      "pageviews": 74171
+    },
+    {
+      "id": "espn-274197",
+      "name": "Lee Kang-In",
+      "league": "LaLiga",
+      "pageviews": 73989
+    },
+    {
+      "id": "espn-238472",
+      "name": "Elliot Anderson",
+      "league": "PL",
+      "pageviews": 72913
+    },
+    {
+      "id": "espn-158626",
+      "name": "Emiliano Martínez",
+      "league": "PL",
+      "pageviews": 69395
+    },
+    {
+      "id": "espn-258906",
+      "name": "Viktor Gyökeres",
+      "league": "PL",
+      "pageviews": 68424
+    },
+    {
+      "id": "espn-235662",
+      "name": "Alexander Isak",
+      "league": "PL",
+      "pageviews": 67161
+    },
+    {
+      "id": "espn-273499",
+      "name": "Jonathan David",
+      "league": "LaLiga",
+      "pageviews": 64359
+    },
+    {
+      "id": "espn-328238",
+      "name": "Bradley Barcola",
+      "league": "PL",
+      "pageviews": 62776
+    },
+    {
+      "id": "espn-227765",
+      "name": "Dani Olmo",
+      "league": "LaLiga",
+      "pageviews": 61665
+    },
+    {
+      "id": "espn-223532",
+      "name": "Trent Alexander-Arnold",
+      "league": "LaLiga",
+      "pageviews": 61287
+    },
+    {
+      "id": "espn-176399",
+      "name": "João Cancelo",
+      "league": "LaLiga",
+      "pageviews": 60920
+    },
+    {
+      "id": "espn-274745",
+      "name": "Khvicha Kvaratskhelia",
+      "league": "Ligue1",
+      "pageviews": 58514
+    },
+    {
+      "id": "espn-238262",
+      "name": "Declan Rice",
+      "league": "PL",
+      "pageviews": 57211
+    },
+    {
+      "id": "espn-259910",
+      "name": "Marc Cucurella",
+      "league": "LaLiga",
+      "pageviews": 55953
+    },
+    {
+      "id": "espn-303748",
+      "name": "Florian Wirtz",
+      "league": "PL",
+      "pageviews": 55790
+    },
+    {
+      "id": "espn-356000",
+      "name": "Dean Huijsen",
+      "league": "LaLiga",
+      "pageviews": 53603
+    },
+    {
+      "id": "espn-309273",
+      "name": "Rasmus Højlund",
+      "league": "SerieA",
+      "pageviews": 53390
+    },
+    {
+      "id": "espn-187946",
+      "name": "Dominik Livakovic",
+      "league": "LaLiga",
+      "pageviews": 53055
+    },
+    {
+      "id": "espn-196176",
+      "name": "David Raya",
+      "league": "PL",
+      "pageviews": 52715
+    },
+    {
+      "id": "espn-288896",
+      "name": "Gonçalo Ramos",
+      "league": "SerieA",
+      "pageviews": 51908
+    },
+    {
+      "id": "espn-115271",
+      "name": "Danny Welbeck",
+      "league": "PL",
+      "pageviews": 51637
+    },
+    {
+      "id": "espn-268641",
+      "name": "Iliman Ndiaye",
+      "league": "PL",
+      "pageviews": 50658
+    },
+    {
+      "id": "espn-209581",
+      "name": "Mikel Merino",
+      "league": "PL",
+      "pageviews": 47664
+    },
+    {
+      "id": "espn-203669",
+      "name": "Martin Ødegaard",
+      "league": "PL",
+      "pageviews": 46875
+    },
+    {
+      "id": "espn-249299",
+      "name": "Alexis Mac Allister",
+      "league": "PL",
+      "pageviews": 46797
+    },
+    {
+      "id": "espn-96970",
+      "name": "Cristian Romero",
+      "league": "LaLiga",
+      "pageviews": 45621
+    },
+    {
+      "id": "espn-368992",
+      "name": "Pau Cubarsí",
+      "league": "LaLiga",
+      "pageviews": 45241
+    },
+    {
+      "id": "espn-199833",
+      "name": "Bernardo Silva",
+      "league": "LaLiga",
+      "pageviews": 45013
+    },
+    {
+      "id": "espn-194115",
+      "name": "Dominic Solanke",
+      "league": "PL",
+      "pageviews": 44518
+    },
+    {
+      "id": "espn-303745",
+      "name": "Omar Marmoush",
+      "league": "PL",
+      "pageviews": 43589
+    },
+    {
+      "id": "espn-277206",
+      "name": "Julián Álvarez",
+      "league": "LaLiga",
+      "pageviews": 43209
+    },
+    {
+      "id": "espn-88965",
+      "name": "Olivier Giroud",
+      "league": "Ligue1",
+      "pageviews": 42601
+    },
+    {
+      "id": "espn-273292",
+      "name": "Antoine Semenyo",
+      "league": "PL",
+      "pageviews": 42599
+    },
+    {
+      "id": "espn-225607",
+      "name": "Christian Pulisic",
+      "league": "SerieA",
+      "pageviews": 42402
+    },
+    {
+      "id": "espn-320760",
+      "name": "Valentín Barco",
+      "league": "PL",
+      "pageviews": 41727
+    },
+    {
+      "id": "espn-108482",
+      "name": "David de Gea",
+      "league": "SerieA",
+      "pageviews": 41423
+    },
+    {
+      "id": "espn-336388",
+      "name": "Désiré Doué",
+      "league": "Ligue1",
+      "pageviews": 39949
+    },
+    {
+      "id": "espn-238902",
+      "name": "Diogo Dalot",
+      "league": "PL",
+      "pageviews": 39599
+    },
+    {
+      "id": "espn-265907",
+      "name": "Marc Guéhi",
+      "league": "PL",
+      "pageviews": 38887
+    },
+    {
+      "id": "espn-155532",
+      "name": "Eric Dier",
+      "league": "Ligue1",
+      "pageviews": 38197
+    },
+    {
+      "id": "espn-196876",
+      "name": "Alisson Becker",
+      "league": "PL",
+      "pageviews": 38129
+    },
+    {
+      "id": "espn-251400",
+      "name": "Eberechi Eze",
+      "league": "PL",
+      "pageviews": 38038
+    },
+    {
+      "id": "espn-231859",
+      "name": "Ezri Konsa",
+      "league": "PL",
+      "pageviews": 38026
+    },
+    {
+      "id": "espn-346612",
+      "name": "Endrick",
+      "league": "LaLiga",
+      "pageviews": 37997
+    },
+    {
+      "id": "espn-231182",
+      "name": "Kai Havertz",
+      "league": "PL",
+      "pageviews": 36797
+    },
+    {
+      "id": "espn-218522",
+      "name": "Bruno Guimarães",
+      "league": "PL",
+      "pageviews": 36449
+    },
+    {
+      "id": "espn-193297",
+      "name": "Youri Tielemans",
+      "league": "PL",
+      "pageviews": 36442
+    },
+    {
+      "id": "espn-352758",
+      "name": "Myles Lewis-Skelly",
+      "league": "PL",
+      "pageviews": 36407
+    },
+    {
+      "id": "espn-298329",
+      "name": "Riccardo Calafiori",
+      "league": "PL",
+      "pageviews": 36262
+    },
+    {
+      "id": "espn-340678",
+      "name": "Diego Moreira",
+      "league": "SerieA",
+      "pageviews": 36159
+    },
+    {
+      "id": "espn-255850",
+      "name": "Scott McTominay",
+      "league": "SerieA",
+      "pageviews": 35825
+    },
+    {
+      "id": "espn-283672",
+      "name": "Jérémy Doku",
+      "league": "PL",
+      "pageviews": 35274
+    },
+    {
+      "id": "espn-156799",
+      "name": "Richarlison",
+      "league": "PL",
+      "pageviews": 35234
+    },
+    {
+      "id": "espn-249524",
+      "name": "Cody Gakpo",
+      "league": "PL",
+      "pageviews": 34794
+    },
+    {
+      "id": "espn-249280",
+      "name": "Alessandro Bastoni",
+      "league": "SerieA",
+      "pageviews": 34388
+    },
+    {
+      "id": "espn-323838",
+      "name": "Giuliano Simeone",
+      "league": "LaLiga",
+      "pageviews": 34249
+    },
+    {
+      "id": "espn-162843",
+      "name": "John McGinn",
+      "league": "PL",
+      "pageviews": 34224
+    },
+    {
+      "id": "espn-297373",
+      "name": "Álex Baena",
+      "league": "LaLiga",
+      "pageviews": 33784
+    },
+    {
+      "id": "espn-157073",
+      "name": "Harry Maguire",
+      "league": "PL",
+      "pageviews": 33779
+    },
+    {
+      "id": "espn-399200",
+      "name": "Hamza Abdelkarim",
+      "league": "LaLiga",
+      "pageviews": 33356
+    },
+    {
+      "id": "espn-354334",
+      "name": "Fermín López",
+      "league": "LaLiga",
+      "pageviews": 33132
+    },
+    {
+      "id": "espn-274217",
+      "name": "Billy Gilmour",
+      "league": "SerieA",
+      "pageviews": 33058
+    },
+    {
+      "id": "espn-267804",
+      "name": "Rodrygo",
+      "league": "LaLiga",
+      "pageviews": 32698
+    },
+    {
+      "id": "espn-259902",
+      "name": "Matheus Cunha",
+      "league": "PL",
+      "pageviews": 32682
+    },
+    {
+      "id": "espn-131634",
+      "name": "Wojciech Szczesny",
+      "league": "LaLiga",
+      "pageviews": 32578
+    },
+    {
+      "id": "espn-231167",
+      "name": "Mason Mount",
+      "league": "PL",
+      "pageviews": 32141
+    },
+    {
+      "id": "espn-154595",
+      "name": "Mateo Kovacic",
+      "league": "PL",
+      "pageviews": 31593
+    },
+    {
+      "id": "espn-382966",
+      "name": "Allan Elias",
+      "league": "PL",
+      "pageviews": 30875
+    },
+    {
+      "id": "espn-266696",
+      "name": "Conor Gallagher",
+      "league": "PL",
+      "pageviews": 30857
+    },
+    {
+      "id": "espn-328464",
+      "name": "Nico O'Reilly",
+      "league": "PL",
+      "pageviews": 29963
+    },
+    {
+      "id": "espn-219022",
+      "name": "Frenkie de Jong",
+      "league": "LaLiga",
+      "pageviews": 29476
+    },
+    {
+      "id": "espn-332613",
+      "name": "Marc Pubill",
+      "league": "LaLiga",
+      "pageviews": 28742
+    },
+    {
+      "id": "espn-149622",
+      "name": "Jan Oblak",
+      "league": "LaLiga",
+      "pageviews": 28547
+    },
+    {
+      "id": "espn-159317",
+      "name": "Aymeric Laporte",
+      "league": "LaLiga",
+      "pageviews": 28366
+    },
+    {
+      "id": "espn-323110",
+      "name": "Milos Kerkez",
+      "league": "PL",
+      "pageviews": 28275
+    },
+    {
+      "id": "espn-289155",
+      "name": "Benjamin Sesko",
+      "league": "PL",
+      "pageviews": 28209
+    },
+    {
+      "id": "espn-194450",
+      "name": "James Maddison",
+      "league": "PL",
+      "pageviews": 27973
+    },
+    {
+      "id": "espn-277385",
+      "name": "William Saliba",
+      "league": "PL",
+      "pageviews": 27920
+    },
+    {
+      "id": "espn-214596",
+      "name": "Fabián Ruiz",
+      "league": "Ligue1",
+      "pageviews": 27470
+    },
+    {
+      "id": "espn-233937",
+      "name": "Lisandro Martínez",
+      "league": "PL",
+      "pageviews": 27270
+    },
+    {
+      "id": "espn-359651",
+      "name": "Matias Fernandez-Pardo",
+      "league": "PL",
+      "pageviews": 27193
+    },
+    {
+      "id": "espn-373927",
+      "name": "Ayyoub Bouaddi",
+      "league": "PL",
+      "pageviews": 27117
+    },
+    {
+      "id": "espn-332962",
+      "name": "Xavi Simons",
+      "league": "PL",
+      "pageviews": 26990
+    },
+    {
+      "id": "espn-235818",
+      "name": "Federico Valverde",
+      "league": "LaLiga",
+      "pageviews": 26841
+    },
+    {
+      "id": "espn-276327",
+      "name": "Joshua Zirkzee",
+      "league": "PL",
+      "pageviews": 26541
+    },
+    {
+      "id": "espn-236322",
+      "name": "Gabriel Magalhães",
+      "league": "PL",
+      "pageviews": 26444
+    }
+  ],
+  "skipped": [
+    {
+      "name": "Christos Tzolis",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Illan Meslier",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Gerónimo Rulli",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Marcus Bettinelli",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Rayan Aït-Nouri",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Vitor Reis",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Conor Bradley",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Harvey Davies",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Hugo Ekitike",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Joe Gomez",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Luke Chambers",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Ronald Araújo",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Trey Nyoni",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Emmanuel Emegha",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Jorrel Hato",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Teddy Sharman-Lowe",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Bryan Mbeumo",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Karl Darlow",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Leny Yoro",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Luke Shaw",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Patrick Dorgu",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Archie Gray",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Brandon Austin",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Destiny Udogie",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Martin Dúbravka",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Mohammed Kudus",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Aladji Bamba",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Dan Burn",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Jacob Murphy",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Jacob Ramsey",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Joe Willock",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Lewis Miley",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Malick Thiaw",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Sean Steur",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Yoane Wissa",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Aaron Wan-Bissaka",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Alejandro Garnacho",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Boubacar Kamara",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Brian Madjo",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Ian Maatsen",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Ibrahim Mbaye",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Arda Güler",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Alejandro Balde",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Roony Bardghji",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Aitor Paredes",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Asier Hierro",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Beñat Gerenabarrena",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Beñat Prados",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Iker Monreal",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Raoul Bellanova",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Stanislav Lobotka",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Khéphren Thuram",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Riccardo Orsolini",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Jhon Lucumí",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Rolando Mandragora",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Matìas Soulè",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Artem Dovbyk",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Mile Svilar",
+      "reason": "excluded from portrait targets by user request"
+    },
+    {
+      "name": "Boulaye Dia",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Duván Zapata",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Saúl Coco",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Anastasios Douvikas",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Maxence Caqueret",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Ansu Fati",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Lamine Camara",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Dominik Greif",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Odsonne Édouard",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Willem Geubbels",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Vincent Sierro",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Andrea Cambiaso",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Moise Kean",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Hamed Traoré",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Jérémie Boga",
+      "reason": "portrait not approved"
+    },
+    {
+      "name": "Moses Simon",
+      "reason": "portrait not approved"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#111b16;color:#efeccd}
+*{box-sizing:border-box}body{margin:0;padding:24px}main{max-width:760px;margin:8vh auto;padding:28px;border:2px solid #78916b;background:#1b2b21}a{color:#b7d883}.eyebrow{letter-spacing:.15em;font-size:.75rem;color:#b7d883}h1{overflow-wrap:anywhere}button{font:inherit;background:#b7d883;color:#111b16;border:2px solid #78916b;padding:12px 22px;cursor:pointer}a:focus-visible,button:focus-visible{outline:3px solid #f0ca70;outline-offset:5px}p{line-height:1.7}
