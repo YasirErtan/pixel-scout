@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Golcüyü Tahmin Et · Pixel Scout</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="../index.html" class="brand">
+      <span>PIXEL<span class="brand-dot">·</span>SCOUT</span>
+    </a>
+    <span class="header-tag">GOLCÜYÜ TAHMİN ET</span>
+    <nav>
+      <button id="stats-btn" class="nav-link" type="button">İstatistikler</button>
+      <a href="../index.html" class="nav-link">← Oyunlar</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Kategori ve Maç Seçim Çubuğu -->
+    <div class="toolbar">
+      <div class="category-tabs" id="category-tabs"></div>
+      <div class="toolbar-actions">
+        <select id="match-selector" class="match-select" aria-label="Maç Seç"></select>
+        <button id="random-match-btn" class="random-btn" type="button">🎲 Rastgele Maç</button>
+      </div>
+    </div>
+
+    <!-- Maç Skorbordu -->
+    <section class="scoreboard-card">
+      <div class="match-meta">
+        <span class="badge" id="match-tournament"></span>
+        <span id="match-date-venue"></span>
+      </div>
+      <div class="teams-display">
+        <div class="team-box">
+          <span class="team-name" id="home-name"></span>
+        </div>
+        <div class="score-display" id="match-score">0 - 0</div>
+        <div class="team-box">
+          <span class="team-name" id="away-name"></span>
+        </div>
+      </div>
+
+      <!-- Goller Seçim Çubuğu -->
+      <div class="goals-section">
+        <div class="goals-header">
+          <span>MAÇIN GOLLERİ (Tahmin etmek istediğin gole tıkla)</span>
+          <span id="goals-progress">0/0 Çözüldü</span>
+        </div>
+        <div class="goals-list" id="goals-list"></div>
+      </div>
+    </section>
+
+    <!-- Tahmin ve İpucu Alanı -->
+    <section class="guess-area" id="guess-area">
+      <!-- Sol Panel: Portre Kartı -->
+      <div class="portrait-card">
+        <div class="card-header">
+          <span id="portrait-goal-label">GOLCÜ KİMLİĞİ</span>
+          <span id="portrait-team-label"></span>
+        </div>
+        <div class="portrait-stage">
+          <div class="portrait-frame" id="portrait-container">
+            <div id="portrait-placeholder" class="portrait-img level-0"></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="status-badge" id="portrait-status">İPUÇLARI BEKLENİYOR</span>
+        </div>
+      </div>
+
+      <!-- Sağ Panel: İpuçları ve Arama -->
+      <div class="interactive-panel">
+        <!-- 3 Kademeli İpucu Grid -->
+        <div class="clues-grid">
+          <div class="clue-card locked" id="clue-position-card">
+            <span class="clue-tag">1. İPUCU · MEVKİ (1. YANLIŞTA)</span>
+            <span class="clue-value" id="clue-position-val">🔒 Kilitli</span>
+          </div>
+          <div class="clue-card locked" id="clue-country-card">
+            <span class="clue-tag">2. İPUCU · ÜLKE (2. YANLIŞTA)</span>
+            <span class="clue-value" id="clue-country-val">🔒 Kilitli</span>
+          </div>
+          <div class="clue-card locked" id="clue-photo-card">
+            <span class="clue-tag">3. İPUCU · PORTRE (3. YANLIŞTA)</span>
+            <span class="clue-value" id="clue-photo-val">🔒 Bulanık</span>
+          </div>
+        </div>
+
+        <!-- Arama Alanı -->
+        <div class="search-container" id="search-section">
+          <label for="player-input" class="sr-only" style="display:none;">Futbolcu Tahmini</label>
+          <div class="search-box">
+            <input 
+              type="text" 
+              id="player-input" 
+              placeholder="Golü atan futbolcunun adını yazın... (örn: Gerrard, Messi, Nihat)" 
+              autocomplete="off"
+            />
+            <button id="guess-btn" type="button">TAHMİN ET</button>
+          </div>
+          <ul id="suggestions" hidden></ul>
+        </div>
+
+        <!-- Kalan Hak ve Tur Bilgisi -->
+        <div class="round-info">
+          <span id="attempts-text">Kalan Hak: 4/4</span>
+          <div class="attempts-dots" id="attempts-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+
+        <!-- Başarı / Sonuç Kutusu -->
+        <div class="success-banner" id="success-banner" hidden>
+          <h3 id="success-title">✅ TEBRİKLER!</h3>
+          <p id="success-desc"></p>
+        </div>
+
+        <!-- Tahmin Geçmişi -->
+        <div class="guesses-history" id="guesses-history"></div>
+      </div>
+    </section>
+
+    <!-- Maç Tamamlandı Kartı -->
+    <div class="match-completed-card" id="match-completed" hidden>
+      <h2>🏆 MAÇTAKİ TÜM GOLLER ÇÖZÜLDÜ!</h2>
+      <p id="completed-summary">Tebrikler, bu efsane maçtaki tüm golcüleri başarıyla tamamladınız.</p>
+      <button class="next-match-btn" id="next-match-btn" type="button">Sonraki Efsane Maça Geç →</button>
+    </div>
+  </main>
+
+  <!-- İstatistik Modalı -->
+  <dialog id="stats-modal">
+    <div class="dialog-header">
+      <h2 style="font: 16px var(--pixel); margin:0;">İSTATİSTİKLER</h2>
+      <button id="close-stats" type="button">✕</button>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box">
+        <strong id="stat-matches">0</strong>
+        <span>Tamamlanan Maç</span>
+      </div>
+      <div class="stat-box">
+        <strong id="stat-goals">0</strong>
+        <span>Bilinen Gol</span>
+      </div>
+      <div class="stat-box">
+        <strong id="stat-accuracy">%0</strong>
+        <span>Tahmin İsabeti</span>
+      </div>
+    </div>
+    <p style="font-size:11px; color:var(--muted); text-align:center;">
+      Skorlar tarayıcınızda saklanır. Başka cihazlarla senkronize edilmez.
+    </p>
+  </dialog>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
