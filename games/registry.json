@@ -10,5 +10,11 @@
     "title": "Golcüyü Tahmin Et",
     "description": "Tarihi maçlardaki unutulmaz golleri atan futbolcuları ipuçlarıyla bul.",
     "href": "./golcuyu-tahmin-et/index.html"
+  },
+  {
+    "id": "piyasa-degeri",
+    "title": "Piyasa Değeri (Higher or Lower)",
+    "description": "Hangi futbol kulübünün piyasa değeri daha yüksek? Transfermarkt kadro değerleri karşılaştırması.",
+    "href": "./piyasa-degeri/index.html"
   }
 ]
