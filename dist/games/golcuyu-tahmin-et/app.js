@@ -1,18 +1,26 @@
 import { MATCHES } from './matches.js';
+import { NATIONAL_MATCHES } from './national-matches.js';
 import { LEGENDARY_PLAYERS, normalizeName } from './legends.js';
 import { generatePixelAvatar } from './avatar.js';
 
 export const STORAGE_KEY = 'pixel-scout:golcuyu-tahmin-et:v1';
 const MAX_ATTEMPTS = 4;
 
+// Oyun Modu: 'national' (varsayılan) | 'classic'
+let currentMode = 'national';
+
 // Uygulama durumu
-let currentMatch = MATCHES[0];
+let currentMatch = NATIONAL_MATCHES[0];
 let currentGoalIndex = 0;
 let currentGoal = currentMatch.goals[0];
 let searchDatabase = [...LEGENDARY_PLAYERS];
 
-// Her gol için tur durumu: { [goalId]: { attempts: [], solved: false, passed: false } }
+// Her gol için tur durumu: { [goalId]: { attempts: [], solved: false, passed: false, opponent: false } }
 let roundState = {};
+
+// Modlara göre oturum havuzları (Sayfayı yenileyene kadar maçlar asla tekrarlanmaz)
+let classicMatchBag = [];
+let nationalMatchBag = [];
 
 // İstatistikler
 let stats = {
@@ -44,38 +52,63 @@ function saveStats() {
   }
 }
 
-// Oyuncu veritabanını dist/players.json ile genişlet
+// Oyuncu veritabanını dist/players.json ile genişlet (Yüz tanıma oyunundaki tüm 2400+ futbolcu)
 async function initPlayerDatabase() {
-  try {
-    const res = await fetch('../../players.json');
-    if (res.ok) {
-      const data = await res.json();
-      const allPlayers = [...(data.players || []), ...(data.searchPlayers || [])];
-      
-      const existingNames = new Set(searchDatabase.map(p => normalizeName(p.name)));
-      for (const p of allPlayers) {
-        const norm = normalizeName(p.name);
-        if (!existingNames.has(norm)) {
-          existingNames.add(norm);
-          searchDatabase.push({
-            id: p.id,
-            name: p.name,
-            nationality: p.nationality,
-            nationalityCode: p.nationalityCode,
-            position: p.position || 'MF',
-            photoUrl: p.photo?.path ? `../../${p.photo.path}` : null,
-            era: p.club ? `${p.club} (${p.league})` : 'Aktif'
-          });
+  const candidateUrls = [
+    '../../players.json',
+    '../players.json',
+    './players.json',
+    '/players.json'
+  ];
+
+  for (const url of candidateUrls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        const allPlayers = [...(data.players || []), ...(data.searchPlayers || [])];
+        const existingNames = new Set(searchDatabase.map(p => normalizeName(p.name)));
+        
+        for (const p of allPlayers) {
+          const norm = normalizeName(p.name);
+          if (!existingNames.has(norm)) {
+            existingNames.add(norm);
+            searchDatabase.push({
+              id: p.id,
+              name: p.name,
+              aliases: p.aliases || [],
+              nationality: p.nationality || '',
+              nationalityCode: p.nationalityCode || '',
+              position: p.position || 'MF',
+              photoUrl: p.photo?.path ? `../../${p.photo.path}` : null,
+              era: p.club ? `${p.club} (${p.league})` : 'Aktif'
+            });
+          }
         }
+        break;
       }
+    } catch {
+      // Bir sonraki URL'yi dene
     }
-  } catch (err) {
-    console.warn('players.json yüklenemedi, yerel efsaneler havuzu kullanılıyor.', err);
   }
+}
+
+// Fisher-Yates Dizi Karıştırma
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 if (typeof document !== 'undefined') {
   // Arayüz Elemanları
+  const modeNationalBtn = document.getElementById('mode-national-btn');
+  const modeClassicBtn = document.getElementById('mode-classic-btn');
+  const modeNoticeBanner = document.getElementById('mode-notice-banner');
+
   const randomMatchBtn = document.getElementById('random-match-btn');
   const skipMatchActionBtn = document.getElementById('skip-match-action');
   const matchTournamentEl = document.getElementById('match-tournament');
@@ -120,26 +153,74 @@ if (typeof document !== 'undefined') {
   const statGoalsEl = document.getElementById('stat-goals');
   const statAccuracyEl = document.getElementById('stat-accuracy');
 
-  // Rastgele Maç Seç
-  function pickRandomMatch(excludeId = null) {
-    const pool = MATCHES.filter(m => m.id !== excludeId);
-    const chosen = pool[Math.floor(Math.random() * pool.length)] || MATCHES[0];
+  // Tekrarsız Oturum Havuzu: Sayfa yenilenene kadar aynı maç tekrar gelmez!
+  function pickNextMatch() {
+    const pool = currentMode === 'national' ? NATIONAL_MATCHES : MATCHES;
+    let bag = currentMode === 'national' ? nationalMatchBag : classicMatchBag;
+
+    // Havuz boşaldıysa (tüm maçlar oynandıysa), havuzu baştan karıştır
+    if (bag.length === 0) {
+      bag = shuffle(pool.map(m => m.id));
+      // Son oynanan maç hemen ilk maç olarak gelmesin
+      if (currentMatch && bag.length > 1 && bag[bag.length - 1] === currentMatch.id) {
+        [bag[0], bag[bag.length - 1]] = [bag[bag.length - 1], bag[0]];
+      }
+      if (currentMode === 'national') {
+        nationalMatchBag = bag;
+      } else {
+        classicMatchBag = bag;
+      }
+    }
+
+    const nextId = bag.pop();
+    const chosen = pool.find(m => m.id === nextId) || pool[0];
     startMatch(chosen);
+  }
+
+  // Mod Değiştirme
+  function setMode(mode) {
+    if (currentMode === mode && currentMatch) return;
+    currentMode = mode;
+
+    if (mode === 'national') {
+      modeNationalBtn?.classList.add('active', 'national');
+      modeClassicBtn?.classList.remove('active');
+      if (modeNoticeBanner) {
+        modeNoticeBanner.hidden = false;
+        modeNoticeBanner.innerHTML = '🇹🇷 <strong>MİLLİ TAKIM MODU:</strong> Sadece Türkiye\'nin attığı goller tahmin edilir. Rakip takımın golleri otomatik olarak açıktır.';
+      }
+    } else {
+      modeClassicBtn?.classList.add('active');
+      modeNationalBtn?.classList.remove('active', 'national');
+      if (modeNoticeBanner) {
+        modeNoticeBanner.hidden = false;
+        modeNoticeBanner.innerHTML = '🌍 <strong>KULÜP & DÜNYA KUPASI MODU:</strong> Şampiyonlar Ligi finalleri, Süper Lig derbileri ve Dünya Kupası efsane maçları.';
+      }
+    }
+
+    pickNextMatch();
   }
 
   // Maçı Başlat
   function startMatch(match) {
     currentMatch = match;
     roundState = {};
-    for (const g of currentMatch.goals) {
-      roundState[g.id] = { attempts: [], solved: false, passed: false };
-    }
-    currentGoalIndex = 0;
-    currentGoal = currentMatch.goals[0];
-    matchCompletedEl.hidden = true;
 
+    for (const g of currentMatch.goals) {
+      // Milli Takım modunda rakip golleri baştan açık
+      if (g.guessable === false) {
+        roundState[g.id] = { attempts: [], solved: true, passed: false, opponent: true };
+      } else {
+        roundState[g.id] = { attempts: [], solved: false, passed: false, opponent: false };
+      }
+    }
+
+    matchCompletedEl.hidden = true;
     updateMatchUI();
-    selectGoal(0);
+
+    // İlk tahmin edilecek gole odaklan
+    const firstGuessableIdx = currentMatch.goals.findIndex(g => g.guessable !== false);
+    selectGoal(firstGuessableIdx !== -1 ? firstGuessableIdx : 0);
   }
 
   // Maç Arayüzünü Güncelle
@@ -153,18 +234,31 @@ if (typeof document !== 'undefined') {
     renderVerticalGoals();
   }
 
-  // Takımların Altındaki Golleri Alt Alta Çiz
+  // Takımların Altındaki Golleri Çiz
   function renderVerticalGoals() {
     homeGoalsListEl.innerHTML = '';
     awayGoalsListEl.innerHTML = '';
 
-    let solvedOrPassedCount = 0;
+    const guessableGoals = currentMatch.goals.filter(g => g.guessable !== false);
+    let solvedOrPassedTurkeyCount = 0;
 
     currentMatch.goals.forEach((g, idx) => {
       const state = roundState[g.id] || { attempts: [], solved: false, passed: false };
       const isSelected = idx === currentGoalIndex;
       const isDone = state.solved || state.passed;
-      if (isDone) solvedOrPassedCount++;
+
+      // Rakip Golü ise: Açık ve tahmin edilmez
+      if (g.guessable === false) {
+        const item = document.createElement('div');
+        item.className = 'goal-pill opponent-goal';
+        item.innerHTML = `⚽ ${g.minute}' ${g.scorerName} <span class="opponent-tag">Rakip Golü</span>`;
+        if (g.isHome) homeGoalsListEl.appendChild(item);
+        else awayGoalsListEl.appendChild(item);
+        return;
+      }
+
+      // Türkiye Golü (veya klasik moddaki tüm goller)
+      if (isDone) solvedOrPassedTurkeyCount++;
 
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -182,7 +276,6 @@ if (typeof document !== 'undefined') {
       btn.textContent = text;
       btn.addEventListener('click', () => selectGoal(idx));
 
-      // Takımına göre sola veya sağa yerleştir
       if (g.isHome) {
         homeGoalsListEl.appendChild(btn);
       } else {
@@ -190,10 +283,14 @@ if (typeof document !== 'undefined') {
       }
     });
 
-    goalsProgressEl.textContent = `${solvedOrPassedCount}/${currentMatch.goals.length} Gol Çözüldü`;
+    // İlerleme Rozeti
+    const totalToGuess = guessableGoals.length;
+    goalsProgressEl.textContent = currentMode === 'national'
+      ? `${solvedOrPassedTurkeyCount}/${totalToGuess} Milli Gol Çözüldü`
+      : `${solvedOrPassedTurkeyCount}/${totalToGuess} Gol Çözüldü`;
 
-    // Maçtaki tüm goller tamamlandıysa
-    if (solvedOrPassedCount === currentMatch.goals.length && currentMatch.goals.length > 0) {
+    // Maçtaki tüm tahmin edilecek goller bittiyse
+    if (solvedOrPassedTurkeyCount === totalToGuess && totalToGuess > 0) {
       matchCompletedEl.hidden = false;
       stats.matchesCompleted += 1;
       saveStats();
@@ -204,13 +301,24 @@ if (typeof document !== 'undefined') {
   function selectGoal(index) {
     currentGoalIndex = index;
     currentGoal = currentMatch.goals[index];
+
+    // Eğer rakip golü ise, en yakın tahmin edilecek gole geç
+    if (currentGoal && currentGoal.guessable === false) {
+      const firstGuessable = currentMatch.goals.findIndex(g => g.guessable !== false);
+      if (firstGuessable !== -1) {
+        currentGoalIndex = firstGuessable;
+        currentGoal = currentMatch.goals[firstGuessable];
+      }
+    }
+
     renderVerticalGoals();
     updateGoalUI();
   }
 
   // Aktif Gol UI'ı
   function updateGoalUI() {
-    const state = roundState[currentGoal.id];
+    if (!currentGoal) return;
+    const state = roundState[currentGoal.id] || { attempts: [], solved: false, passed: false };
     const attemptsCount = state.attempts.length;
     const isDone = state.solved || state.passed;
 
@@ -321,7 +429,7 @@ if (typeof document !== 'undefined') {
     return pos;
   }
 
-  // Portre Çizimi (Gerçek Fotoğraf + SVG Fallback)
+  // Portre Çizimi (Futbolculuk Dönemi Fotoğrafı + SVG Fallback)
   function renderPortrait(attemptsCount, isDone) {
     portraitContainerEl.innerHTML = '';
     let levelClass = 'level-0';
@@ -338,20 +446,17 @@ if (typeof document !== 'undefined') {
       img.alt = currentGoal.scorerName;
       img.className = `portrait-img ${levelClass}`;
       img.referrerPolicy = 'no-referrer';
-      
-      // Wikimedia hotlink korumasını aşmak için hızlı ve güvenilir görsel proxy
+
       const srcUrl = currentGoal.photoUrl.startsWith('http')
-        ? `https://images.weserv.nl/?url=${encodeURIComponent(currentGoal.photoUrl)}&w=320&output=jpg`
+        ? `https://images.weserv.nl/?url=${encodeURIComponent(currentGoal.photoUrl)}&w=360&output=jpg`
         : currentGoal.photoUrl;
 
       img.src = srcUrl;
       img.onerror = () => {
-        // İlk hata durumunda doğrudan orijinal URL'yi dene
         if (img.src !== currentGoal.photoUrl && currentGoal.photoUrl.startsWith('http')) {
           img.src = currentGoal.photoUrl;
           return;
         }
-        // İkisi de olmazsa pixel avatar çiz
         portraitContainerEl.innerHTML = '';
         const svgWrap = document.createElement('div');
         svgWrap.className = `portrait-img ${levelClass}`;
@@ -373,7 +478,7 @@ if (typeof document !== 'undefined') {
     if (!query) return;
 
     const state = roundState[currentGoal.id];
-    if (state.solved || state.passed) return;
+    if (!state || state.solved || state.passed) return;
 
     stats.totalGuesses += 1;
 
@@ -389,8 +494,6 @@ if (typeof document !== 'undefined') {
       state.attempts.push({ playerName: currentGoal.scorerName, correct: true });
       stats.correctGuesses += 1;
       stats.goalsSolved += 1;
-
-      // Sonraki çözülmemiş gole otomatik geçiş hazırlığı
       setTimeout(autoAdvanceGoal, 1400);
     } else {
       state.attempts.push({ playerName: query, correct: false });
@@ -405,10 +508,10 @@ if (typeof document !== 'undefined') {
     updateGoalUI();
   }
 
-  // Pas Geçme (Cevabı Gösterme)
+  // Pas Geçme
   function handlePass() {
     const state = roundState[currentGoal.id];
-    if (state.solved || state.passed) return;
+    if (!state || state.solved || state.passed) return;
 
     state.passed = true;
     state.attempts.push({ playerName: `${currentGoal.scorerName} (Cevap Açıldı)`, correct: false, passed: true });
@@ -417,18 +520,20 @@ if (typeof document !== 'undefined') {
     renderVerticalGoals();
     updateGoalUI();
 
-    setTimeout(autoAdvanceGoal, 2000);
+    setTimeout(autoAdvanceGoal, 1800);
   }
 
-  // Sıradaki çözülmemiş gole geç
+  // Sıradaki çözülmemiş tahmin edilecek gole geç
   function autoAdvanceGoal() {
-    const nextUnsolvedIdx = currentMatch.goals.findIndex(g => !roundState[g.id].solved && !roundState[g.id].passed);
+    const nextUnsolvedIdx = currentMatch.goals.findIndex(g =>
+      g.guessable !== false && !roundState[g.id]?.solved && !roundState[g.id]?.passed
+    );
     if (nextUnsolvedIdx !== -1) {
       selectGoal(nextUnsolvedIdx);
     }
   }
 
-  // Otomatik Tamamlama
+  // Gelişmiş ve Kapsamlı Otomatik Tamamlama (Yüz tanıma oyunundaki 2400+ oyuncu + takma isimler)
   let selectedSuggestionIndex = -1;
 
   function showSuggestions(val) {
@@ -439,14 +544,31 @@ if (typeof document !== 'undefined') {
       return;
     }
 
-    const matches = [];
+    const exactMatches = [];
+    const prefixMatches = [];
+    const containsMatches = [];
+
     for (const p of searchDatabase) {
       const pNorm = normalizeName(p.name);
-      if (pNorm.includes(term)) {
-        matches.push(p);
-        if (matches.length >= 10) break;
+      const isExact = pNorm === term;
+      const isPrefix = pNorm.startsWith(term);
+      const isContains = pNorm.includes(term);
+      const aliasMatch = p.aliases?.some(a => normalizeName(a).includes(term));
+
+      if (isExact) {
+        exactMatches.push(p);
+      } else if (isPrefix) {
+        prefixMatches.push(p);
+      } else if (isContains || aliasMatch) {
+        containsMatches.push(p);
+      }
+
+      if (exactMatches.length + prefixMatches.length + containsMatches.length >= 30) {
+        break;
       }
     }
+
+    const matches = [...exactMatches, ...prefixMatches, ...containsMatches].slice(0, 20);
 
     if (matches.length === 0) {
       suggestionsEl.hidden = true;
@@ -539,15 +661,23 @@ if (typeof document !== 'undefined') {
   });
 
   randomMatchBtn.addEventListener('click', () => {
-    pickRandomMatch(currentMatch.id);
+    pickNextMatch();
   });
 
   skipMatchActionBtn.addEventListener('click', () => {
-    pickRandomMatch(currentMatch.id);
+    pickNextMatch();
   });
 
   nextMatchBtnEl.addEventListener('click', () => {
-    pickRandomMatch(currentMatch.id);
+    pickNextMatch();
+  });
+
+  modeNationalBtn?.addEventListener('click', () => {
+    setMode('national');
+  });
+
+  modeClassicBtn?.addEventListener('click', () => {
+    setMode('classic');
   });
 
   // İstatistik Modalı
@@ -563,8 +693,8 @@ if (typeof document !== 'undefined') {
     statsModalEl.close();
   });
 
-  // Başlangıç: Rastgele maçla başla
+  // Başlangıç: Milli Takım Modu ile başla
   loadStats();
-  pickRandomMatch();
+  setMode('national');
   initPlayerDatabase();
 }

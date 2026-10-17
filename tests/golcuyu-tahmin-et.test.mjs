@@ -65,3 +65,32 @@ test('avatar generator creates valid pixel-art SVG string', () => {
   assert.ok(svg.includes('</svg>'), 'Should close svg tag');
   assert.ok(svg.includes('image-rendering:pixelated'), 'Should have pixelated style');
 });
+
+test('national team mode has at least 15 iconic Turkey matches with opponent goals open and turkey goals guessable', async () => {
+  const { NATIONAL_MATCHES } = await import('../dist/games/golcuyu-tahmin-et/national-matches.js');
+  assert.ok(NATIONAL_MATCHES.length >= 15, `Should have at least 15 national matches, found: ${NATIONAL_MATCHES.length}`);
+
+  for (const match of NATIONAL_MATCHES) {
+    assert.ok(match.id, 'Match must have an id');
+    assert.ok(match.tournament, 'Match must have a tournament');
+    assert.ok(match.date, 'Match must have a date');
+    assert.ok(match.stadium, 'Match must have a stadium');
+    assert.ok(match.homeTeam.name && match.awayTeam.name, 'Teams must be named');
+    assert.ok(Array.isArray(match.goals) && match.goals.length > 0, 'Match must have goals');
+
+    const turkeyGoals = match.goals.filter(g => g.team === 'Türkiye');
+    const opponentGoals = match.goals.filter(g => g.team !== 'Türkiye');
+
+    assert.ok(turkeyGoals.length > 0, `Match ${match.id} must have at least one Turkey goal`);
+
+    for (const g of turkeyGoals) {
+      assert.equal(g.guessable, true, `Turkey goal ${g.id} must be guessable`);
+      assert.ok(g.photoUrl, `Turkey goal ${g.id} must have photoUrl`);
+      assert.ok(g.scorerName, `Turkey goal ${g.id} must have scorerName`);
+    }
+
+    for (const g of opponentGoals) {
+      assert.equal(g.guessable, false, `Opponent goal ${g.id} must NOT be guessable (open by default)`);
+    }
+  }
+});
