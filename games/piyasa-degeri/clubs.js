@@ -29,7 +29,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 1_260_000_000,
+    marketValue: 1500000000,
     color: '#6CABDD',
     textColor: '#1C2C5B',
     logo: './logos/manchester-city.svg'
@@ -41,7 +41,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 1_170_000_000,
+    marketValue: 1380000000,
     color: '#EF0107',
     textColor: '#063672',
     logo: './logos/arsenal.svg'
@@ -53,7 +53,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 960_000_000,
+    marketValue: 1150000000,
     color: '#034694',
     textColor: '#EE242C',
     logo: './logos/chelsea.svg'
@@ -65,7 +65,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 930_000_000,
+    marketValue: 1090000000,
     color: '#C8102E',
     textColor: '#00B2A9',
     logo: './logos/liverpool.svg'
@@ -77,7 +77,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 780_000_000,
+    marketValue: 836000000,
     color: '#132257',
     textColor: '#FFFFFF',
     logo: './logos/tottenham.svg'
@@ -89,7 +89,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 750_000_000,
+    marketValue: 928800000,
     color: '#DA291C',
     textColor: '#FBE122',
     logo: './logos/manchester-united.svg'
@@ -101,7 +101,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 650_000_000,
+    marketValue: 712100000,
     color: '#241F20',
     textColor: '#41B6E6',
     logo: './logos/newcastle.svg'
@@ -113,7 +113,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 615_000_000,
+    marketValue: 633700000,
     color: '#95BFE5',
     textColor: '#670E36',
     logo: './logos/aston-villa.svg'
@@ -125,7 +125,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 540_000_000,
+    marketValue: 700000000,
     color: '#0057B8',
     textColor: '#FFCD00',
     logo: './logos/brighton.svg'
@@ -137,7 +137,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 480_000_000,
+    marketValue: 401000000,
     color: '#7A263A',
     textColor: '#1BB1E7',
     logo: './logos/west-ham.svg'
@@ -149,7 +149,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 430_000_000,
+    marketValue: 554000000,
     color: '#DD0000',
     textColor: '#FFFFFF',
     logo: './logos/nottingham-forest.svg'
@@ -161,7 +161,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 420_000_000,
+    marketValue: 633800000,
     color: '#E30613',
     textColor: '#000000',
     logo: './logos/brentford.svg'
@@ -173,7 +173,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 410_000_000,
+    marketValue: 603200000,
     color: '#1B458F',
     textColor: '#C4122E',
     logo: './logos/crystal-palace.svg'
@@ -185,7 +185,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 370_000_000,
+    marketValue: 433000000,
     color: '#FDB913',
     textColor: '#231F20',
     logo: './logos/wolves.svg'
@@ -197,7 +197,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 350_000_000,
+    marketValue: 624200000,
     color: '#DA291C',
     textColor: '#000000',
     logo: './logos/bournemouth.svg'
@@ -209,7 +209,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 340_000_000,
+    marketValue: 418600000,
     color: '#CC0000',
     textColor: '#000000',
     logo: './logos/fulham.svg'
@@ -221,7 +221,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 330_000_000,
+    marketValue: 436800000,
     color: '#003399',
     textColor: '#FFFFFF',
     logo: './logos/everton.svg'
@@ -233,7 +233,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 260_000_000,
+    marketValue: 272000000,
     color: '#003090',
     textColor: '#FDBE11',
     logo: './logos/leicester-city.svg'
@@ -245,7 +245,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 230_000_000,
+    marketValue: 264000000,
     color: '#D71920',
     textColor: '#130C0E',
     logo: './logos/southampton.svg'
@@ -257,7 +257,7 @@ export const CLUBS = [
     league: 'Premier League',
     country: 'İngiltere',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    marketValue: 160_000_000,
+    marketValue: 380750000,
     color: '#003399',
     textColor: '#C8102E',
     logo: './logos/ipswich-town.svg'
@@ -273,7 +273,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 1_360_000_000,
+    marketValue: 1500000000,
     color: '#FEBE10',
     textColor: '#00529F',
     logo: './logos/real-madrid.svg'
@@ -285,7 +285,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 940_000_000,
+    marketValue: 1300000000,
     color: '#004D98',
     textColor: '#A50044',
     logo: './logos/barcelona.svg'
@@ -297,7 +297,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 510_000_000,
+    marketValue: 703500000,
     color: '#CB3524',
     textColor: '#272E61',
     logo: './logos/atletico-madrid.svg'
@@ -309,7 +309,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 430_000_000,
+    marketValue: 291800000,
     color: '#0067B1',
     textColor: '#FFFFFF',
     logo: './logos/real-sociedad.svg'
@@ -321,7 +321,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 340_000_000,
+    marketValue: 229800000,
     color: '#EE2524',
     textColor: '#000000',
     logo: './logos/athletic-bilbao.svg'
@@ -333,7 +333,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 270_000_000,
+    marketValue: 208000000,
     color: '#CD212A',
     textColor: '#FFFFFF',
     logo: './logos/girona.svg'
@@ -345,7 +345,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 250_000_000,
+    marketValue: 368050000,
     color: '#00519E',
     textColor: '#FFE600',
     logo: './logos/villarreal.svg'
@@ -357,7 +357,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 210_000_000,
+    marketValue: 258100000,
     color: '#0BB364',
     textColor: '#FFFFFF',
     logo: './logos/real-betis.png'
@@ -369,7 +369,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 170_000_000,
+    marketValue: 156500000,
     color: '#FF6600',
     textColor: '#000000',
     logo: './logos/valencia.svg'
@@ -381,7 +381,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 160_000_000,
+    marketValue: 176800000,
     color: '#D4001F',
     textColor: '#FFFFFF',
     logo: './logos/sevilla.svg'
@@ -393,7 +393,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 130_000_000,
+    marketValue: 180300000,
     color: '#71A0D6',
     textColor: '#FFFFFF',
     logo: './logos/celta-vigo.svg'
@@ -405,7 +405,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 115_000_000,
+    marketValue: 82000000,
     color: '#0A1E40',
     textColor: '#D91A2A',
     logo: './logos/osasuna.svg'
@@ -417,7 +417,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 95_000_000,
+    marketValue: 88700000,
     color: '#E20613',
     textColor: '#000000',
     logo: './logos/mallorca.svg'
@@ -429,7 +429,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 85_000_000,
+    marketValue: 72900000,
     color: '#FFE600',
     textColor: '#003893',
     logo: './logos/las-palmas.svg'
@@ -441,7 +441,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 80_000_000,
+    marketValue: 100800000,
     color: '#E51A22',
     textColor: '#FFFFFF',
     logo: './logos/rayo-vallecano.svg'
@@ -453,7 +453,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 75_000_000,
+    marketValue: 72900000,
     color: '#003DA5',
     textColor: '#FFFFFF',
     logo: './logos/alaves.svg'
@@ -465,7 +465,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 70_000_000,
+    marketValue: 98900000,
     color: '#005999',
     textColor: '#FFFFFF',
     logo: './logos/getafe.png'
@@ -477,7 +477,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 65_000_000,
+    marketValue: 141600000,
     color: '#007FC8',
     textColor: '#FFFFFF',
     logo: './logos/espanyol.svg'
@@ -489,7 +489,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 55_000_000,
+    marketValue: 67300000,
     color: '#0055A5',
     textColor: '#FFFFFF',
     logo: './logos/leganes.png'
@@ -501,7 +501,7 @@ export const CLUBS = [
     league: 'La Liga',
     country: 'İspanya',
     flag: '🇪🇸',
-    marketValue: 45_000_000,
+    marketValue: 54100000,
     color: '#5C2D91',
     textColor: '#FFFFFF',
     logo: './logos/valladolid.svg'
@@ -517,7 +517,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 670_000_000,
+    marketValue: 738300000,
     color: '#005CA9',
     textColor: '#001932',
     logo: './logos/inter-milan.svg'
@@ -529,7 +529,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 590_000_000,
+    marketValue: 613600000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/juventus.png'
@@ -541,7 +541,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 560_000_000,
+    marketValue: 738300000,
     color: '#FB090B',
     textColor: '#000000',
     logo: './logos/ac-milan.svg'
@@ -553,7 +553,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 440_000_000,
+    marketValue: 449050000,
     color: '#1E71B8',
     textColor: '#000000',
     logo: './logos/atalanta.svg'
@@ -565,7 +565,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 430_000_000,
+    marketValue: 424500000,
     color: '#0080C8',
     textColor: '#FFFFFF',
     logo: './logos/napoli.svg'
@@ -577,7 +577,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 330_000_000,
+    marketValue: 498400000,
     color: '#8E1F2F',
     textColor: '#F0BC42',
     logo: './logos/as-roma.svg'
@@ -589,7 +589,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 280_000_000,
+    marketValue: 229150000,
     color: '#1A2F4C',
     textColor: '#A01B2C',
     logo: './logos/bologna.svg'
@@ -601,7 +601,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 270_000_000,
+    marketValue: 353250000,
     color: '#4F1B7A',
     textColor: '#FFFFFF',
     logo: './logos/fiorentina.svg'
@@ -613,7 +613,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 240_000_000,
+    marketValue: 262050000,
     color: '#87D8F7',
     textColor: '#0A2240',
     logo: './logos/lazio.svg'
@@ -625,7 +625,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 180_000_000,
+    marketValue: 171100000,
     color: '#8B1E3F',
     textColor: '#FFFFFF',
     logo: './logos/torino.svg'
@@ -637,7 +637,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 135_000_000,
+    marketValue: 161800000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/udinese.svg'
@@ -649,7 +649,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 130_000_000,
+    marketValue: 165800000,
     color: '#A01B2C',
     textColor: '#1A2F4C',
     logo: './logos/genoa.png'
@@ -661,7 +661,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 120_000_000,
+    marketValue: 156130000,
     color: '#FFCC00',
     textColor: '#003366',
     logo: './logos/parma.svg'
@@ -673,7 +673,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 110_000_000,
+    marketValue: 568150000,
     color: '#003366',
     textColor: '#FFFFFF',
     logo: './logos/como.svg'
@@ -685,7 +685,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 95_000_000,
+    marketValue: 112500000,
     color: '#E30613',
     textColor: '#FFFFFF',
     logo: './logos/monza.svg'
@@ -697,7 +697,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 90_000_000,
+    marketValue: 82550000,
     color: '#FED100',
     textColor: '#D91A2A',
     logo: './logos/lecce.png'
@@ -709,7 +709,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 85_000_000,
+    marketValue: 76300000,
     color: '#002B49',
     textColor: '#FFD100',
     logo: './logos/verona.svg'
@@ -721,7 +721,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 80_000_000,
+    marketValue: 141850000,
     color: '#A01B2C',
     textColor: '#0A2240',
     logo: './logos/cagliari.svg'
@@ -733,7 +733,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 70_000_000,
+    marketValue: 68500000,
     color: '#005BAA',
     textColor: '#FFFFFF',
     logo: './logos/empoli.svg'
@@ -745,7 +745,7 @@ export const CLUBS = [
     league: 'Serie A',
     country: 'İtalya',
     flag: '🇮🇹',
-    marketValue: 60_000_000,
+    marketValue: 120250000,
     color: '#FF671F',
     textColor: '#008559',
     logo: './logos/venezia.svg'
@@ -761,7 +761,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 940_000_000,
+    marketValue: 1040000000,
     color: '#DC052D',
     textColor: '#0066B2',
     logo: './logos/bayern-munchen.svg'
@@ -773,7 +773,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 630_000_000,
+    marketValue: 520450000,
     color: '#E32221',
     textColor: '#000000',
     logo: './logos/bayer-leverkusen.svg'
@@ -785,7 +785,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 510_000_000,
+    marketValue: 514950000,
     color: '#ED1C24',
     textColor: '#001932',
     logo: './logos/rb-leipzig.svg'
@@ -797,7 +797,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 470_000_000,
+    marketValue: 587900000,
     color: '#FDE100',
     textColor: '#000000',
     logo: './logos/borussia-dortmund.svg'
@@ -809,7 +809,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 315_000_000,
+    marketValue: 399450000,
     color: '#E32219',
     textColor: '#FFFFFF',
     logo: './logos/vfb-stuttgart.svg'
@@ -821,7 +821,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 280_000_000,
+    marketValue: 288150000,
     color: '#E1000F',
     textColor: '#000000',
     logo: './logos/eintracht-frankfurt.svg'
@@ -833,7 +833,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 220_000_000,
+    marketValue: 221800000,
     color: '#65B32E',
     textColor: '#FFFFFF',
     logo: './logos/vfl-wolfsburg.svg'
@@ -845,7 +845,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 180_000_000,
+    marketValue: 244200000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/sc-freiburg.svg'
@@ -857,7 +857,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 160_000_000,
+    marketValue: 287550000,
     color: '#005CA9',
     textColor: '#FFFFFF',
     logo: './logos/hoffenheim.svg'
@@ -869,7 +869,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 150_000_000,
+    marketValue: 134950000,
     color: '#000000',
     textColor: '#00A651',
     logo: './logos/monchengladbach.svg'
@@ -881,7 +881,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 125_000_000,
+    marketValue: 124250000,
     color: '#1D9053',
     textColor: '#FFFFFF',
     logo: './logos/werder-bremen.svg'
@@ -893,7 +893,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 120_000_000,
+    marketValue: 159700000,
     color: '#C70000',
     textColor: '#FFFFFF',
     logo: './logos/mainz.png'
@@ -905,7 +905,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 115_000_000,
+    marketValue: 111980000,
     color: '#ED1C24',
     textColor: '#FFD700',
     logo: './logos/union-berlin.svg'
@@ -917,7 +917,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 110_000_000,
+    marketValue: 192000000,
     color: '#BA171D',
     textColor: '#006633',
     logo: './logos/augsburg.svg'
@@ -929,7 +929,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 65_000_000,
+    marketValue: 63550000,
     color: '#E30613',
     textColor: '#003366',
     logo: './logos/heidenheim.svg'
@@ -941,7 +941,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 60_000_000,
+    marketValue: 60000000,
     color: '#005CA9',
     textColor: '#FFFFFF',
     logo: './logos/bochum.svg'
@@ -953,7 +953,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 45_000_000,
+    marketValue: 43850000,
     color: '#5C2D16',
     textColor: '#FFFFFF',
     logo: './logos/st-pauli.svg'
@@ -965,7 +965,7 @@ export const CLUBS = [
     league: 'Bundesliga',
     country: 'Almanya',
     flag: '🇩🇪',
-    marketValue: 38_000_000,
+    marketValue: 36500000,
     color: '#003399',
     textColor: '#ED1C24',
     logo: './logos/holstein-kiel.svg'
@@ -981,7 +981,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 890_000_000,
+    marketValue: 1360000000,
     color: '#004170',
     textColor: '#DA291C',
     logo: './logos/psg.svg'
@@ -993,7 +993,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 340_000_000,
+    marketValue: 377650000,
     color: '#E51B24',
     textColor: '#CCA352',
     logo: './logos/monaco.svg'
@@ -1005,7 +1005,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 310_000_000,
+    marketValue: 189350000,
     color: '#00A3E0',
     textColor: '#FFFFFF',
     logo: './logos/marseille.svg'
@@ -1017,7 +1017,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 260_000_000,
+    marketValue: 253300000,
     color: '#E01E2B',
     textColor: '#1A2F4C',
     logo: './logos/lille.svg'
@@ -1029,7 +1029,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 240_000_000,
+    marketValue: 264450000,
     color: '#002B7F',
     textColor: '#DA291C',
     logo: './logos/lyon.svg'
@@ -1041,7 +1041,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 210_000_000,
+    marketValue: 150250000,
     color: '#E01E2B',
     textColor: '#000000',
     logo: './logos/nice.svg'
@@ -1053,7 +1053,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 200_000_000,
+    marketValue: 253400000,
     color: '#E01E2B',
     textColor: '#000000',
     logo: './logos/rennes.svg'
@@ -1065,7 +1065,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 180_000_000,
+    marketValue: 243000000,
     color: '#E01E2B',
     textColor: '#FFE600',
     logo: './logos/lens.svg'
@@ -1077,7 +1077,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 130_000_000,
+    marketValue: 319900000,
     color: '#0072CE',
     textColor: '#FFFFFF',
     logo: './logos/strasbourg.svg'
@@ -1089,7 +1089,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 125_000_000,
+    marketValue: 147500000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
     logo: './logos/reims.svg'
@@ -1101,7 +1101,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 120_000_000,
+    marketValue: 87800000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
     logo: './logos/brest.svg'
@@ -1113,7 +1113,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 90_000_000,
+    marketValue: 94500000,
     color: '#FED100',
     textColor: '#008559',
     logo: './logos/nantes.svg'
@@ -1125,7 +1125,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 85_000_000,
+    marketValue: 123900000,
     color: '#5C2D91',
     textColor: '#FFFFFF',
     logo: './logos/toulouse.svg'
@@ -1137,7 +1137,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 75_000_000,
+    marketValue: 76800000,
     color: '#002B49',
     textColor: '#FF671F',
     logo: './logos/montpellier.svg'
@@ -1149,7 +1149,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 65_000_000,
+    marketValue: 62550000,
     color: '#002B7F',
     textColor: '#71A0D6',
     logo: './logos/le-havre.png'
@@ -1161,7 +1161,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 60_000_000,
+    marketValue: 96000000,
     color: '#0055A5',
     textColor: '#FFFFFF',
     logo: './logos/auxerre.svg'
@@ -1173,7 +1173,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 45_000_000,
+    marketValue: 44650000,
     color: '#008559',
     textColor: '#FFFFFF',
     logo: './logos/saint-etienne.png'
@@ -1185,7 +1185,7 @@ export const CLUBS = [
     league: 'Ligue 1',
     country: 'Fransa',
     flag: '🇫🇷',
-    marketValue: 40_000_000,
+    marketValue: 65500000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/angers.png'
@@ -1201,7 +1201,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 288_000_000,
+    marketValue: 381500000,
     color: '#A90432',
     textColor: '#FDB912',
     logo: './logos/galatasaray.svg'
@@ -1213,7 +1213,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 242_000_000,
+    marketValue: 261200000,
     color: '#002D72',
     textColor: '#FFF200',
     logo: './logos/fenerbahce.png'
@@ -1225,7 +1225,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 145_000_000,
+    marketValue: 273500000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/besiktas.png'
@@ -1237,7 +1237,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 102_000_000,
+    marketValue: 184300000,
     color: '#800020',
     textColor: '#5CA2D1',
     logo: './logos/trabzonspor.png'
@@ -1249,7 +1249,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 55_000_000,
+    marketValue: 72150000,
     color: '#0B1C38',
     textColor: '#F58220',
     logo: './logos/basaksehir.svg'
@@ -1261,7 +1261,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 38_000_000,
+    marketValue: 13900000,
     color: '#4B1248',
     textColor: '#F7C900',
     logo: './logos/eyupspor.png'
@@ -1273,7 +1273,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 36_000_000,
+    marketValue: 42150000,
     color: '#002E6E',
     textColor: '#FFFFFF',
     logo: './logos/kasimpasa.svg'
@@ -1285,7 +1285,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 34_000_000,
+    marketValue: 63000000,
     color: '#E30613',
     textColor: '#FFF200',
     logo: './logos/goztepe.svg'
@@ -1297,7 +1297,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 32_000_000,
+    marketValue: 52850000,
     color: '#E30613',
     textColor: '#FFFFFF',
     logo: './logos/samsunspor.svg'
@@ -1309,7 +1309,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 30_000_000,
+    marketValue: 49550000,
     color: '#00843D',
     textColor: '#0033A0',
     logo: './logos/rizespor.svg'
@@ -1321,7 +1321,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 29_000_000,
+    marketValue: 32500000,
     color: '#E30613',
     textColor: '#FFFFFF',
     logo: './logos/antalyaspor.svg'
@@ -1333,7 +1333,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 28_000_000,
+    marketValue: 35200000,
     color: '#F39200',
     textColor: '#008542',
     logo: './logos/alanyaspor.svg'
@@ -1345,7 +1345,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 25_000_000,
+    marketValue: 31280000,
     color: '#D21034',
     textColor: '#000000',
     logo: './logos/gaziantep-fk.svg'
@@ -1357,7 +1357,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 24_000_000,
+    marketValue: 34600000,
     color: '#00843D',
     textColor: '#FFFFFF',
     logo: './logos/konyaspor.svg'
@@ -1369,7 +1369,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 22_000_000,
+    marketValue: 25100000,
     color: '#E30613',
     textColor: '#FFFFFF',
     logo: './logos/sivasspor.svg'
@@ -1381,7 +1381,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 20_000_000,
+    marketValue: 24300000,
     color: '#FFE500',
     textColor: '#D91A2A',
     logo: './logos/kayserispor.svg'
@@ -1393,7 +1393,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 19_000_000,
+    marketValue: 20800000,
     color: '#800000',
     textColor: '#FFFFFF',
     logo: './logos/hatayspor.png'
@@ -1405,7 +1405,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 18_000_000,
+    marketValue: 15400000,
     color: '#006633',
     textColor: '#FFFFFF',
     logo: './logos/bodrum-fk.svg'
@@ -1417,7 +1417,7 @@ export const CLUBS = [
     league: 'Süper Lig',
     country: 'Türkiye',
     flag: '🇹🇷',
-    marketValue: 12_000_000,
+    marketValue: 10200000,
     color: '#002B49',
     textColor: '#71A0D6',
     logo: './logos/adana-demirspor.png'
@@ -1433,7 +1433,7 @@ export const CLUBS = [
     league: 'Liga Portugal',
     country: 'Portekiz',
     flag: '🇵🇹',
-    marketValue: 440_000_000,
+    marketValue: 413700000,
     color: '#008057',
     textColor: '#EDBB00',
     logo: './logos/sporting-cp.png'
@@ -1445,7 +1445,7 @@ export const CLUBS = [
     league: 'Liga Portugal',
     country: 'Portekiz',
     flag: '🇵🇹',
-    marketValue: 335_000_000,
+    marketValue: 422000000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
     logo: './logos/benfica.png'
@@ -1457,7 +1457,7 @@ export const CLUBS = [
     league: 'Liga Portugal',
     country: 'Portekiz',
     flag: '🇵🇹',
-    marketValue: 330_000_000,
+    marketValue: 471500000,
     color: '#0038A8',
     textColor: '#FFFFFF',
     logo: './logos/fc-porto.png'
@@ -1469,7 +1469,7 @@ export const CLUBS = [
     league: 'Eredivisie',
     country: 'Hollanda',
     flag: '🇳🇱',
-    marketValue: 320_000_000,
+    marketValue: 306500000,
     color: '#FF0000',
     textColor: '#FFFFFF',
     logo: './logos/psv-eindhoven.png'
@@ -1481,7 +1481,7 @@ export const CLUBS = [
     league: 'Eredivisie',
     country: 'Hollanda',
     flag: '🇳🇱',
-    marketValue: 285_000_000,
+    marketValue: 245230000,
     color: '#FF0000',
     textColor: '#000000',
     logo: './logos/feyenoord.png'
@@ -1493,7 +1493,7 @@ export const CLUBS = [
     league: 'Eredivisie',
     country: 'Hollanda',
     flag: '🇳🇱',
-    marketValue: 225_000_000,
+    marketValue: 228450000,
     color: '#D2122E',
     textColor: '#FFFFFF',
     logo: './logos/ajax.png'
@@ -1505,7 +1505,7 @@ export const CLUBS = [
     league: 'Avusturya Bundesliga',
     country: 'Avusturya',
     flag: '🇦🇹',
-    marketValue: 170_000_000,
+    marketValue: 130600000,
     color: '#D0103A',
     textColor: '#1A2F4C',
     logo: './logos/rb-salzburg.png'
@@ -1517,7 +1517,7 @@ export const CLUBS = [
     league: 'Pro League',
     country: 'Belçika',
     flag: '🇧🇪',
-    marketValue: 165_000_000,
+    marketValue: 238200000,
     color: '#000000',
     textColor: '#0055A5',
     logo: './logos/club-brugge.png'
@@ -1529,7 +1529,7 @@ export const CLUBS = [
     league: 'Ukrayna Premier Ligi',
     country: 'Ukrayna',
     flag: '🇺🇦',
-    marketValue: 160_000_000,
+    marketValue: 160000000,
     color: '#FF6600',
     textColor: '#000000',
     logo: './logos/shakhtar.png'
@@ -1541,7 +1541,7 @@ export const CLUBS = [
     league: 'Scottish Premiership',
     country: 'İskoçya',
     flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-    marketValue: 120_000_000,
+    marketValue: 123300000,
     color: '#018749',
     textColor: '#FFFFFF',
     logo: './logos/celtic.png'
@@ -1553,7 +1553,7 @@ export const CLUBS = [
     league: 'Çekya Ligi',
     country: 'Çekya',
     flag: '🇨🇿',
-    marketValue: 95_000_000,
+    marketValue: 111200000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
     logo: './logos/slavia-prag.png'
@@ -1565,7 +1565,7 @@ export const CLUBS = [
     league: 'Yunanistan Süper Ligi',
     country: 'Yunanistan',
     flag: '🇬🇷',
-    marketValue: 95_000_000,
+    marketValue: 185650000,
     color: '#D4001F',
     textColor: '#FFFFFF',
     logo: './logos/olympiakos.png'
@@ -1577,7 +1577,7 @@ export const CLUBS = [
     league: 'Yunanistan Süper Ligi',
     country: 'Yunanistan',
     flag: '🇬🇷',
-    marketValue: 90_000_000,
+    marketValue: 114350000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/paok.svg'
@@ -1589,7 +1589,7 @@ export const CLUBS = [
     league: 'Scottish Premiership',
     country: 'İskoçya',
     flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-    marketValue: 85_000_000,
+    marketValue: 155550000,
     color: '#1B458F',
     textColor: '#FFFFFF',
     logo: './logos/rangers.png'
@@ -1601,7 +1601,7 @@ export const CLUBS = [
     league: 'Çekya Ligi',
     country: 'Çekya',
     flag: '🇨🇿',
-    marketValue: 85_000_000,
+    marketValue: 91250000,
     color: '#9E1B32',
     textColor: '#002B49',
     logo: './logos/sparta-prag.png'
@@ -1613,7 +1613,7 @@ export const CLUBS = [
     league: 'Hırvatistan Ligi',
     country: 'Hırvatistan',
     flag: '🇭🇷',
-    marketValue: 75_000_000,
+    marketValue: 77950000,
     color: '#003893',
     textColor: '#FFFFFF',
     logo: './logos/dinamo-zagreb.png'
@@ -1625,7 +1625,7 @@ export const CLUBS = [
     league: 'Sırbistan Süper Ligi',
     country: 'Sırbistan',
     flag: '🇷🇸',
-    marketValue: 70_000_000,
+    marketValue: 78500000,
     color: '#D4001F',
     textColor: '#FFFFFF',
     logo: './logos/red-star.png'
@@ -1637,7 +1637,7 @@ export const CLUBS = [
     league: 'Avusturya Bundesliga',
     country: 'Avusturya',
     flag: '🇦🇹',
-    marketValue: 68_000_000,
+    marketValue: 75900000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/sturm-graz.png'
@@ -1649,7 +1649,7 @@ export const CLUBS = [
     league: 'İsviçre Süper Ligi',
     country: 'İsviçre',
     flag: '🇨🇭',
-    marketValue: 65_000_000,
+    marketValue: 67800000,
     color: '#FFDE00',
     textColor: '#000000',
     logo: './logos/young-boys.png'
@@ -1665,7 +1665,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 245_000_000,
+    marketValue: 240030000,
     color: '#0055A5',
     textColor: '#FFFFFF',
     logo: './logos/al-hilal.svg'
@@ -1677,7 +1677,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 190_000_000,
+    marketValue: 136580000,
     color: '#FFF200',
     textColor: '#003399',
     logo: './logos/al-nassr.svg'
@@ -1689,7 +1689,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 180_000_000,
+    marketValue: 193900000,
     color: '#007A3D',
     textColor: '#FFFFFF',
     logo: './logos/al-ahli.svg'
@@ -1701,7 +1701,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 175_000_000,
+    marketValue: 147300000,
     color: '#FED100',
     textColor: '#000000',
     logo: './logos/al-ittihad.svg'
@@ -1713,7 +1713,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 75_000_000,
+    marketValue: 152130000,
     color: '#C8102E',
     textColor: '#FFCD00',
     logo: './logos/al-qadsiah.png'
@@ -1725,7 +1725,7 @@ export const CLUBS = [
     league: 'Saudi Pro League',
     country: 'Suudi Arabistan',
     flag: '🇸🇦',
-    marketValue: 65_000_000,
+    marketValue: 67400000,
     color: '#008559',
     textColor: '#DA291C',
     logo: './logos/al-ettifaq.svg'
@@ -1741,7 +1741,7 @@ export const CLUBS = [
     league: 'Danimarka Süper Ligi',
     country: 'Danimarka',
     flag: '🇩🇰',
-    marketValue: 72_000_000,
+    marketValue: 64050000,
     color: '#003366',
     textColor: '#FFFFFF',
     logo: './logos/copenhagen.png'
@@ -1753,7 +1753,7 @@ export const CLUBS = [
     league: 'Danimarka Süper Ligi',
     country: 'Danimarka',
     flag: '🇩🇰',
-    marketValue: 62_000_000,
+    marketValue: 76700000,
     color: '#000000',
     textColor: '#D91A2A',
     logo: './logos/midtjylland.png'
@@ -1765,7 +1765,7 @@ export const CLUBS = [
     league: 'Danimarka Süper Ligi',
     country: 'Danimarka',
     flag: '🇩🇰',
-    marketValue: 45_000_000,
+    marketValue: 44580000,
     color: '#D4001F',
     textColor: '#FFD700',
     logo: './logos/nordsjaelland.svg'
@@ -1777,7 +1777,7 @@ export const CLUBS = [
     league: 'Norveç Eliteserien',
     country: 'Norveç',
     flag: '🇳🇴',
-    marketValue: 42_000_000,
+    marketValue: 79180000,
     color: '#FFDE00',
     textColor: '#000000',
     logo: './logos/bodo-glimt.svg'
@@ -1789,7 +1789,7 @@ export const CLUBS = [
     league: 'İsveç Allsvenskan',
     country: 'İsveç',
     flag: '🇸🇪',
-    marketValue: 40_000_000,
+    marketValue: 31750000,
     color: '#69B3E7',
     textColor: '#FFFFFF',
     logo: './logos/malmo.png'
@@ -1801,7 +1801,7 @@ export const CLUBS = [
     league: 'Danimarka Süper Ligi',
     country: 'Danimarka',
     flag: '🇩🇰',
-    marketValue: 35_000_000,
+    marketValue: 44480000,
     color: '#FED100',
     textColor: '#003893',
     logo: './logos/brondby.png'
@@ -1813,7 +1813,7 @@ export const CLUBS = [
     league: 'Norveç Eliteserien',
     country: 'Norveç',
     flag: '🇳🇴',
-    marketValue: 28_000_000,
+    marketValue: 45900000,
     color: '#0055A5',
     textColor: '#FFFFFF',
     logo: './logos/molde.svg'
@@ -1825,7 +1825,7 @@ export const CLUBS = [
     league: 'İsveç Allsvenskan',
     country: 'İsveç',
     flag: '🇸🇪',
-    marketValue: 24_000_000,
+    marketValue: 35350000,
     color: '#002B49',
     textColor: '#71A0D6',
     logo: './logos/djurgardens.png'
@@ -1837,7 +1837,7 @@ export const CLUBS = [
     league: 'Norveç Eliteserien',
     country: 'Norveç',
     flag: '🇳🇴',
-    marketValue: 22_000_000,
+    marketValue: 30750000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/rosenborg.png'
@@ -1849,7 +1849,7 @@ export const CLUBS = [
     league: 'Azerbaycan Premier Ligi',
     country: 'Azerbaycan',
     flag: '🇦🇿',
-    marketValue: 22_000_000,
+    marketValue: 21500000,
     color: '#000000',
     textColor: '#FFFFFF',
     logo: './logos/qarabag.svg'
@@ -1861,7 +1861,7 @@ export const CLUBS = [
     league: 'İsveç Allsvenskan',
     country: 'İsveç',
     flag: '🇸🇪',
-    marketValue: 20_000_000,
+    marketValue: 30930000,
     color: '#000000',
     textColor: '#FFD700',
     logo: './logos/aik.png'
@@ -1873,7 +1873,7 @@ export const CLUBS = [
     league: 'İsveç Allsvenskan',
     country: 'İsveç',
     flag: '🇸🇪',
-    marketValue: 19_000_000,
+    marketValue: 14880000,
     color: '#FFD100',
     textColor: '#000000',
     logo: './logos/elfsborg.png'
@@ -1885,7 +1885,7 @@ export const CLUBS = [
     league: 'Norveç Eliteserien',
     country: 'Norveç',
     flag: '🇳🇴',
-    marketValue: 18_000_000,
+    marketValue: 56000000,
     color: '#002B49',
     textColor: '#FFFFFF',
     logo: './logos/viking.svg'
@@ -1897,7 +1897,7 @@ export const CLUBS = [
     league: 'Finlandiya Veikkausliiga',
     country: 'Finlandiya',
     flag: '🇫🇮',
-    marketValue: 12_000_000,
+    marketValue: 8200000,
     color: '#002B7F',
     textColor: '#FFFFFF',
     logo: './logos/hjk-helsinki.png'
