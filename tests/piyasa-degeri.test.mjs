@@ -36,7 +36,11 @@ test('clubs database contains comprehensive list across all requested leagues', 
     assert.ok(club.flag, `Club ${club.id} must have a flag`);
     assert.ok(typeof club.marketValue === 'number' && club.marketValue > 0, `Club ${club.id} must have positive market value`);
     assert.match(club.color, /^#[0-9a-fA-F]{6}$/, `Club ${club.id} must have valid hex color`);
-    assert.ok(club.logo && club.logo.startsWith('http'), `Club ${club.id} must have logo url`);
+    assert.ok(club.logo, `Club ${club.id} must have logo`);
+    if (club.logo.startsWith('./logos/')) {
+      const logoPath = path.join(root, 'dist/games/piyasa-degeri', club.logo);
+      assert.ok(fs.existsSync(logoPath), `Local logo file must exist: ${logoPath}`);
+    }
 
     leagues.add(club.league);
   }

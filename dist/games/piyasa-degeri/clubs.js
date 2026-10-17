@@ -32,7 +32,7 @@ export const CLUBS = [
     marketValue: 1_260_000_000,
     color: '#6CABDD',
     textColor: '#1C2C5B',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg'
+    logo: './logos/manchester-city.svg'
   },
   {
     id: 'arsenal',
@@ -44,7 +44,7 @@ export const CLUBS = [
     marketValue: 1_170_000_000,
     color: '#EF0107',
     textColor: '#063672',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg'
+    logo: './logos/arsenal.svg'
   },
   {
     id: 'chelsea',
@@ -56,7 +56,7 @@ export const CLUBS = [
     marketValue: 960_000_000,
     color: '#034694',
     textColor: '#EE242C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg'
+    logo: './logos/chelsea.svg'
   },
   {
     id: 'liverpool',
@@ -68,7 +68,7 @@ export const CLUBS = [
     marketValue: 930_000_000,
     color: '#C8102E',
     textColor: '#00B2A9',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg'
+    logo: './logos/liverpool.svg'
   },
   {
     id: 'tottenham',
@@ -80,7 +80,7 @@ export const CLUBS = [
     marketValue: 780_000_000,
     color: '#132257',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg'
+    logo: './logos/tottenham.svg'
   },
   {
     id: 'manchester-united',
@@ -92,7 +92,7 @@ export const CLUBS = [
     marketValue: 750_000_000,
     color: '#DA291C',
     textColor: '#FBE122',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg'
+    logo: './logos/manchester-united.svg'
   },
   {
     id: 'newcastle',
@@ -104,7 +104,7 @@ export const CLUBS = [
     marketValue: 650_000_000,
     color: '#241F20',
     textColor: '#41B6E6',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg'
+    logo: './logos/newcastle.svg'
   },
   {
     id: 'aston-villa',
@@ -116,7 +116,7 @@ export const CLUBS = [
     marketValue: 615_000_000,
     color: '#95BFE5',
     textColor: '#670E36',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9f/Aston_Villa_logo.svg'
+    logo: './logos/aston-villa.svg'
   },
   {
     id: 'brighton',
@@ -128,7 +128,7 @@ export const CLUBS = [
     marketValue: 540_000_000,
     color: '#0057B8',
     textColor: '#FFCD00',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg'
+    logo: './logos/brighton.svg'
   },
   {
     id: 'west-ham',
@@ -140,7 +140,7 @@ export const CLUBS = [
     marketValue: 480_000_000,
     color: '#7A263A',
     textColor: '#1BB1E7',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg'
+    logo: './logos/west-ham.svg'
   },
   {
     id: 'nottingham-forest',
@@ -152,7 +152,7 @@ export const CLUBS = [
     marketValue: 430_000_000,
     color: '#DD0000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg'
+    logo: './logos/nottingham-forest.svg'
   },
   {
     id: 'brentford',
@@ -164,7 +164,7 @@ export const CLUBS = [
     marketValue: 420_000_000,
     color: '#E30613',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC_crest.svg'
+    logo: './logos/brentford.svg'
   },
   {
     id: 'crystal-palace',
@@ -176,7 +176,7 @@ export const CLUBS = [
     marketValue: 410_000_000,
     color: '#1B458F',
     textColor: '#C4122E',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Crystal_Palace_FC_logo_%282022%29.svg'
+    logo: './logos/crystal-palace.svg'
   },
   {
     id: 'wolves',
@@ -188,7 +188,7 @@ export const CLUBS = [
     marketValue: 370_000_000,
     color: '#FDB913',
     textColor: '#231F20',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg'
+    logo: './logos/wolves.svg'
   },
   {
     id: 'bournemouth',
@@ -200,7 +200,7 @@ export const CLUBS = [
     marketValue: 350_000_000,
     color: '#DA291C',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg'
+    logo: './logos/bournemouth.svg'
   },
   {
     id: 'fulham',
@@ -212,7 +212,7 @@ export const CLUBS = [
     marketValue: 340_000_000,
     color: '#CC0000',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/Fulham_FC_%28shield%29.svg'
+    logo: './logos/fulham.svg'
   },
   {
     id: 'everton',
@@ -224,7 +224,7 @@ export const CLUBS = [
     marketValue: 330_000_000,
     color: '#003399',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg'
+    logo: './logos/everton.svg'
   },
   {
     id: 'leicester-city',
@@ -236,7 +236,7 @@ export const CLUBS = [
     marketValue: 260_000_000,
     color: '#003090',
     textColor: '#FDBE11',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2d/Leicester_City_crest.svg'
+    logo: './logos/leicester-city.svg'
   },
   {
     id: 'southampton',
@@ -248,7 +248,7 @@ export const CLUBS = [
     marketValue: 230_000_000,
     color: '#D71920',
     textColor: '#130C0E',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c9/FC_Southampton.svg'
+    logo: './logos/southampton.svg'
   },
   {
     id: 'ipswich-town',
@@ -260,7 +260,7 @@ export const CLUBS = [
     marketValue: 160_000_000,
     color: '#003399',
     textColor: '#C8102E',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/4/43/Ipswich_Town.svg'
+    logo: './logos/ipswich-town.svg'
   },
 
   // ==========================================
@@ -276,7 +276,7 @@ export const CLUBS = [
     marketValue: 1_360_000_000,
     color: '#FEBE10',
     textColor: '#00529F',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg'
+    logo: './logos/real-madrid.svg'
   },
   {
     id: 'barcelona',
@@ -288,7 +288,7 @@ export const CLUBS = [
     marketValue: 940_000_000,
     color: '#004D98',
     textColor: '#A50044',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg'
+    logo: './logos/barcelona.svg'
   },
   {
     id: 'atletico-madrid',
@@ -300,7 +300,7 @@ export const CLUBS = [
     marketValue: 510_000_000,
     color: '#CB3524',
     textColor: '#272E61',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f4/Atletico_Madrid_2017_logo.svg'
+    logo: './logos/atletico-madrid.svg'
   },
   {
     id: 'real-sociedad',
@@ -312,7 +312,7 @@ export const CLUBS = [
     marketValue: 430_000_000,
     color: '#0067B1',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Real_Sociedad_logo.svg'
+    logo: './logos/real-sociedad.svg'
   },
   {
     id: 'athletic-bilbao',
@@ -324,7 +324,7 @@ export const CLUBS = [
     marketValue: 340_000_000,
     color: '#EE2524',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/98/Club_Athletic_Bilbao_logo.svg'
+    logo: './logos/athletic-bilbao.svg'
   },
   {
     id: 'girona',
@@ -336,7 +336,7 @@ export const CLUBS = [
     marketValue: 270_000_000,
     color: '#CD212A',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/79/Girona_FC_logo.svg'
+    logo: './logos/girona.svg'
   },
   {
     id: 'villarreal',
@@ -348,7 +348,7 @@ export const CLUBS = [
     marketValue: 250_000_000,
     color: '#00519E',
     textColor: '#FFE600',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/70/Villarreal_CF_logo.svg'
+    logo: './logos/villarreal.svg'
   },
   {
     id: 'real-betis',
@@ -360,7 +360,7 @@ export const CLUBS = [
     marketValue: 210_000_000,
     color: '#0BB364',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/1/13/Real_betis_logo.svg'
+    logo: './logos/real-betis.png'
   },
   {
     id: 'valencia',
@@ -372,7 +372,7 @@ export const CLUBS = [
     marketValue: 170_000_000,
     color: '#FF6600',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/ce/Valenciacf.svg'
+    logo: './logos/valencia.svg'
   },
   {
     id: 'sevilla',
@@ -384,7 +384,7 @@ export const CLUBS = [
     marketValue: 160_000_000,
     color: '#D4001F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/3/3b/Sevilla_FC_logo.svg'
+    logo: './logos/sevilla.svg'
   },
   {
     id: 'celta-vigo',
@@ -396,7 +396,7 @@ export const CLUBS = [
     marketValue: 130_000_000,
     color: '#71A0D6',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/1/12/RC_Celta_de_Vigo_logo.svg'
+    logo: './logos/celta-vigo.svg'
   },
   {
     id: 'osasuna',
@@ -408,7 +408,7 @@ export const CLUBS = [
     marketValue: 115_000_000,
     color: '#0A1E40',
     textColor: '#D91A2A',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/d/db/Osasuna_logo.svg'
+    logo: './logos/osasuna.svg'
   },
   {
     id: 'mallorca',
@@ -420,7 +420,7 @@ export const CLUBS = [
     marketValue: 95_000_000,
     color: '#E20613',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Rcd_mallorca.svg'
+    logo: './logos/mallorca.svg'
   },
   {
     id: 'las-palmas',
@@ -432,7 +432,7 @@ export const CLUBS = [
     marketValue: 85_000_000,
     color: '#FFE600',
     textColor: '#003893',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/20/UD_Las_Palmas_logo.svg'
+    logo: './logos/las-palmas.svg'
   },
   {
     id: 'rayo-vallecano',
@@ -444,7 +444,7 @@ export const CLUBS = [
     marketValue: 80_000_000,
     color: '#E51A22',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/1/17/Rayo_Vallecano_logo.svg'
+    logo: './logos/rayo-vallecano.svg'
   },
   {
     id: 'alaves',
@@ -456,7 +456,7 @@ export const CLUBS = [
     marketValue: 75_000_000,
     color: '#003DA5',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f8/Deportivo_Alaves_logo_%282020%29.svg'
+    logo: './logos/alaves.svg'
   },
   {
     id: 'getafe',
@@ -468,7 +468,7 @@ export const CLUBS = [
     marketValue: 70_000_000,
     color: '#005999',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/7f/Getafe_cf.svg'
+    logo: './logos/getafe.png'
   },
   {
     id: 'espanyol',
@@ -480,7 +480,7 @@ export const CLUBS = [
     marketValue: 65_000_000,
     color: '#007FC8',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/d/d6/Rcd_espanyol_logo.svg'
+    logo: './logos/espanyol.svg'
   },
   {
     id: 'leganes',
@@ -492,7 +492,7 @@ export const CLUBS = [
     marketValue: 55_000_000,
     color: '#0055A5',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/02/Club_Deportivo_Legan%C3%A9s_logo.svg'
+    logo: './logos/leganes.png'
   },
   {
     id: 'valladolid',
@@ -504,7 +504,7 @@ export const CLUBS = [
     marketValue: 45_000_000,
     color: '#5C2D91',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6e/Real_Valladolid_Logo.svg'
+    logo: './logos/valladolid.svg'
   },
 
   // ==========================================
@@ -520,7 +520,7 @@ export const CLUBS = [
     marketValue: 670_000_000,
     color: '#005CA9',
     textColor: '#001932',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg'
+    logo: './logos/inter-milan.svg'
   },
   {
     id: 'juventus',
@@ -532,7 +532,7 @@ export const CLUBS = [
     marketValue: 590_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Juventus_FC_2017_logo.svg'
+    logo: './logos/juventus.png'
   },
   {
     id: 'ac-milan',
@@ -544,7 +544,7 @@ export const CLUBS = [
     marketValue: 560_000_000,
     color: '#FB090B',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg'
+    logo: './logos/ac-milan.svg'
   },
   {
     id: 'atalanta',
@@ -556,7 +556,7 @@ export const CLUBS = [
     marketValue: 440_000_000,
     color: '#1E71B8',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/66/AtalantaBC.svg'
+    logo: './logos/atalanta.svg'
   },
   {
     id: 'napoli',
@@ -568,7 +568,7 @@ export const CLUBS = [
     marketValue: 430_000_000,
     color: '#0080C8',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Neapel.svg'
+    logo: './logos/napoli.svg'
   },
   {
     id: 'as-roma',
@@ -580,7 +580,7 @@ export const CLUBS = [
     marketValue: 330_000_000,
     color: '#8E1F2F',
     textColor: '#F0BC42',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f7/AS_Roma_logo_%282017%29.svg'
+    logo: './logos/as-roma.svg'
   },
   {
     id: 'bologna',
@@ -592,7 +592,7 @@ export const CLUBS = [
     marketValue: 280_000_000,
     color: '#1A2F4C',
     textColor: '#A01B2C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/5b/Bologna_F.C._1909_logo.svg'
+    logo: './logos/bologna.svg'
   },
   {
     id: 'fiorentina',
@@ -604,7 +604,7 @@ export const CLUBS = [
     marketValue: 270_000_000,
     color: '#4F1B7A',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/7/79/ACF_Fiorentina_2022.svg'
+    logo: './logos/fiorentina.svg'
   },
   {
     id: 'lazio',
@@ -616,7 +616,7 @@ export const CLUBS = [
     marketValue: 240_000_000,
     color: '#87D8F7',
     textColor: '#0A2240',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/ce/S.S._Lazio_badge.svg'
+    logo: './logos/lazio.svg'
   },
   {
     id: 'torino',
@@ -628,7 +628,7 @@ export const CLUBS = [
     marketValue: 180_000_000,
     color: '#8B1E3F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2e/Torino_FC_Logo.svg'
+    logo: './logos/torino.svg'
   },
   {
     id: 'udinese',
@@ -640,7 +640,7 @@ export const CLUBS = [
     marketValue: 135_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/ce/Udinese_Calcio_logo.svg'
+    logo: './logos/udinese.svg'
   },
   {
     id: 'genoa',
@@ -652,7 +652,7 @@ export const CLUBS = [
     marketValue: 130_000_000,
     color: '#A01B2C',
     textColor: '#1A2F4C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6c/Genoa_C.F.C._logo.svg'
+    logo: './logos/genoa.png'
   },
   {
     id: 'parma',
@@ -664,7 +664,7 @@ export const CLUBS = [
     marketValue: 120_000_000,
     color: '#FFCC00',
     textColor: '#003366',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9b/Parma_Calcio_1913_logo.svg'
+    logo: './logos/parma.svg'
   },
   {
     id: 'como',
@@ -676,7 +676,7 @@ export const CLUBS = [
     marketValue: 110_000_000,
     color: '#003366',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/52/Como_1907_logo.svg'
+    logo: './logos/como.svg'
   },
   {
     id: 'monza',
@@ -688,7 +688,7 @@ export const CLUBS = [
     marketValue: 95_000_000,
     color: '#E30613',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2e/AC_Monza_logo.svg'
+    logo: './logos/monza.svg'
   },
   {
     id: 'lecce',
@@ -700,7 +700,7 @@ export const CLUBS = [
     marketValue: 90_000_000,
     color: '#FED100',
     textColor: '#D91A2A',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a7/US_Lecce_logo.svg'
+    logo: './logos/lecce.png'
   },
   {
     id: 'verona',
@@ -712,7 +712,7 @@ export const CLUBS = [
     marketValue: 85_000_000,
     color: '#002B49',
     textColor: '#FFD100',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/92/Hellas_Verona_FC_logo_%282020%29.svg'
+    logo: './logos/verona.svg'
   },
   {
     id: 'cagliari',
@@ -724,7 +724,7 @@ export const CLUBS = [
     marketValue: 80_000_000,
     color: '#A01B2C',
     textColor: '#0A2240',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/61/Cagliari_Calcio_1920.svg'
+    logo: './logos/cagliari.svg'
   },
   {
     id: 'empoli',
@@ -736,7 +736,7 @@ export const CLUBS = [
     marketValue: 70_000_000,
     color: '#005BAA',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/cc/Empoli_FC_1920.svg'
+    logo: './logos/empoli.svg'
   },
   {
     id: 'venezia',
@@ -748,7 +748,7 @@ export const CLUBS = [
     marketValue: 60_000_000,
     color: '#FF671F',
     textColor: '#008559',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/91/Venezia_FC_logo.svg'
+    logo: './logos/venezia.svg'
   },
 
   // ==========================================
@@ -764,7 +764,7 @@ export const CLUBS = [
     marketValue: 940_000_000,
     color: '#DC052D',
     textColor: '#0066B2',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg'
+    logo: './logos/bayern-munchen.svg'
   },
   {
     id: 'bayer-leverkusen',
@@ -776,7 +776,7 @@ export const CLUBS = [
     marketValue: 630_000_000,
     color: '#E32221',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/59/Bayer_04_Leverkusen_logo.svg'
+    logo: './logos/bayer-leverkusen.svg'
   },
   {
     id: 'rb-leipzig',
@@ -788,7 +788,7 @@ export const CLUBS = [
     marketValue: 510_000_000,
     color: '#ED1C24',
     textColor: '#001932',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/04/RB_Leipzig_2014_logo.svg'
+    logo: './logos/rb-leipzig.svg'
   },
   {
     id: 'borussia-dortmund',
@@ -800,7 +800,7 @@ export const CLUBS = [
     marketValue: 470_000_000,
     color: '#FDE100',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg'
+    logo: './logos/borussia-dortmund.svg'
   },
   {
     id: 'vfb-stuttgart',
@@ -812,7 +812,7 @@ export const CLUBS = [
     marketValue: 315_000_000,
     color: '#E32219',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/e/eb/VfB_Stuttgart_1893_Logo.svg'
+    logo: './logos/vfb-stuttgart.svg'
   },
   {
     id: 'eintracht-frankfurt',
@@ -824,7 +824,7 @@ export const CLUBS = [
     marketValue: 280_000_000,
     color: '#E1000F',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/Eintracht_Frankfurt_Logo.svg'
+    logo: './logos/eintracht-frankfurt.svg'
   },
   {
     id: 'vfl-wolfsburg',
@@ -836,7 +836,7 @@ export const CLUBS = [
     marketValue: 220_000_000,
     color: '#65B32E',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/Logo-VfL-Wolfsburg.svg'
+    logo: './logos/vfl-wolfsburg.svg'
   },
   {
     id: 'sc-freiburg',
@@ -848,7 +848,7 @@ export const CLUBS = [
     marketValue: 180_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6d/SC_Freiburg_logo.svg'
+    logo: './logos/sc-freiburg.svg'
   },
   {
     id: 'hoffenheim',
@@ -860,7 +860,7 @@ export const CLUBS = [
     marketValue: 160_000_000,
     color: '#005CA9',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Logo_TSG_1899_Hoffenheim.svg'
+    logo: './logos/hoffenheim.svg'
   },
   {
     id: 'monchengladbach',
@@ -872,7 +872,7 @@ export const CLUBS = [
     marketValue: 150_000_000,
     color: '#000000',
     textColor: '#00A651',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/81/Borussia_M%C3%B6nchengladbach_logo.svg'
+    logo: './logos/monchengladbach.svg'
   },
   {
     id: 'werder-bremen',
@@ -884,7 +884,7 @@ export const CLUBS = [
     marketValue: 125_000_000,
     color: '#1D9053',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg'
+    logo: './logos/werder-bremen.svg'
   },
   {
     id: 'mainz',
@@ -896,7 +896,7 @@ export const CLUBS = [
     marketValue: 120_000_000,
     color: '#C70000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/FSV_Mainz_05_Logo.svg'
+    logo: './logos/mainz.png'
   },
   {
     id: 'union-berlin',
@@ -908,7 +908,7 @@ export const CLUBS = [
     marketValue: 115_000_000,
     color: '#ED1C24',
     textColor: '#FFD700',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/1._FC_Union_Berlin_Logo.svg'
+    logo: './logos/union-berlin.svg'
   },
   {
     id: 'augsburg',
@@ -920,7 +920,7 @@ export const CLUBS = [
     marketValue: 110_000_000,
     color: '#BA171D',
     textColor: '#006633',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c5/FC_Augsburg_logo.svg'
+    logo: './logos/augsburg.svg'
   },
   {
     id: 'heidenheim',
@@ -932,7 +932,7 @@ export const CLUBS = [
     marketValue: 65_000_000,
     color: '#E30613',
     textColor: '#003366',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/1._FC_Heidenheim_1846.svg'
+    logo: './logos/heidenheim.svg'
   },
   {
     id: 'bochum',
@@ -944,7 +944,7 @@ export const CLUBS = [
     marketValue: 60_000_000,
     color: '#005CA9',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/7/72/VfL_Bochum_logo.svg'
+    logo: './logos/bochum.svg'
   },
   {
     id: 'st-pauli',
@@ -956,7 +956,7 @@ export const CLUBS = [
     marketValue: 45_000_000,
     color: '#5C2D16',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/8/87/FC_St._Pauli_logo.svg'
+    logo: './logos/st-pauli.svg'
   },
   {
     id: 'holstein-kiel',
@@ -968,7 +968,7 @@ export const CLUBS = [
     marketValue: 38_000_000,
     color: '#003399',
     textColor: '#ED1C24',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9f/Holstein_Kiel_Logo.svg'
+    logo: './logos/holstein-kiel.svg'
   },
 
   // ==========================================
@@ -984,7 +984,7 @@ export const CLUBS = [
     marketValue: 890_000_000,
     color: '#004170',
     textColor: '#DA291C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg'
+    logo: './logos/psg.svg'
   },
   {
     id: 'monaco',
@@ -996,7 +996,7 @@ export const CLUBS = [
     marketValue: 340_000_000,
     color: '#E51B24',
     textColor: '#CCA352',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/b/ba/AS_Monaco_FC.svg'
+    logo: './logos/monaco.svg'
   },
   {
     id: 'marseille',
@@ -1008,7 +1008,7 @@ export const CLUBS = [
     marketValue: 310_000_000,
     color: '#00A3E0',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Olympique_Marseille_logo.svg'
+    logo: './logos/marseille.svg'
   },
   {
     id: 'lille',
@@ -1020,7 +1020,7 @@ export const CLUBS = [
     marketValue: 260_000_000,
     color: '#E01E2B',
     textColor: '#1A2F4C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6f/LOSC_Lille_Logo.svg'
+    logo: './logos/lille.svg'
   },
   {
     id: 'lyon',
@@ -1032,7 +1032,7 @@ export const CLUBS = [
     marketValue: 240_000_000,
     color: '#002B7F',
     textColor: '#DA291C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c6/Olympique_Lyonnais.svg'
+    logo: './logos/lyon.svg'
   },
   {
     id: 'nice',
@@ -1044,7 +1044,7 @@ export const CLUBS = [
     marketValue: 210_000_000,
     color: '#E01E2B',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2e/OGC_Nice_logo.svg'
+    logo: './logos/nice.svg'
   },
   {
     id: 'rennes',
@@ -1056,7 +1056,7 @@ export const CLUBS = [
     marketValue: 200_000_000,
     color: '#E01E2B',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Stade_Rennais_FC.svg'
+    logo: './logos/rennes.svg'
   },
   {
     id: 'lens',
@@ -1068,7 +1068,7 @@ export const CLUBS = [
     marketValue: 180_000_000,
     color: '#E01E2B',
     textColor: '#FFE600',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/cc/RC_Lens_logo.svg'
+    logo: './logos/lens.svg'
   },
   {
     id: 'strasbourg',
@@ -1080,7 +1080,7 @@ export const CLUBS = [
     marketValue: 130_000_000,
     color: '#0072CE',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/80/Racing_Club_de_Strasbourg_logo.svg'
+    logo: './logos/strasbourg.svg'
   },
   {
     id: 'reims',
@@ -1092,7 +1092,7 @@ export const CLUBS = [
     marketValue: 125_000_000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Stade_de_Reims_logo.svg'
+    logo: './logos/reims.svg'
   },
   {
     id: 'brest',
@@ -1104,7 +1104,7 @@ export const CLUBS = [
     marketValue: 120_000_000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/05/Stade_Brestois_29_logo.svg'
+    logo: './logos/brest.svg'
   },
   {
     id: 'nantes',
@@ -1116,7 +1116,7 @@ export const CLUBS = [
     marketValue: 90_000_000,
     color: '#FED100',
     textColor: '#008559',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Nantes_logo.svg'
+    logo: './logos/nantes.svg'
   },
   {
     id: 'toulouse',
@@ -1128,7 +1128,7 @@ export const CLUBS = [
     marketValue: 85_000_000,
     color: '#5C2D91',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/94/Toulouse_FC_2018_logo.svg'
+    logo: './logos/toulouse.svg'
   },
   {
     id: 'montpellier',
@@ -1140,7 +1140,7 @@ export const CLUBS = [
     marketValue: 75_000_000,
     color: '#002B49',
     textColor: '#FF671F',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Montpellier_HSC_logo.svg'
+    logo: './logos/montpellier.svg'
   },
   {
     id: 'le-havre',
@@ -1152,7 +1152,7 @@ export const CLUBS = [
     marketValue: 65_000_000,
     color: '#002B7F',
     textColor: '#71A0D6',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/76/Le_Havre_AC_logo.svg'
+    logo: './logos/le-havre.png'
   },
   {
     id: 'auxerre',
@@ -1164,7 +1164,7 @@ export const CLUBS = [
     marketValue: 60_000_000,
     color: '#0055A5',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/3/36/AJ_Auxerre.svg'
+    logo: './logos/auxerre.svg'
   },
   {
     id: 'saint-etienne',
@@ -1176,7 +1176,7 @@ export const CLUBS = [
     marketValue: 45_000_000,
     color: '#008559',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/2/2c/AS_Saint-%C3%89tienne.svg'
+    logo: './logos/saint-etienne.png'
   },
   {
     id: 'angers',
@@ -1188,7 +1188,7 @@ export const CLUBS = [
     marketValue: 40_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/d/d4/Angers_SCO_logo.svg'
+    logo: './logos/angers.png'
   },
 
   // ==========================================
@@ -1204,7 +1204,7 @@ export const CLUBS = [
     marketValue: 288_000_000,
     color: '#A90432',
     textColor: '#FDB912',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Galatasaray_Sports_Club_Logo.svg'
+    logo: './logos/galatasaray.svg'
   },
   {
     id: 'fenerbahce',
@@ -1216,7 +1216,7 @@ export const CLUBS = [
     marketValue: 242_000_000,
     color: '#002D72',
     textColor: '#FFF200',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/8/86/Fenerbah%C3%A7e_SK.png'
+    logo: './logos/fenerbahce.png'
   },
   {
     id: 'besiktas',
@@ -1228,7 +1228,7 @@ export const CLUBS = [
     marketValue: 145_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Logo_of_Be%C5%9Fikta%C5%9F_JK.svg'
+    logo: './logos/besiktas.png'
   },
   {
     id: 'trabzonspor',
@@ -1240,7 +1240,7 @@ export const CLUBS = [
     marketValue: 102_000_000,
     color: '#800020',
     textColor: '#5CA2D1',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/a/ab/TrabzonsporAmblemi.png'
+    logo: './logos/trabzonspor.png'
   },
   {
     id: 'basaksehir',
@@ -1252,7 +1252,7 @@ export const CLUBS = [
     marketValue: 55_000_000,
     color: '#0B1C38',
     textColor: '#F58220',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/6/64/%C4%B0stanbul_Ba%C5%9fak%C5%9Fehir_FK.png'
+    logo: './logos/basaksehir.svg'
   },
   {
     id: 'eyupspor',
@@ -1264,7 +1264,7 @@ export const CLUBS = [
     marketValue: 38_000_000,
     color: '#4B1248',
     textColor: '#F7C900',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/c/cf/Ey%C3%BCpspor_Logo.png'
+    logo: './logos/eyupspor.png'
   },
   {
     id: 'kasimpasa',
@@ -1276,7 +1276,7 @@ export const CLUBS = [
     marketValue: 36_000_000,
     color: '#002E6E',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/0/07/Kas%C4%B1mpa%C5%9Fa_SK.png'
+    logo: './logos/kasimpasa.svg'
   },
   {
     id: 'goztepe',
@@ -1288,7 +1288,7 @@ export const CLUBS = [
     marketValue: 34_000_000,
     color: '#E30613',
     textColor: '#FFF200',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/9/90/G%C3%B6ztepe_logo.png'
+    logo: './logos/goztepe.svg'
   },
   {
     id: 'samsunspor',
@@ -1300,7 +1300,7 @@ export const CLUBS = [
     marketValue: 32_000_000,
     color: '#E30613',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/c/c5/Samsunspor_logo.png'
+    logo: './logos/samsunspor.svg'
   },
   {
     id: 'rizespor',
@@ -1312,7 +1312,7 @@ export const CLUBS = [
     marketValue: 30_000_000,
     color: '#00843D',
     textColor: '#0033A0',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/5/53/%C3%87aykur_Rizespor_Logo.png'
+    logo: './logos/rizespor.svg'
   },
   {
     id: 'antalyaspor',
@@ -1324,7 +1324,7 @@ export const CLUBS = [
     marketValue: 29_000_000,
     color: '#E30613',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/0/00/Antalyaspor_logo.png'
+    logo: './logos/antalyaspor.svg'
   },
   {
     id: 'alanyaspor',
@@ -1336,7 +1336,7 @@ export const CLUBS = [
     marketValue: 28_000_000,
     color: '#F39200',
     textColor: '#008542',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/8/87/Alanyaspor_logo.png'
+    logo: './logos/alanyaspor.svg'
   },
   {
     id: 'gaziantep-fk',
@@ -1348,7 +1348,7 @@ export const CLUBS = [
     marketValue: 25_000_000,
     color: '#D21034',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/1/1b/Gaziantep_FK_Logo.png'
+    logo: './logos/gaziantep-fk.svg'
   },
   {
     id: 'konyaspor',
@@ -1360,7 +1360,7 @@ export const CLUBS = [
     marketValue: 24_000_000,
     color: '#00843D',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/6/6f/Konyaspor_logo.png'
+    logo: './logos/konyaspor.svg'
   },
   {
     id: 'sivasspor',
@@ -1372,7 +1372,7 @@ export const CLUBS = [
     marketValue: 22_000_000,
     color: '#E30613',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/a/ae/Sivasspor.png'
+    logo: './logos/sivasspor.svg'
   },
   {
     id: 'kayserispor',
@@ -1384,7 +1384,7 @@ export const CLUBS = [
     marketValue: 20_000_000,
     color: '#FFE500',
     textColor: '#D91A2A',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/1/18/Kayserispor_logosu.png'
+    logo: './logos/kayserispor.svg'
   },
   {
     id: 'hatayspor',
@@ -1396,7 +1396,7 @@ export const CLUBS = [
     marketValue: 19_000_000,
     color: '#800000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/1/17/Hatayspor.png'
+    logo: './logos/hatayspor.png'
   },
   {
     id: 'bodrum-fk',
@@ -1408,7 +1408,7 @@ export const CLUBS = [
     marketValue: 18_000_000,
     color: '#006633',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/3/3d/Bodrum_FK_logo.png'
+    logo: './logos/bodrum-fk.svg'
   },
   {
     id: 'adana-demirspor',
@@ -1420,7 +1420,7 @@ export const CLUBS = [
     marketValue: 12_000_000,
     color: '#002B49',
     textColor: '#71A0D6',
-    logo: 'https://upload.wikimedia.org/wikipedia/tr/e/e4/Adana_Demirspor_Logo.png'
+    logo: './logos/adana-demirspor.png'
   },
 
   // ==========================================
@@ -1436,7 +1436,7 @@ export const CLUBS = [
     marketValue: 440_000_000,
     color: '#008057',
     textColor: '#EDBB00',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/e1/Sporting_Clube_de_Portugal_%28Logo%29.svg'
+    logo: './logos/sporting-cp.png'
   },
   {
     id: 'benfica',
@@ -1448,7 +1448,7 @@ export const CLUBS = [
     marketValue: 335_000_000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a2/SL_Benfica_logo.svg'
+    logo: './logos/benfica.png'
   },
   {
     id: 'fc-porto',
@@ -1460,7 +1460,7 @@ export const CLUBS = [
     marketValue: 330_000_000,
     color: '#0038A8',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg'
+    logo: './logos/fc-porto.png'
   },
   {
     id: 'psv-eindhoven',
@@ -1472,7 +1472,7 @@ export const CLUBS = [
     marketValue: 320_000_000,
     color: '#FF0000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/05/PSV_Eindhoven.svg'
+    logo: './logos/psv-eindhoven.png'
   },
   {
     id: 'feyenoord',
@@ -1484,7 +1484,7 @@ export const CLUBS = [
     marketValue: 285_000_000,
     color: '#FF0000',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/e3/Feyenoord_logo.svg'
+    logo: './logos/feyenoord.png'
   },
   {
     id: 'ajax',
@@ -1496,7 +1496,7 @@ export const CLUBS = [
     marketValue: 225_000_000,
     color: '#D2122E',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/79/Ajax_Amsterdam.svg'
+    logo: './logos/ajax.png'
   },
   {
     id: 'rb-salzburg',
@@ -1508,7 +1508,7 @@ export const CLUBS = [
     marketValue: 170_000_000,
     color: '#D0103A',
     textColor: '#1A2F4C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/77/FC_Red_Bull_Salzburg_logo.svg'
+    logo: './logos/rb-salzburg.png'
   },
   {
     id: 'club-brugge',
@@ -1520,7 +1520,7 @@ export const CLUBS = [
     marketValue: 165_000_000,
     color: '#000000',
     textColor: '#0055A5',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/d/d0/Club_Brugge_KV_logo.svg'
+    logo: './logos/club-brugge.png'
   },
   {
     id: 'shakhtar',
@@ -1532,7 +1532,7 @@ export const CLUBS = [
     marketValue: 160_000_000,
     color: '#FF6600',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/a/a1/FC_Shakhtar_Donetsk.svg'
+    logo: './logos/shakhtar.png'
   },
   {
     id: 'celtic',
@@ -1544,7 +1544,7 @@ export const CLUBS = [
     marketValue: 120_000_000,
     color: '#018749',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/3/35/Celtic_FC.svg'
+    logo: './logos/celtic.png'
   },
   {
     id: 'slavia-prag',
@@ -1556,7 +1556,7 @@ export const CLUBS = [
     marketValue: 95_000_000,
     color: '#E01E2B',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/8/87/SK_Slavia_Praha_logo.svg'
+    logo: './logos/slavia-prag.png'
   },
   {
     id: 'olympiakos',
@@ -1568,7 +1568,7 @@ export const CLUBS = [
     marketValue: 95_000_000,
     color: '#D4001F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/f/f1/Olympiacos_FC_logo.svg'
+    logo: './logos/olympiakos.png'
   },
   {
     id: 'paok',
@@ -1580,7 +1580,7 @@ export const CLUBS = [
     marketValue: 90_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/91/PAOK_FC_logo.svg'
+    logo: './logos/paok.svg'
   },
   {
     id: 'rangers',
@@ -1592,7 +1592,7 @@ export const CLUBS = [
     marketValue: 85_000_000,
     color: '#1B458F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC.svg'
+    logo: './logos/rangers.png'
   },
   {
     id: 'sparta-prag',
@@ -1604,7 +1604,7 @@ export const CLUBS = [
     marketValue: 85_000_000,
     color: '#9E1B32',
     textColor: '#002B49',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/64/AC_Sparta_Praha_logo.svg'
+    logo: './logos/sparta-prag.png'
   },
   {
     id: 'dinamo-zagreb',
@@ -1616,7 +1616,7 @@ export const CLUBS = [
     marketValue: 75_000_000,
     color: '#003893',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/68/GNK_Dinamo_Zagreb_logo.svg'
+    logo: './logos/dinamo-zagreb.png'
   },
   {
     id: 'red-star',
@@ -1628,7 +1628,7 @@ export const CLUBS = [
     marketValue: 70_000_000,
     color: '#D4001F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/6/66/FK_Crvena_zvezda_logo.svg'
+    logo: './logos/red-star.png'
   },
   {
     id: 'sturm-graz',
@@ -1640,7 +1640,7 @@ export const CLUBS = [
     marketValue: 68_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/52/SK_Sturm_Graz.svg'
+    logo: './logos/sturm-graz.png'
   },
   {
     id: 'young-boys',
@@ -1652,7 +1652,7 @@ export const CLUBS = [
     marketValue: 65_000_000,
     color: '#FFDE00',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6b/BSC_Young_Boys_logo.svg'
+    logo: './logos/young-boys.png'
   },
 
   // ==========================================
@@ -1668,7 +1668,7 @@ export const CLUBS = [
     marketValue: 245_000_000,
     color: '#0055A5',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/5/5c/Al_Hilal_SFC_Logo.svg'
+    logo: './logos/al-hilal.svg'
   },
   {
     id: 'al-nassr',
@@ -1680,7 +1680,7 @@ export const CLUBS = [
     marketValue: 190_000_000,
     color: '#FFF200',
     textColor: '#003399',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c5/Al-Nassr_FC_Logo.svg'
+    logo: './logos/al-nassr.svg'
   },
   {
     id: 'al-ahli',
@@ -1692,7 +1692,7 @@ export const CLUBS = [
     marketValue: 180_000_000,
     color: '#007A3D',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/05/Al-Ahli_Saudi_FC_logo.svg'
+    logo: './logos/al-ahli.svg'
   },
   {
     id: 'al-ittihad',
@@ -1704,7 +1704,7 @@ export const CLUBS = [
     marketValue: 175_000_000,
     color: '#FED100',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/65/Al-Ittihad_Club_logo.svg'
+    logo: './logos/al-ittihad.svg'
   },
   {
     id: 'al-qadsiah',
@@ -1716,7 +1716,7 @@ export const CLUBS = [
     marketValue: 75_000_000,
     color: '#C8102E',
     textColor: '#FFCD00',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/3/33/Al-Qadsiah_FC_Logo.svg'
+    logo: './logos/al-qadsiah.png'
   },
   {
     id: 'al-ettifaq',
@@ -1728,7 +1728,7 @@ export const CLUBS = [
     marketValue: 65_000_000,
     color: '#008559',
     textColor: '#DA291C',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/7/7b/Al-Ettifaq_FC_logo.svg'
+    logo: './logos/al-ettifaq.svg'
   },
 
   // ==========================================
@@ -1744,7 +1744,7 @@ export const CLUBS = [
     marketValue: 72_000_000,
     color: '#003366',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/FC_K%C3%B8benhavn_logo.svg'
+    logo: './logos/copenhagen.png'
   },
   {
     id: 'midtjylland',
@@ -1756,7 +1756,7 @@ export const CLUBS = [
     marketValue: 62_000_000,
     color: '#000000',
     textColor: '#D91A2A',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/91/FC_Midtjylland_logo.svg'
+    logo: './logos/midtjylland.png'
   },
   {
     id: 'nordsjaelland',
@@ -1768,7 +1768,7 @@ export const CLUBS = [
     marketValue: 45_000_000,
     color: '#D4001F',
     textColor: '#FFD700',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/4/4e/FC_Nordsj%C3%A6lland_logo.svg'
+    logo: './logos/nordsjaelland.svg'
   },
   {
     id: 'bodo-glimt',
@@ -1780,7 +1780,7 @@ export const CLUBS = [
     marketValue: 42_000_000,
     color: '#FFDE00',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/8/87/FK_Bod%C3%B8_Glimt_logo.svg'
+    logo: './logos/bodo-glimt.svg'
   },
   {
     id: 'malmo',
@@ -1792,7 +1792,7 @@ export const CLUBS = [
     marketValue: 40_000_000,
     color: '#69B3E7',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/c5/Malmo_FF_logo.svg'
+    logo: './logos/malmo.png'
   },
   {
     id: 'brondby',
@@ -1804,7 +1804,7 @@ export const CLUBS = [
     marketValue: 35_000_000,
     color: '#FED100',
     textColor: '#003893',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/9f/Br%C3%B8ndby_IF_logo.svg'
+    logo: './logos/brondby.png'
   },
   {
     id: 'molde',
@@ -1816,7 +1816,7 @@ export const CLUBS = [
     marketValue: 28_000_000,
     color: '#0055A5',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6f/Molde_FK_logo.svg'
+    logo: './logos/molde.svg'
   },
   {
     id: 'djurgardens',
@@ -1828,7 +1828,7 @@ export const CLUBS = [
     marketValue: 24_000_000,
     color: '#002B49',
     textColor: '#71A0D6',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/c/cb/Djurg%C3%A5rdens_IF_crest.svg'
+    logo: './logos/djurgardens.png'
   },
   {
     id: 'rosenborg',
@@ -1840,7 +1840,7 @@ export const CLUBS = [
     marketValue: 22_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/b/b3/Rosenborg_BK_logo.svg'
+    logo: './logos/rosenborg.png'
   },
   {
     id: 'qarabag',
@@ -1852,7 +1852,7 @@ export const CLUBS = [
     marketValue: 22_000_000,
     color: '#000000',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/3/30/Qaraba%C4%9F_FK_logo.svg'
+    logo: './logos/qarabag.svg'
   },
   {
     id: 'aik',
@@ -1864,7 +1864,7 @@ export const CLUBS = [
     marketValue: 20_000_000,
     color: '#000000',
     textColor: '#FFD700',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/6/6d/AIK_logo.svg'
+    logo: './logos/aik.png'
   },
   {
     id: 'elfsborg',
@@ -1876,7 +1876,7 @@ export const CLUBS = [
     marketValue: 19_000_000,
     color: '#FFD100',
     textColor: '#000000',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/d/dc/IF_Elfsborg_logo.svg'
+    logo: './logos/elfsborg.png'
   },
   {
     id: 'viking',
@@ -1888,7 +1888,7 @@ export const CLUBS = [
     marketValue: 18_000_000,
     color: '#002B49',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Viking_FK_logo.svg'
+    logo: './logos/viking.svg'
   },
   {
     id: 'hjk-helsinki',
@@ -1900,6 +1900,6 @@ export const CLUBS = [
     marketValue: 12_000_000,
     color: '#002B7F',
     textColor: '#FFFFFF',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/4/4b/HJK_Helsinki_logo.svg'
+    logo: './logos/hjk-helsinki.png'
   }
 ];

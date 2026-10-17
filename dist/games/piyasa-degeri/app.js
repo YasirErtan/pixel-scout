@@ -6,6 +6,7 @@ const elBestScore = document.getElementById('best-score');
 
 // Sol Panel Elemanları (Açık Olan Kulüp)
 const elLeftSide = document.getElementById('left-side');
+const elLeftWatermark = document.getElementById('left-watermark');
 const elLeftBgGlow = document.getElementById('left-bg-glow');
 const elLeftLogo = document.getElementById('left-logo');
 const elLeftLogoFallback = document.getElementById('left-logo-fallback');
@@ -16,6 +17,7 @@ const elLeftFullValue = document.getElementById('left-full-value');
 
 // Sağ Panel Elemanları (Tahmin Edilecek Kulüp)
 const elRightSide = document.getElementById('right-side');
+const elRightWatermark = document.getElementById('right-watermark');
 const elRightBgGlow = document.getElementById('right-bg-glow');
 const elRightLogo = document.getElementById('right-logo');
 const elRightLogoFallback = document.getElementById('right-logo-fallback');
@@ -120,9 +122,20 @@ function renderClubA(club) {
   elLeftValue.textContent = formatMarketValue(club.marketValue);
   elLeftFullValue.textContent = formatFullCurrency(club.marketValue);
 
-  if (elLeftBgGlow) {
-    elLeftBgGlow.style.background = `radial-gradient(circle at center, ${club.color}33 0%, transparent 70%)`;
+  // Takım Renklerinde Dinamik Arka Plan ve Atmosfer Tasarımı
+  if (elLeftSide) {
+    elLeftSide.style.background = `radial-gradient(circle at 50% 30%, ${club.color}35 0%, ${club.color}14 50%, #070d09 85%), linear-gradient(180deg, rgba(7, 13, 9, 0.25) 0%, rgba(7, 13, 9, 0.9) 100%)`;
   }
+  if (elLeftWatermark) {
+    elLeftWatermark.style.backgroundImage = `url("${club.logo}")`;
+  }
+  if (elLeftBgGlow) {
+    elLeftBgGlow.style.background = `radial-gradient(circle at center, ${club.color}45 0%, transparent 68%)`;
+  }
+  if (elLeftLogo) {
+    elLeftLogo.style.filter = `drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 45px ${club.color}66)`;
+  }
+
   setupLogo(elLeftLogo, elLeftLogoFallback, club);
 }
 
@@ -132,9 +145,20 @@ function renderClubB(club) {
   elRightName.textContent = club.name;
   elRightLeague.textContent = `${club.flag} ${club.league}`;
   
-  if (elRightBgGlow) {
-    elRightBgGlow.style.background = `radial-gradient(circle at center, ${club.color}33 0%, transparent 70%)`;
+  // Takım Renklerinde Dinamik Arka Plan ve Atmosfer Tasarımı
+  if (elRightSide) {
+    elRightSide.style.background = `radial-gradient(circle at 50% 30%, ${club.color}35 0%, ${club.color}14 50%, #070d09 85%), linear-gradient(180deg, rgba(7, 13, 9, 0.25) 0%, rgba(7, 13, 9, 0.9) 100%)`;
   }
+  if (elRightWatermark) {
+    elRightWatermark.style.backgroundImage = `url("${club.logo}")`;
+  }
+  if (elRightBgGlow) {
+    elRightBgGlow.style.background = `radial-gradient(circle at center, ${club.color}45 0%, transparent 68%)`;
+  }
+  if (elRightLogo) {
+    elRightLogo.style.filter = `drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 45px ${club.color}66)`;
+  }
+
   setupLogo(elRightLogo, elRightLogoFallback, club);
 
   const compName = currentClubA.shortName || currentClubA.name;
