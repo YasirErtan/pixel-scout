@@ -131,6 +131,63 @@ main {
   padding: 20px 16px 60px;
 }
 
+/* Oyun Modu Seçici Tab Çubuğu */
+.mode-tabs-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mode-tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: #17281d;
+  border: 2px solid var(--line);
+  color: var(--muted);
+  font: 11px/1.2 var(--pixel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab-btn:hover {
+  background: #213c2c;
+  color: var(--ink);
+  border-color: var(--edge);
+}
+
+.mode-tab-btn.active {
+  background: #23422e;
+  border-color: var(--lime);
+  color: var(--lime);
+  box-shadow: 0 0 10px rgba(197, 231, 130, 0.15);
+}
+
+.mode-tab-btn.national.active {
+  border-color: #f1796d;
+  color: #ff9b91;
+  box-shadow: 0 0 10px rgba(241, 121, 109, 0.2);
+}
+
+.mode-notice {
+  background: #1e3325;
+  border-left: 4px solid #f1796d;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #e4ebd8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-notice strong {
+  color: var(--lime);
+}
+
 /* Üst Maç Bilgi Çubuğu */
 .match-top-bar {
   display: flex;
@@ -254,6 +311,28 @@ main {
   background: #3d2b24;
   border-color: var(--orange);
   color: #ffe0b3;
+}
+
+.goal-pill.opponent-goal {
+  background: #152219;
+  border-color: #2b3d2f;
+  color: #8c9e8d;
+  cursor: default;
+  opacity: 0.9;
+}
+
+.goal-pill.opponent-goal:hover {
+  background: #152219;
+  border-color: #2b3d2f;
+}
+
+.opponent-tag {
+  font-size: 8px;
+  color: var(--muted);
+  background: #101a13;
+  padding: 2px 6px;
+  border: 1px solid #2b3d2f;
+  margin-left: auto;
 }
 
 /* Orta Skor Kutusu */
