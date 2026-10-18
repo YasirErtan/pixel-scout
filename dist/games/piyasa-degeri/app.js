@@ -9,7 +9,6 @@ const elLeftSide = document.getElementById('left-side');
 const elLeftWatermark = document.getElementById('left-watermark');
 const elLeftBgGlow = document.getElementById('left-bg-glow');
 const elLeftLogo = document.getElementById('left-logo');
-const elLeftLogoFallback = document.getElementById('left-logo-fallback');
 const elLeftName = document.getElementById('left-name');
 const elLeftLeague = document.getElementById('left-league');
 const elLeftValue = document.getElementById('left-value');
@@ -20,7 +19,6 @@ const elRightSide = document.getElementById('right-side');
 const elRightWatermark = document.getElementById('right-watermark');
 const elRightBgGlow = document.getElementById('right-bg-glow');
 const elRightLogo = document.getElementById('right-logo');
-const elRightLogoFallback = document.getElementById('right-logo-fallback');
 const elRightName = document.getElementById('right-name');
 const elRightLeague = document.getElementById('right-league');
 const elRightValueBox = document.getElementById('right-value-box');
@@ -80,37 +78,14 @@ function drawNextClub(excludeId = null) {
   return nextClub;
 }
 
-// Kulüp Logosu ve Fallback Rozeti Hazırlama
-function setupLogo(imgEl, fallbackEl, club) {
-  const initials = (club.shortName || club.name)
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(w => w[0])
-    .join('')
-    .toUpperCase();
-
-  fallbackEl.textContent = initials;
-  fallbackEl.style.backgroundColor = club.color || '#2d4734';
-  fallbackEl.style.color = club.textColor || '#ffffff';
-
-  imgEl.onerror = () => {
-    imgEl.style.display = 'none';
-    fallbackEl.hidden = false;
-  };
-
-  imgEl.onload = () => {
-    imgEl.style.display = 'block';
-    fallbackEl.hidden = true;
-  };
-
-  if (club.logo) {
+// Kulüp Logosu Hazırlama (Sadece Logo)
+function setupLogo(imgEl, club) {
+  if (club && club.logo) {
     imgEl.src = club.logo;
     imgEl.alt = `${club.name} Logosu`;
     imgEl.style.display = 'block';
-    fallbackEl.hidden = true;
   } else {
     imgEl.style.display = 'none';
-    fallbackEl.hidden = false;
   }
 }
 
@@ -136,7 +111,7 @@ function renderClubA(club) {
     elLeftLogo.style.filter = `drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 45px ${club.color}66)`;
   }
 
-  setupLogo(elLeftLogo, elLeftLogoFallback, club);
+  setupLogo(elLeftLogo, club);
 }
 
 // Sağ Paneli Güncelle (Kulüp B - Tahmin)
@@ -159,7 +134,7 @@ function renderClubB(club) {
     elRightLogo.style.filter = `drop-shadow(0 16px 32px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 45px ${club.color}66)`;
   }
 
-  setupLogo(elRightLogo, elRightLogoFallback, club);
+  setupLogo(elRightLogo, club);
 
   const compName = currentClubA.shortName || currentClubA.name;
   elComparisonCaption.textContent = `${compName}'dan daha mı değerli?`;
