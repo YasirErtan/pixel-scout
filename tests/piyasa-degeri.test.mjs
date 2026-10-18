@@ -146,3 +146,28 @@ test('scoreboard management correctly tracks top 5 and outcome states', async ()
   assert.equal(saved[0].name, 'Şampiyon');
   assert.equal(saved[0].score, 15);
 });
+
+test('global scoreboard falls back gracefully to local storage when network is offline', async () => {
+  const {
+    fetchGlobalScoreboard,
+    recordScoreGlobal,
+    FIREBASE_CONFIG
+  } = await import('../dist/games/piyasa-degeri/scoreboard.js');
+
+  class MockStorage {
+    constructor() { this.store = {}; }
+    getItem(k) { return this.store[k] || null; }
+    setItem(k, v) { this.store[k] = String(v); }
+  }
+
+  const storage = new MockStorage();
+  // Network fail durumunda bile yerel skor dönmeli
+  const list = await fetchGlobalScoreboard(storage);
+  assert.ok(Array.isArray(list));
+  assert.equal(list.length, 5);
+
+  const res = await recordScoreGlobal(12, 'OnlineStar', storage);
+  assert.ok(res);
+  assert.equal(res.outcome, 'RECORD');
+  assert.equal(res.rank, 1);
+});

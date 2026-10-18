@@ -2,6 +2,8 @@ import { CLUBS, formatMarketValue, formatFullCurrency } from './clubs.js';
 import {
   getScoreboard,
   recordScore,
+  fetchGlobalScoreboard,
+  recordScoreGlobal,
   getStoredPlayerName,
   setStoredPlayerName
 } from './scoreboard.js';
@@ -199,10 +201,8 @@ function updatePlayerNameDisplay() {
   }
 }
 
-// Scoreboard Listesini DOM Elemanına Bas
-function renderScoreboardList(targetEl, highlightTimestamp = null) {
+function populateListDOM(targetEl, list, highlightTimestamp = null) {
   if (!targetEl) return;
-  const list = getScoreboard();
   targetEl.innerHTML = '';
 
   list.forEach((item, index) => {
@@ -230,6 +230,20 @@ function renderScoreboardList(targetEl, highlightTimestamp = null) {
     `;
     targetEl.appendChild(li);
   });
+}
+
+// Scoreboard Listesini DOM Elemanına Bas (Önce Lokal, ardından Canlı Global)
+function renderScoreboardList(targetEl, highlightTimestamp = null) {
+  if (!targetEl) return;
+  const localList = getScoreboard();
+  populateListDOM(targetEl, localList, highlightTimestamp);
+
+  // Canlı global listeyi çekip arkaplanda güncelle
+  fetchGlobalScoreboard().then(globalList => {
+    if (globalList && globalList.length > 0) {
+      populateListDOM(targetEl, globalList, highlightTimestamp);
+    }
+  }).catch(() => {});
 }
 
 // Oyuncu İsmi Sorma Modalı
@@ -354,40 +368,43 @@ async function handleGuess(isHigher) {
   }
 }
 
-// Oyun Bitti Ekranı
-function showGameOver(guessedHigher) {
-  elFinalScore.textContent = score;
-  elModalBestScore.textContent = bestScore;
-
-  // Skorun Scoreboard'a işlenmesi ve durum analizi
-  const result = recordScore(score, currentPlayerName || 'Oyuncu');
-
-  // Önceki tema sınıflarını temizle
+function applyOutcomeUI(result) {
   if (elModalCardBox) {
     elModalCardBox.classList.remove('outcome-record', 'outcome-podium', 'outcome-disappointment');
   }
-
-  // Konfeti ve durum sınıfları
   stopConfetti(elConfettiCanvas);
 
   if (result.outcome === 'RECORD') {
-    // 1. sıraya yerleşirse: "YENİ REKOR" ve konfeti patlaması
     if (elModalCardBox) elModalCardBox.classList.add('outcome-record');
     launchConfetti(elConfettiCanvas);
   } else if (result.outcome === 'PODIUM') {
-    // 2. veya 3. olursa: "TEBRİKLER PODYUMDASIN"
     if (elModalCardBox) elModalCardBox.classList.add('outcome-podium');
   } else if (result.outcome === 'DISAPPOINTMENT') {
-    // İlk 3 cevapta elenirse: "HAYAL KIRIKLIĞI"
     if (elModalCardBox) elModalCardBox.classList.add('outcome-disappointment');
   }
 
   if (elModalBadgeIcon) elModalBadgeIcon.textContent = result.icon;
   if (elModalTitle) elModalTitle.textContent = result.title;
   if (elModalSubtitle) elModalSubtitle.textContent = result.subtitle;
+}
 
-  // Oyun sonu Scoreboard listesini bas (yeni skoru vurgula)
-  renderScoreboardList(elModalScoreboardList, result.newEntry?.timestamp);
+// Oyun Bitti Ekranı
+function showGameOver(guessedHigher) {
+  elFinalScore.textContent = score;
+  elModalBestScore.textContent = bestScore;
+
+  // 1. Anında yerel kayıt ve anında UI tepkisi
+  const localResult = recordScore(score, currentPlayerName || 'Oyuncu');
+  applyOutcomeUI(localResult);
+  renderScoreboardList(elModalScoreboardList, localResult.newEntry?.timestamp);
+
+  // 2. Global Firebase bulutuna eşitle
+  recordScoreGlobal(score, currentPlayerName || 'Oyuncu').then(globalResult => {
+    if (globalResult && globalResult.outcome !== localResult.outcome) {
+      applyOutcomeUI(globalResult);
+    }
+    renderScoreboardList(elModalScoreboardList, globalResult.newEntry?.timestamp);
+  }).catch(() => {});
 
   const valA = currentClubA.marketValue;
   const valB = currentClubB.marketValue;

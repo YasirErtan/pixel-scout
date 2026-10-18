@@ -135,3 +135,101 @@ export function recordScore(score, playerName = 'Oyuncu', storage = globalThis.l
     newEntry: entry
   };
 }
+
+// Global Firebase Altyapı Yapılandırması
+export const FIREBASE_CONFIG = {
+  dbUrl: 'https://pixel-scout-game-default-rtdb.firebaseio.com'
+};
+
+/**
+ * Firebase Realtime Database URL'ini günceller veya okur.
+ */
+export function setFirebaseUrl(url) {
+  if (url) FIREBASE_CONFIG.dbUrl = url.replace(/\/+$/, '');
+  return FIREBASE_CONFIG.dbUrl;
+}
+
+/**
+ * Firebase üzerinden canlı global ilk 5 skor listesini çeker.
+ * Bağlantı yoksa veya hata olursa otomatik olarak lokal listeye döner.
+ */
+export async function fetchGlobalScoreboard(storage = globalThis.localStorage) {
+  try {
+    const res = await fetch(`${FIREBASE_CONFIG.dbUrl}/leaderboard.json`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error('Firebase fetch failed');
+    const data = await res.json();
+    if (!data) return getScoreboard(storage);
+
+    const list = Object.values(data).map(item => ({
+      name: item.name || 'Oyuncu',
+      score: Number(item.score) || 0,
+      date: item.date || '',
+      timestamp: item.timestamp || 0
+    }));
+
+    list.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (b.timestamp || 0) - (a.timestamp || 0);
+    });
+
+    const top5 = list.slice(0, 5);
+    if (storage) {
+      try { storage.setItem(SCOREBOARD_STORAGE_KEY, JSON.stringify(top5)); } catch {}
+    }
+    return top5;
+  } catch {
+    return getScoreboard(storage);
+  }
+}
+
+/**
+ * Yeni skoru hem yerel depoya hem de Global Firebase bulutuna kaydeder.
+ */
+export async function recordScoreGlobal(score, playerName = 'Oyuncu', storage = globalThis.localStorage) {
+  const localResult = recordScore(score, playerName, storage);
+
+  const entry = {
+    name: (playerName || '').trim() || 'Oyuncu',
+    score: Number(score) || 0,
+    date: new Date().toLocaleDateString('tr-TR'),
+    timestamp: Date.now()
+  };
+
+  try {
+    await fetch(`${FIREBASE_CONFIG.dbUrl}/leaderboard.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+
+    const globalTop5 = await fetchGlobalScoreboard(storage);
+    const globalRank = globalTop5.findIndex(i => i.timestamp === entry.timestamp) + 1;
+
+    if (globalRank > 0) {
+      localResult.rank = globalRank;
+      localResult.top5 = globalTop5;
+      localResult.isTop5 = globalRank <= 5;
+
+      if (score >= 3) {
+        if (globalRank === 1) {
+          localResult.outcome = 'RECORD';
+          localResult.title = 'YENİ REKOR';
+          localResult.subtitle = 'Global zirvenin yeni lideri sensin! Dünyanın bir numarası!';
+          localResult.icon = '🏆';
+        } else if (globalRank === 2 || globalRank === 3) {
+          localResult.outcome = 'PODIUM';
+          localResult.title = 'TEBRİKLER PODYUMDASIN';
+          localResult.subtitle = `Global sıralamada ${globalRank}. sıraya yerleştin!`;
+          localResult.icon = globalRank === 2 ? '🥈' : '🥉';
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Global scoreboard sync notice (offline mode active):', err.message);
+  }
+
+  return localResult;
+}
