@@ -82,4 +82,67 @@ test('index.html contains all necessary higher-lower DOM elements', () => {
   assert.ok(html.includes('id="feedback-badge"'));
   assert.ok(html.includes('id="game-over-dialog"'));
   assert.ok(html.includes('id="restart-btn"'));
+  assert.ok(html.includes('id="start-dialog"'));
+  assert.ok(html.includes('id="player-name-input"'));
+  assert.ok(html.includes('id="scoreboard-dialog"'));
+  assert.ok(html.includes('id="scoreboard-btn"'));
+  assert.ok(html.includes('id="confetti-canvas"'));
+  assert.ok(html.includes('id="modal-title"'));
+});
+
+test('scoreboard management correctly tracks top 5 and outcome states', async () => {
+  const {
+    getScoreboard,
+    recordScore,
+    DEFAULT_SCOREBOARD,
+    SCOREBOARD_STORAGE_KEY
+  } = await import('../dist/games/piyasa-degeri/scoreboard.js');
+
+  class MockStorage {
+    constructor() { this.store = {}; }
+    getItem(k) { return this.store[k] || null; }
+    setItem(k, v) { this.store[k] = String(v); }
+  }
+
+  // 1. Varsayılan liste testi
+  const storage = new MockStorage();
+  const initial = getScoreboard(storage);
+  assert.equal(initial.length, 5);
+  assert.equal(initial[0].name, 'Pep');
+  assert.equal(initial[0].score, 8);
+
+  // 2. İlk 3 cevapta elenme durumu (< 3 skor): HAYAL KIRIKLIĞI
+  const resDisappoint0 = recordScore(0, 'Ali', storage);
+  assert.equal(resDisappoint0.outcome, 'DISAPPOINTMENT');
+  assert.equal(resDisappoint0.title, 'HAYAL KIRIKLIĞI');
+
+  const resDisappoint2 = recordScore(2, 'Veli', storage);
+  assert.equal(resDisappoint2.outcome, 'DISAPPOINTMENT');
+  assert.equal(resDisappoint2.title, 'HAYAL KIRIKLIĞI');
+
+  // 3. 1. sıraya yerleşme durumu: YENİ REKOR
+  const resRecord = recordScore(15, 'Şampiyon', storage);
+  assert.equal(resRecord.outcome, 'RECORD');
+  assert.equal(resRecord.title, 'YENİ REKOR');
+  assert.equal(resRecord.rank, 1);
+
+  // 4. 2. veya 3. sıraya yerleşme durumu: TEBRİKLER PODYUMDASIN
+  // Şu anki liste: #1: Şampiyon(15), #2: Pep(8), #3: Alex(6)...
+  // 9 puan alırsa 2. sıraya yerleşir
+  const resPodium2 = recordScore(9, 'Efsane', storage);
+  assert.equal(resPodium2.outcome, 'PODIUM');
+  assert.equal(resPodium2.title, 'TEBRİKLER PODYUMDASIN');
+  assert.equal(resPodium2.rank, 2);
+
+  // 8 puan alırsa 3. sıraya yerleşir (#1: 15, #2: 9, #3: 8)
+  const resPodium3 = recordScore(8, 'Usta', storage);
+  assert.equal(resPodium3.outcome, 'PODIUM');
+  assert.equal(resPodium3.title, 'TEBRİKLER PODYUMDASIN');
+  assert.equal(resPodium3.rank, 3);
+
+  // 5. Scoreboard tam 5 kişi tutmalı
+  const saved = getScoreboard(storage);
+  assert.equal(saved.length, 5);
+  assert.equal(saved[0].name, 'Şampiyon');
+  assert.equal(saved[0].score, 15);
 });

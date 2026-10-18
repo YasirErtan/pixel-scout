@@ -1,8 +1,21 @@
 import { CLUBS, formatMarketValue, formatFullCurrency } from './clubs.js';
+import {
+  getScoreboard,
+  recordScore,
+  getStoredPlayerName,
+  setStoredPlayerName
+} from './scoreboard.js';
+import { launchConfetti, stopConfetti } from './confetti.js';
 
-// DOM Elemanları
+// DOM Elemanları - Skor Paneli & Üst Çubuk
 const elCurrentScore = document.getElementById('current-score');
 const elBestScore = document.getElementById('best-score');
+const elPlayerProfileBtn = document.getElementById('player-profile-btn');
+const elHeaderPlayerName = document.getElementById('header-player-name');
+const elScoreboardBtn = document.getElementById('scoreboard-btn');
+
+// Konfeti Kanvası
+const elConfettiCanvas = document.getElementById('confetti-canvas');
 
 // Sol Panel Elemanları (Açık Olan Kulüp)
 const elLeftSide = document.getElementById('left-side');
@@ -29,15 +42,34 @@ const elHigherBtn = document.getElementById('higher-btn');
 const elLowerBtn = document.getElementById('lower-btn');
 const elComparisonCaption = document.getElementById('comparison-caption');
 
-// Geri Bildirim ve Modal Elemanları
+// Geri Bildirim Rozeti
 const elFeedbackBadge = document.getElementById('feedback-badge');
 const elFeedbackIcon = document.getElementById('feedback-icon');
+
+// Başlama / İsim Sorma Modalı
+const elStartDialog = document.getElementById('start-dialog');
+const elStartForm = document.getElementById('start-form');
+const elPlayerNameInput = document.getElementById('player-name-input');
+const elStartScoreboardList = document.getElementById('start-scoreboard-list');
+
+// Müstakil Skor Tablosu Modalı
+const elScoreboardDialog = document.getElementById('scoreboard-dialog');
+const elScoreboardListItems = document.getElementById('scoreboard-list-items');
+const elCloseScoreboardBtn = document.getElementById('close-scoreboard-btn');
+
+// Oyun Bitti (Game Over) Modalı
 const elGameOverDialog = document.getElementById('game-over-dialog');
+const elModalCardBox = document.getElementById('modal-card-box');
+const elModalBadgeIcon = document.getElementById('modal-badge-icon');
+const elModalTitle = document.getElementById('modal-title');
+const elModalSubtitle = document.getElementById('modal-subtitle');
 const elGameOverReason = document.getElementById('game-over-reason');
 const elFinalScore = document.getElementById('final-score');
 const elModalBestScore = document.getElementById('modal-best-score');
+const elModalScoreboardList = document.getElementById('modal-scoreboard-list');
 const elModalComparison = document.getElementById('modal-comparison');
 const elRestartBtn = document.getElementById('restart-btn');
+const elChangeNameBtn = document.getElementById('change-name-btn');
 
 // Oyun Durumu
 const STORAGE_KEY = 'pixel-scout:piyasa-degeri:best';
@@ -45,10 +77,21 @@ let score = 0;
 let bestScore = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
 if (Number.isNaN(bestScore)) bestScore = 0;
 
+let currentPlayerName = getStoredPlayerName() || '';
 let currentClubA = null;
 let currentClubB = null;
 let sessionBag = [];
 let isTransitioning = false;
+
+// HTML Güvenli Metin Kaçırma
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 // Fisher-Yates Karıştırma
 function shuffle(array) {
@@ -141,37 +184,108 @@ function renderClubB(club) {
 
   // Butonları aç, sayaç kutusunu gizle
   elActionButtonsBox.hidden = false;
-  elHigherBtn.disabled = false;
-  elLowerBtn.disabled = false;
   elRightValueBox.hidden = true;
-  elRightValue.textContent = '€0 Milyon';
-  elRightFullValue.textContent = '€0';
 }
 
-// HUD Skor Güncelleme
+// HUD Güncelle
 function updateHUD() {
   elCurrentScore.textContent = score;
   elBestScore.textContent = bestScore;
 }
 
-// Sayı Sayma / Count-Up Animasyonu
-function animateValue(targetValue, durationMs = 700) {
+function updatePlayerNameDisplay() {
+  if (elHeaderPlayerName) {
+    elHeaderPlayerName.textContent = `👤 ${currentPlayerName || 'Oyuncu'}`;
+  }
+}
+
+// Scoreboard Listesini DOM Elemanına Bas
+function renderScoreboardList(targetEl, highlightTimestamp = null) {
+  if (!targetEl) return;
+  const list = getScoreboard();
+  targetEl.innerHTML = '';
+
+  list.forEach((item, index) => {
+    const li = document.createElement('li');
+    const rank = index + 1;
+    li.className = `scoreboard-item rank-${rank}`;
+
+    if (highlightTimestamp && item.timestamp === highlightTimestamp) {
+      li.classList.add('current-user-rank');
+    }
+
+    const badge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
+    const isCurrentUser = highlightTimestamp && item.timestamp === highlightTimestamp;
+
+    li.innerHTML = `
+      <div class="scoreboard-item-left">
+        <span class="scoreboard-badge">${badge}</span>
+        <span class="scoreboard-item-name">${escapeHtml(item.name)}</span>
+        ${isCurrentUser ? '<span class="scoreboard-item-tag">SEN</span>' : ''}
+      </div>
+      <div class="scoreboard-item-right">
+        <span class="scoreboard-item-score">${item.score} Skor</span>
+        <span class="scoreboard-item-date">${item.date || ''}</span>
+      </div>
+    `;
+    targetEl.appendChild(li);
+  });
+}
+
+// Oyuncu İsmi Sorma Modalı
+function openStartDialog() {
+  if (!elStartDialog) return;
+  if (elPlayerNameInput) {
+    elPlayerNameInput.value = currentPlayerName || '';
+  }
+  renderScoreboardList(elStartScoreboardList);
+  if (elStartDialog.showModal) {
+    elStartDialog.showModal();
+  } else {
+    elStartDialog.setAttribute('open', '');
+  }
+  setTimeout(() => elPlayerNameInput?.focus(), 80);
+}
+
+// Müstakil Skor Tablosu Modalı
+function openScoreboardDialog() {
+  if (!elScoreboardDialog) return;
+  renderScoreboardList(elScoreboardListItems);
+  if (elScoreboardDialog.showModal) {
+    elScoreboardDialog.showModal();
+  } else {
+    elScoreboardDialog.setAttribute('open', '');
+  }
+}
+
+function closeScoreboardDialog() {
+  if (!elScoreboardDialog) return;
+  if (elScoreboardDialog.close) {
+    elScoreboardDialog.close();
+  } else {
+    elScoreboardDialog.removeAttribute('open');
+  }
+}
+
+// Sayaç Efekti (Count-up Animation)
+function animateValue(targetValue, duration = 850) {
   return new Promise(resolve => {
     const startTime = performance.now();
-    const startVal = Math.max(0, Math.floor(targetValue * 0.15));
+    elRightValueBox.hidden = false;
+    elActionButtonsBox.hidden = true;
 
-    function tick(now) {
+    function frame(now) {
       const elapsed = now - startTime;
-      const progress = Math.min(elapsed / durationMs, 1);
-      // Ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(startVal + (targetValue - startVal) * eased);
+      const progress = Math.min(elapsed / duration, 1);
+      // Easing out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentVal = Math.round(targetValue * easeProgress);
 
-      elRightValue.textContent = formatMarketValue(current);
-      elRightFullValue.textContent = formatFullCurrency(current);
+      elRightValue.textContent = formatMarketValue(currentVal);
+      elRightFullValue.textContent = formatFullCurrency(currentVal);
 
       if (progress < 1) {
-        requestAnimationFrame(tick);
+        requestAnimationFrame(frame);
       } else {
         elRightValue.textContent = formatMarketValue(targetValue);
         elRightFullValue.textContent = formatFullCurrency(targetValue);
@@ -179,34 +293,33 @@ function animateValue(targetValue, durationMs = 700) {
       }
     }
 
-    requestAnimationFrame(tick);
+    requestAnimationFrame(frame);
   });
 }
 
-// Tahmin İşleme
+// Oyuncunun Tahmini (Higher / Lower)
 async function handleGuess(isHigher) {
   if (isTransitioning || !currentClubA || !currentClubB) return;
   isTransitioning = true;
 
-  // Butonları devre dışı bırak
-  elHigherBtn.disabled = true;
-  elLowerBtn.disabled = true;
-  elActionButtonsBox.hidden = true;
-  elRightValueBox.hidden = false;
-
-  // Değeri sayarak aç
-  await animateValue(currentClubB.marketValue, 650);
-
   const valA = currentClubA.marketValue;
   const valB = currentClubB.marketValue;
 
-  // Eşitlik durumunda iki tahmin de doğru kabul edilir
-  const isCorrect = (valA === valB) || (isHigher ? valB >= valA : valB <= valA);
+  // Sayacı çalıştır ve değeri göster
+  await animateValue(valB);
 
-  // Geri Bildirim Rozeti Göster
+  // Eşitlik durumunda tahmin doğru kabul edilir
+  const isCorrect = (valB === valA) || (isHigher && valB > valA) || (!isHigher && valB < valA);
+
+  // Geri bildirim rozeti
   elFeedbackBadge.hidden = false;
-  elFeedbackBadge.className = `feedback-badge ${isCorrect ? 'correct' : 'wrong'}`;
-  elFeedbackIcon.textContent = isCorrect ? '✓' : '✕';
+  if (isCorrect) {
+    elFeedbackBadge.className = 'feedback-badge correct';
+    elFeedbackIcon.textContent = '✓';
+  } else {
+    elFeedbackBadge.className = 'feedback-badge wrong';
+    elFeedbackIcon.textContent = '✗';
+  }
 
   if (isCorrect) {
     score++;
@@ -246,6 +359,36 @@ function showGameOver(guessedHigher) {
   elFinalScore.textContent = score;
   elModalBestScore.textContent = bestScore;
 
+  // Skorun Scoreboard'a işlenmesi ve durum analizi
+  const result = recordScore(score, currentPlayerName || 'Oyuncu');
+
+  // Önceki tema sınıflarını temizle
+  if (elModalCardBox) {
+    elModalCardBox.classList.remove('outcome-record', 'outcome-podium', 'outcome-disappointment');
+  }
+
+  // Konfeti ve durum sınıfları
+  stopConfetti(elConfettiCanvas);
+
+  if (result.outcome === 'RECORD') {
+    // 1. sıraya yerleşirse: "YENİ REKOR" ve konfeti patlaması
+    if (elModalCardBox) elModalCardBox.classList.add('outcome-record');
+    launchConfetti(elConfettiCanvas);
+  } else if (result.outcome === 'PODIUM') {
+    // 2. veya 3. olursa: "TEBRİKLER PODYUMDASIN"
+    if (elModalCardBox) elModalCardBox.classList.add('outcome-podium');
+  } else if (result.outcome === 'DISAPPOINTMENT') {
+    // İlk 3 cevapta elenirse: "HAYAL KIRIKLIĞI"
+    if (elModalCardBox) elModalCardBox.classList.add('outcome-disappointment');
+  }
+
+  if (elModalBadgeIcon) elModalBadgeIcon.textContent = result.icon;
+  if (elModalTitle) elModalTitle.textContent = result.title;
+  if (elModalSubtitle) elModalSubtitle.textContent = result.subtitle;
+
+  // Oyun sonu Scoreboard listesini bas (yeni skoru vurgula)
+  renderScoreboardList(elModalScoreboardList, result.newEntry?.timestamp);
+
   const valA = currentClubA.marketValue;
   const valB = currentClubB.marketValue;
   const diff = Math.abs(valB - valA);
@@ -272,14 +415,8 @@ function showGameOver(guessedHigher) {
   }
 }
 
-// Oyunu Yeniden Başlat
-function restartGame() {
-  if (elGameOverDialog.close) {
-    elGameOverDialog.close();
-  } else {
-    elGameOverDialog.removeAttribute('open');
-  }
-
+// Tur Başlatma
+function startNewRound() {
   score = 0;
   updateHUD();
 
@@ -292,13 +429,72 @@ function restartGame() {
   isTransitioning = false;
 }
 
+// Oyunu Yeniden Başlat
+function restartGame() {
+  stopConfetti(elConfettiCanvas);
+  if (elGameOverDialog.close) {
+    elGameOverDialog.close();
+  } else {
+    elGameOverDialog.removeAttribute('open');
+  }
+
+  startNewRound();
+}
+
+// İsim Değiştirme
+function changePlayerName() {
+  stopConfetti(elConfettiCanvas);
+  if (elGameOverDialog.open) {
+    if (elGameOverDialog.close) elGameOverDialog.close();
+    else elGameOverDialog.removeAttribute('open');
+  }
+  openStartDialog();
+}
+
 // Olay Dinleyicileri (Event Listeners)
 elHigherBtn.addEventListener('click', () => handleGuess(true));
 elLowerBtn.addEventListener('click', () => handleGuess(false));
 elRestartBtn.addEventListener('click', restartGame);
 
-// Klavye Kısayolları (Higher: Yukarı/W/H/Y, Lower: Aşağı/S/L/D, Yeniden Oyna: Boşluk/Enter)
+if (elChangeNameBtn) {
+  elChangeNameBtn.addEventListener('click', changePlayerName);
+}
+if (elPlayerProfileBtn) {
+  elPlayerProfileBtn.addEventListener('click', openStartDialog);
+}
+if (elScoreboardBtn) {
+  elScoreboardBtn.addEventListener('click', openScoreboardDialog);
+}
+if (elCloseScoreboardBtn) {
+  elCloseScoreboardBtn.addEventListener('click', closeScoreboardDialog);
+}
+
+// Başlama Formu Gönderimi
+if (elStartForm) {
+  elStartForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nameVal = (elPlayerNameInput.value || '').trim();
+    currentPlayerName = nameVal || 'Oyuncu';
+    setStoredPlayerName(currentPlayerName);
+    updatePlayerNameDisplay();
+
+    if (elStartDialog.close) {
+      elStartDialog.close();
+    } else {
+      elStartDialog.removeAttribute('open');
+    }
+
+    // Oyun henüz başlamamışsa veya yeniden başlama gerekiyorsa
+    startNewRound();
+  });
+}
+
+// Klavye Kısayolları
 window.addEventListener('keydown', (e) => {
+  if (elStartDialog?.open || elScoreboardDialog?.open) {
+    return;
+  }
+
   if (elGameOverDialog.open) {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
@@ -322,11 +518,10 @@ window.addEventListener('keydown', (e) => {
 // Başlatma
 function init() {
   updateHUD();
-  replenishBag();
-  const firstClub = drawNextClub();
-  const secondClub = drawNextClub(firstClub.id);
-  renderClubA(firstClub);
-  renderClubB(secondClub);
+  updatePlayerNameDisplay();
+
+  // Oyuna başlarken İsim sorsun
+  openStartDialog();
 }
 
 init();
