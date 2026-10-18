@@ -138,7 +138,7 @@ export function recordScore(score, playerName = 'Oyuncu', storage = globalThis.l
 
 // Global Firebase Altyapı Yapılandırması
 export const FIREBASE_CONFIG = {
-  dbUrl: 'https://pixel-scout-game-default-rtdb.firebaseio.com'
+  dbUrl: 'https://pixel-176f4-default-rtdb.firebaseio.com'
 };
 
 /**
