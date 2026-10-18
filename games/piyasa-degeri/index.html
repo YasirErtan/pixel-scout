@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+  <!-- Konfeti Kutlama Canvası -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
   <!-- Oyun Başlığı ve Canlı Skor Göstergesi -->
   <header class="game-header">
     <div class="header-left">
@@ -28,6 +31,12 @@
     </div>
 
     <div class="header-right">
+      <button id="player-profile-btn" class="nav-btn player-nav-btn" type="button" title="İsmini Değiştir">
+        <span id="header-player-name">👤 Oyuncu</span>
+      </button>
+      <button id="scoreboard-btn" class="nav-btn scoreboard-nav-btn" type="button">
+        🏆 Skor Tablosu
+      </button>
       <a href="../index.html" class="nav-btn">← Oyunlar</a>
     </div>
   </header>
@@ -98,11 +107,64 @@
     </div>
   </main>
 
-  <!-- Oyun Bitti Modalı -->
-  <dialog class="game-over-dialog" id="game-over-dialog">
+  <!-- 1. Oyuna Başlama / İsim Sorma Modalı -->
+  <dialog class="start-dialog" id="start-dialog">
+    <div class="modal-card start-card">
+      <div class="modal-badge-icon">⚡</div>
+      <h2>PİYASA DEĞERİ</h2>
+      <p class="modal-subtitle">Hangi futbol kulübünün kadrosu daha değerli? Rekor kırabilecek misin?</p>
+
+      <form id="start-form" class="start-form" method="dialog">
+        <label for="player-name-input" class="start-label">OYUNCU ADINI GİR:</label>
+        <div class="input-row">
+          <input 
+            type="text" 
+            id="player-name-input" 
+            class="player-name-input" 
+            maxlength="16" 
+            placeholder="Adını yaz..." 
+            autocomplete="nickname" 
+            required 
+            autofocus 
+          />
+          <button type="submit" id="start-game-submit-btn" class="start-submit-btn">
+            BAŞLA ▶
+          </button>
+        </div>
+      </form>
+
+      <!-- Mevcut Skor Tablosu Özeti -->
+      <div class="start-scoreboard-preview">
+        <h4 class="scoreboard-preview-title">🏆 GÜNCEL İLK 5 LİDER</h4>
+        <ol class="scoreboard-list compact" id="start-scoreboard-list"></ol>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 2. Müstakil Skor Tablosu (Scoreboard) Modalı -->
+  <dialog class="scoreboard-dialog" id="scoreboard-dialog">
     <div class="modal-card">
-      <div class="modal-badge-icon">❌</div>
-      <h2>OYUN BİTTİ!</h2>
+      <div class="modal-badge-icon">🏆</div>
+      <h2>EN İYİ İLK 5</h2>
+      <p class="modal-subtitle">Piyasa Değeri Oyunu Liderlik Tablosu</p>
+
+      <div class="scoreboard-card-container">
+        <ol class="scoreboard-list" id="scoreboard-list-items"></ol>
+      </div>
+
+      <button id="close-scoreboard-btn" class="restart-btn secondary-btn" type="button">
+        KAPAT
+      </button>
+    </div>
+  </dialog>
+
+  <!-- 3. Oyun Bitti (Game Over) Modalı -->
+  <dialog class="game-over-dialog" id="game-over-dialog">
+    <div class="modal-card" id="modal-card-box">
+      <div class="modal-badge-icon" id="modal-badge-icon">❌</div>
+      <h2 id="modal-title">OYUN BİTTİ!</h2>
+      <p id="modal-subtitle" class="modal-subtitle"></p>
+
       <p id="game-over-reason" class="modal-reason">
         Kulüp B'nin piyasa değeri daha düşüktü.
       </p>
@@ -118,13 +180,24 @@
         </div>
       </div>
 
+      <!-- Oyun Sonu Scoreboard İlk 5 Gösterimi -->
+      <div class="modal-scoreboard-section">
+        <h4 class="scoreboard-preview-title">🏆 SCOREBOARD (EN İYİ İLK 5)</h4>
+        <ol class="scoreboard-list" id="modal-scoreboard-list"></ol>
+      </div>
+
       <div class="modal-comparison" id="modal-comparison">
         <!-- İki takımın gerçek değer farkı buraya yazılacak -->
       </div>
 
-      <button id="restart-btn" class="restart-btn" type="button">
-        🔄 YENİDEN OYNA
-      </button>
+      <div class="modal-actions-row">
+        <button id="restart-btn" class="restart-btn" type="button">
+          🔄 YENİDEN OYNA
+        </button>
+        <button id="change-name-btn" class="secondary-modal-btn" type="button">
+          👤 İSİM DEĞİŞTİR
+        </button>
+      </div>
 
       <div class="modal-footer-nav">
         <a href="../index.html" class="modal-link">← Diğer Oyunlara Dön</a>

@@ -533,8 +533,37 @@ body {
   width: 100%;
   font-size: 13px;
   color: #e2ece3;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   line-height: 1.5;
+}
+
+.modal-actions-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.modal-actions-row .restart-btn {
+  flex: 2;
+}
+
+.secondary-modal-btn {
+  flex: 1;
+  height: 56px;
+  background: #14241b;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font: 10px var(--pixel);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.secondary-modal-btn:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+  background: #1e3527;
 }
 
 .restart-btn {
@@ -557,8 +586,20 @@ body {
   box-shadow: 0 6px 20px rgba(197, 231, 130, 0.4);
 }
 
+.restart-btn.secondary-btn {
+  background: #203a2b;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.restart-btn.secondary-btn:hover {
+  background: #2a4c38;
+  border-color: var(--lime);
+}
+
 .modal-footer-nav {
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .modal-link {
@@ -570,6 +611,271 @@ body {
 
 .modal-link:hover {
   color: var(--lime);
+}
+
+/* ==========================================
+   KONFETİ KANVASI
+   ========================================== */
+.confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999999;
+  display: none;
+}
+
+/* ==========================================
+   NAVBAR BUTONLARI (SCOREBOARD & OYUNCU)
+   ========================================== */
+.player-nav-btn {
+  background: rgba(45, 71, 52, 0.4);
+  border-color: rgba(197, 231, 130, 0.3);
+  color: var(--lime);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-nav-btn:hover {
+  background: #25442e;
+  border-color: var(--lime);
+}
+
+.scoreboard-nav-btn {
+  background: rgba(253, 224, 71, 0.08);
+  border-color: rgba(253, 224, 71, 0.35);
+  color: var(--yellow);
+  cursor: pointer;
+}
+
+.scoreboard-nav-btn:hover {
+  background: rgba(253, 224, 71, 0.18);
+  border-color: var(--yellow);
+}
+
+/* ==========================================
+   DIALOG VE MODAL STİLLERİ
+   ========================================== */
+dialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: auto;
+  max-width: 92vw;
+}
+
+dialog::backdrop {
+  background: rgba(4, 9, 6, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.start-card {
+  max-width: 480px;
+}
+
+.start-form {
+  width: 100%;
+  margin: 18px 0 14px;
+}
+
+.start-label {
+  display: block;
+  font: 10px var(--pixel);
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.player-name-input {
+  flex: 1;
+  height: 48px;
+  background: #101c15;
+  border: 2px solid var(--line);
+  color: #ffffff;
+  padding: 0 14px;
+  font: 13px var(--pixel);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.player-name-input:focus {
+  border-color: var(--lime);
+  box-shadow: 0 0 12px rgba(197, 231, 130, 0.3);
+}
+
+.start-submit-btn {
+  height: 48px;
+  padding: 0 18px;
+  background: var(--lime);
+  color: #0b140f;
+  font: 12px var(--pixel);
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.start-submit-btn:hover {
+  background: #d8f598;
+  transform: translateY(-1px);
+}
+
+/* Scoreboard Listesi */
+.start-scoreboard-preview,
+.modal-scoreboard-section,
+.scoreboard-card-container {
+  width: 100%;
+  margin: 14px 0 18px;
+  text-align: left;
+}
+
+.scoreboard-preview-title {
+  font: 11px var(--pixel);
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scoreboard-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.scoreboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: #101c15;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.scoreboard-item.rank-1 {
+  background: linear-gradient(90deg, rgba(253, 224, 71, 0.16) 0%, #101c15 100%);
+  border-color: rgba(253, 224, 71, 0.55);
+}
+
+.scoreboard-item.rank-2 {
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.14) 0%, #101c15 100%);
+  border-color: rgba(226, 232, 240, 0.45);
+}
+
+.scoreboard-item.rank-3 {
+  background: linear-gradient(90deg, rgba(251, 146, 60, 0.14) 0%, #101c15 100%);
+  border-color: rgba(251, 146, 60, 0.45);
+}
+
+.scoreboard-item.current-user-rank {
+  border-color: var(--lime);
+  background: #193122;
+  box-shadow: 0 0 14px rgba(197, 231, 130, 0.4);
+  transform: scale(1.02);
+}
+
+.scoreboard-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scoreboard-badge {
+  font-size: 16px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.scoreboard-item-name {
+  font: 12px var(--pixel);
+  color: #ffffff;
+}
+
+.scoreboard-item-tag {
+  font-size: 9px;
+  background: var(--lime);
+  color: #0b140f;
+  padding: 2px 5px;
+  font-weight: bold;
+  border-radius: 2px;
+  margin-left: 6px;
+}
+
+.scoreboard-item-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scoreboard-item-score {
+  font: 14px var(--pixel);
+  color: var(--lime);
+  font-weight: bold;
+}
+
+.scoreboard-item.rank-1 .scoreboard-item-score {
+  color: var(--yellow);
+}
+
+.scoreboard-item-date {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* Özel Durum Temaları (Yeni Rekor, Podyum, Hayal Kırıklığı) */
+.modal-card.outcome-record {
+  border-color: var(--yellow);
+  box-shadow: 0 0 45px rgba(253, 224, 71, 0.35), 0 25px 60px rgba(0, 0, 0, 0.9);
+}
+
+.modal-card.outcome-record h2 {
+  color: var(--yellow);
+  text-shadow: 0 0 16px rgba(253, 224, 71, 0.7);
+  animation: pulseTitle 1.4s infinite alternate;
+}
+
+.modal-card.outcome-podium {
+  border-color: var(--lime);
+  box-shadow: 0 0 40px rgba(197, 231, 130, 0.3), 0 25px 60px rgba(0, 0, 0, 0.9);
+}
+
+.modal-card.outcome-podium h2 {
+  color: var(--lime);
+  text-shadow: 0 0 14px rgba(197, 231, 130, 0.6);
+}
+
+.modal-card.outcome-disappointment {
+  border-color: #ef4444;
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.3), 0 25px 60px rgba(0, 0, 0, 0.9);
+}
+
+.modal-card.outcome-disappointment h2 {
+  color: #f87171;
+  text-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes pulseTitle {
+  from { transform: scale(1); filter: brightness(1); }
+  to { transform: scale(1.04); filter: brightness(1.25); }
 }
 
 /* ==========================================
