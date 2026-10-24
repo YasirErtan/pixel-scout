@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { PLAYERS, DATASET_META, getPlayerById } from '../dist/games/cok-oyunculu/players.js';
+import { PLAYERS, BONUS_PLAYER, DATASET_META, getPlayerById } from '../dist/games/cok-oyunculu/players.js';
 import {
   calculateAccuracyScore,
   calculateRoundScores,
@@ -119,5 +119,35 @@ test('Oyun ekranı HTML, CSS ve registry.json entegrasyon kontrolü', () => {
   assert.ok(html.includes('id="playerPositionText"'), 'Futbolcu kartında mevki göstergesi bulunmalı');
   assert.ok(!/baskın ayak/i.test(html), 'Baskın ayak bilgisi kartta yer almamalı');
   assert.ok(css.includes('object-fit: cover'), 'Fotoğraflarda kayma/bozulma önleyici object-fit: cover bulunmalı');
+  assert.ok(html.includes('data-bonus="true"'), 'Lobi ekranında Bonus Soru Aktif/Aktif Değil seçimi bulunmalı');
   assert.equal(formatMarketValue(180_000_000, true), '€180.0M');
+});
+
+test('Bonus oyuncu (Eren Çiftçi) özellikleri, TL formatı ve puansız değerlendirme kontrolü', () => {
+  assert.equal(BONUS_PLAYER.name, 'Eren Çiftçi');
+  assert.equal(BONUS_PLAYER.club, 'Albaraka');
+  assert.equal(BONUS_PLAYER.country, 'Türkiye');
+  assert.equal(BONUS_PLAYER.position, 'Stajyer');
+  assert.equal(BONUS_PLAYER.marketValue, 28075.50);
+  assert.equal(BONUS_PLAYER.currency, 'TRY');
+  assert.equal(BONUS_PLAYER.isBonus, true);
+  assert.equal(getPlayerById(BONUS_PLAYER.id)?.name, 'Eren Çiftçi');
+
+  // TL formatlama kontrolü
+  assert.equal(formatMarketValue(28075.50, true, 'TRY'), '28.075,50 ₺');
+
+  // Bonus turunda sıralama yapılmalı ama puanlamaya dahil edilmemeli (0 Puan)
+  const bonusRound = calculateRoundScores(
+    [
+      { playerId: 'p1', name: 'Ahmet', guess: 28075.50, lockedAt: 1000 },
+      { playerId: 'p2', name: 'Burak', guess: 25000, lockedAt: 1200 }
+    ],
+    BONUS_PLAYER.marketValue,
+    { isBonus: true }
+  );
+
+  assert.equal(bonusRound[0].playerId, 'p1');
+  assert.equal(bonusRound[0].rank, 1);
+  assert.equal(bonusRound[0].totalRoundPoints, 0, 'Bonus soru puanlamaya dahil edilmemeli');
+  assert.equal(bonusRound[1].totalRoundPoints, 0, 'Bonus soru puanlamaya dahil edilmemeli');
 });

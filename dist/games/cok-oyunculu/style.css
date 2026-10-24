@@ -637,6 +637,42 @@ button, input {
   color: #fff;
 }
 
+.round-counter-pill.is-bonus {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+}
+
+.bonus-exact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+}
+
+.bonus-exact-input {
+  width: 180px;
+  background: rgba(7, 11, 20, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #fbbf24;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: right;
+  outline: none;
+}
+
+.bonus-exact-input:focus {
+  border-color: var(--emerald-bright);
+  color: #fff;
+}
+
 .round-dots {
   display: flex;
   align-items: center;

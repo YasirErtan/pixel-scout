@@ -72,13 +72,16 @@ export function getInitials(name) {
 }
 
 /**
- * Bot oyuncular için gerçekçi tahmin üretir.
+ * Bot oyuncular için gerçekçi tahmin üretir (Euro veya Bonus TL).
  */
-export function generateBotGuess(actualValue, skill = 0.18) {
+export function generateBotGuess(actualValue, skill = 0.18, isBonus = false) {
   const direction = Math.random() < 0.5 ? -1 : 1;
   const errorFactor = (Math.random() * skill * 1.35) * direction;
+  if (isBonus) {
+    const rawTry = Math.max(1000, actualValue * (1 + errorFactor));
+    return Math.round(rawTry / 250) * 250;
+  }
   const rawEuro = Math.max(500_000, actualValue * (1 + errorFactor));
-  // 500 bin € katlarına yuvarla
   return Math.round(rawEuro / 500_000) * 500_000;
 }
 
@@ -114,7 +117,14 @@ export class MultiplayerRoomClient {
   /**
    * Yeni bir 4 haneli oda oluşturur.
    */
-  async createRoom({ hostName, questionCount = 10, roundDurationSec = 15, deckIds = [], withBots = 0 }) {
+  async createRoom({
+    hostName,
+    questionCount = 10,
+    roundDurationSec = 15,
+    bonusEnabled = true,
+    deckIds = [],
+    withBots = 0
+  }) {
     const cleanName = (hostName || this.playerName || 'Kurucu').trim().slice(0, 18);
     this.playerName = cleanName;
     savePlayerName(cleanName);
@@ -156,12 +166,13 @@ export class MultiplayerRoomClient {
     const roomData = {
       code,
       hostId: this.clientId,
-      status: 'lobby', // 'lobby' | 'playing' | 'reveal' | 'finished'
+      status: 'lobby',
       createdAt: now,
       updatedAt: now,
       settings: {
         questionCount: Number(questionCount) === 20 ? 20 : 10,
         roundDurationSec: [10, 15, 20, 25, 30].includes(Number(roundDurationSec)) ? Number(roundDurationSec) : 15,
+        bonusEnabled: Boolean(bonusEnabled),
         maxPlayers: 6
       },
       deckIds,
@@ -179,7 +190,6 @@ export class MultiplayerRoomClient {
       });
       this.isOfflineMode = false;
     } catch {
-      // Çevrimdışı / yerel yedek mod
       this.isOfflineMode = true;
     }
 
@@ -284,35 +294,6 @@ export class MultiplayerRoomClient {
   }
 
   /**
-   * Oda ayarlarını günceller (Soru sayısı: 10/20, Süre: 10/15/20/25 sn).
-   */
-  async updateSettings({ questionCount, roundDurationSec, deckIds }) {
-    if (!this.localRoomState) return;
-    if (questionCount) this.localRoomState.settings.questionCount = Number(questionCount) === 20 ? 20 : 10;
-    if (roundDurationSec) this.localRoomState.settings.roundDurationSec = Number(roundDurationSec);
-    if (Array.isArray(deckIds) && deckIds.length > 0) {
-      this.localRoomState.deckIds = deckIds;
-    }
-    this.localRoomState.updatedAt = Date.now();
-
-    if (!this.isOfflineMode && this.roomCode) {
-      try {
-        await this._fetchJson(`/mp_rooms/${this.roomCode}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            settings: this.localRoomState.settings,
-            deckIds: this.localRoomState.deckIds,
-            updatedAt: this.localRoomState.updatedAt
-          })
-        });
-      } catch {
-        // ignore
-      }
-    }
-    this._emit();
-  }
-
-  /**
    * Oyunu başlatır (Tur 0).
    */
   async startGame(deckIds, getPlayerById) {
@@ -327,7 +308,6 @@ export class MultiplayerRoomClient {
       this.localRoomState.deckIds = deckIds;
     }
 
-    // Tüm oyuncuların puanlarını sıfırla
     for (const pid of Object.keys(this.localRoomState.players || {})) {
       this.localRoomState.players[pid].totalScore = 0;
       this.localRoomState.players[pid].lastRoundDelta = 0;
@@ -348,9 +328,6 @@ export class MultiplayerRoomClient {
     this._emit();
   }
 
-  /**
-   * Mevcut turdaki botların tahminlerini hazırlar.
-   */
   _populateBotGuessesForCurrentRound(getPlayerById) {
     if (!this.localRoomState || typeof getPlayerById !== 'function') return;
     const roundIdx = this.localRoomState.currentRound || 0;
@@ -364,7 +341,7 @@ export class MultiplayerRoomClient {
     const now = Date.now();
     for (const p of Object.values(this.localRoomState.players || {})) {
       if (p.isBot) {
-        const botGuess = generateBotGuess(footballer.marketValue, p.skill || 0.18);
+        const botGuess = generateBotGuess(footballer.marketValue, p.skill || 0.18, Boolean(footballer.isBonus));
         const simulatedDelayMs = 1500 + Math.floor(Math.random() * 4500);
         this.localRoomState.guesses[roundIdx][p.id] = {
           playerId: p.id,
@@ -378,15 +355,16 @@ export class MultiplayerRoomClient {
   /**
    * Oyuncunun bu turdaki tahminini kilitler.
    */
-  async submitGuess(guessEuro) {
+  async submitGuess(guessVal) {
     if (!this.localRoomState) return;
     const roundIdx = this.localRoomState.currentRound || 0;
     if (!this.localRoomState.guesses) this.localRoomState.guesses = {};
     if (!this.localRoomState.guesses[roundIdx]) this.localRoomState.guesses[roundIdx] = {};
 
+    const numericGuess = Math.round((Number(guessVal) || 0) * 100) / 100;
     const payload = {
       playerId: this.clientId,
-      guess: Math.round(Number(guessEuro) || 0),
+      guess: numericGuess,
       lockedAt: Date.now()
     };
 
@@ -448,9 +426,11 @@ export class MultiplayerRoomClient {
   async nextRound(getPlayerById) {
     if (!this.localRoomState) return;
     const nextIdx = (this.localRoomState.currentRound || 0) + 1;
-    const totalQuestions = this.localRoomState.settings?.questionCount || 10;
+    const totalRounds = Array.isArray(this.localRoomState.deckIds) && this.localRoomState.deckIds.length > 0
+      ? this.localRoomState.deckIds.length
+      : (this.localRoomState.settings?.questionCount || 10);
 
-    if (nextIdx >= totalQuestions) {
+    if (nextIdx >= totalRounds) {
       this.localRoomState.status = 'finished';
     } else {
       this.localRoomState.status = 'playing';
@@ -485,7 +465,7 @@ export class MultiplayerRoomClient {
           this._emit();
         }
       } catch {
-        // Ağ kesintisinde yerel durumu koru
+        // ignore
       }
     }, 1400);
   }
