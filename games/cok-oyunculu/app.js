@@ -1,4 +1,4 @@
-import { PLAYERS, getPlayerById } from './players.js';
+import { PLAYERS, BONUS_PLAYER, getPlayerById } from './players.js';
 import {
   calculateRoundScores,
   selectUniqueGamePlayers,
@@ -15,7 +15,9 @@ import {
 const roomClient = new MultiplayerRoomClient();
 let selectedQuestionCount = 10;
 let selectedTimerSec = 15;
-let currentGuessEuro = 50_000_000;
+let selectedBonusEnabled = true;
+let currentGuessValue = 50_000_000;
+let currentRoundIsBonus = false;
 let isMyGuessLocked = false;
 let lastRenderedRound = -1;
 let lastRenderedStatus = '';
@@ -49,8 +51,7 @@ const startMatchBtn = document.getElementById('startMatchBtn');
 // Oyun Ekranı DOM
 const exitGameBtn = document.getElementById('exitGameBtn');
 const headerRoomCode = document.getElementById('headerRoomCode');
-const currentQuestionNum = document.getElementById('currentQuestionNum');
-const totalQuestionNum = document.getElementById('totalQuestionNum');
+const roundCounterPill = document.getElementById('roundCounterPill');
 const roundStepDots = document.getElementById('roundStepDots');
 const timerBox = document.getElementById('timerBox');
 const timerText = document.getElementById('timerText');
@@ -61,6 +62,7 @@ const playerPortraitFallback = document.getElementById('playerPortraitFallback')
 const playerFallbackInitials = document.getElementById('playerFallbackInitials');
 const playerAgeBadge = document.getElementById('playerAgeBadge');
 const playerPositionText = document.getElementById('playerPositionText');
+const playerSeasonTag = document.getElementById('playerSeasonTag');
 const playerNameHeading = document.getElementById('playerNameHeading');
 const playerClubLogo = document.getElementById('playerClubLogo');
 const playerClubName = document.getElementById('playerClubName');
@@ -69,8 +71,14 @@ const playerCountryEmoji = document.getElementById('playerCountryEmoji');
 const playerCountryName = document.getElementById('playerCountryName');
 
 const guessConsoleCard = document.getElementById('guessConsoleCard');
+const consoleKickerText = document.getElementById('consoleKickerText');
+const consoleSubText = document.getElementById('consoleSubText');
 const guessValueDisplay = document.getElementById('guessValueDisplay');
+const bonusExactInputRow = document.getElementById('bonusExactInputRow');
+const bonusExactInput = document.getElementById('bonusExactInput');
 const marketValueSlider = document.getElementById('marketValueSlider');
+const sliderScaleLabels = document.getElementById('sliderScaleLabels');
+const quickAdjustGrid = document.getElementById('quickAdjustGrid');
 const lockGuessBtn = document.getElementById('lockGuessBtn');
 const lockedStatusNote = document.getElementById('lockedStatusNote');
 
@@ -104,19 +112,101 @@ function showLobbyError(msg) {
   lobbyErrorMsg.hidden = false;
 }
 
-function buildNewDeck(questionCount) {
+function buildNewDeck(questionCount, bonusEnabled = selectedBonusEnabled) {
   const selected = selectUniqueGamePlayers(PLAYERS, questionCount, [...usedPlayerIdsInSession]);
   for (const p of selected) {
     usedPlayerIdsInSession.add(p.id);
   }
-  return selected.map((p) => p.id);
+  const normalIds = selected.map((p) => p.id);
+  return bonusEnabled ? [BONUS_PLAYER.id, ...normalIds] : normalIds;
 }
 
-function setGuessValue(euroVal) {
-  const clamped = Math.max(500_000, Math.min(250_000_000, Math.round(euroVal / 500_000) * 500_000));
-  currentGuessEuro = clamped;
-  if (marketValueSlider) marketValueSlider.value = String(clamped);
-  if (guessValueDisplay) guessValueDisplay.textContent = formatMarketValue(clamped, true);
+function configureConsoleForPlayer(player) {
+  const isBonus = Boolean(player?.isBonus);
+  currentRoundIsBonus = isBonus;
+
+  if (isBonus) {
+    if (consoleKickerText) consoleKickerText.textContent = '🎁 BONUS SORU TAHMİNİN (TÜRK LİRASI ₺)';
+    if (consoleSubText) consoleSubText.textContent = 'Bonus soruya özel TL (₺) cinsinden piyasa değerini belirle (Puanlamaya dahil edilmez)';
+    if (bonusExactInputRow) bonusExactInputRow.hidden = false;
+    if (bonusExactInput) {
+      bonusExactInput.disabled = false;
+      bonusExactInput.value = '25000,00';
+    }
+    if (marketValueSlider) {
+      marketValueSlider.min = '0';
+      marketValueSlider.max = '100000';
+      marketValueSlider.step = '50';
+    }
+    if (sliderScaleLabels) {
+      sliderScaleLabels.innerHTML = `
+        <span>0 ₺</span>
+        <span>20.000 ₺</span>
+        <span>40.000 ₺</span>
+        <span>60.000 ₺</span>
+        <span>80.000 ₺</span>
+        <span>100.000 ₺</span>
+      `;
+    }
+    if (quickAdjustGrid) {
+      quickAdjustGrid.innerHTML = `
+        <button type="button" class="quick-step-btn minus" data-step="-10000">-10.000₺</button>
+        <button type="button" class="quick-step-btn minus" data-step="-2500">-2.500₺</button>
+        <button type="button" class="quick-step-btn minus" data-step="-250">-250₺</button>
+        <button type="button" class="quick-step-btn plus" data-step="250">+250₺</button>
+        <button type="button" class="quick-step-btn plus" data-step="2500">+2.500₺</button>
+        <button type="button" class="quick-step-btn plus" data-step="10000">+10.000₺</button>
+      `;
+    }
+    setGuessValue(25000, true);
+  } else {
+    if (consoleKickerText) consoleKickerText.textContent = 'SENİN TAHMİNİN';
+    if (consoleSubText) consoleSubText.textContent = '2026/27 Transfermarkt güncel piyasa değerini belirle';
+    if (bonusExactInputRow) bonusExactInputRow.hidden = true;
+    if (marketValueSlider) {
+      marketValueSlider.min = '500000';
+      marketValueSlider.max = '250000000';
+      marketValueSlider.step = '500000';
+    }
+    if (sliderScaleLabels) {
+      sliderScaleLabels.innerHTML = `
+        <span>€0.5M</span>
+        <span>€50M</span>
+        <span>€100M</span>
+        <span>€150M</span>
+        <span>€200M</span>
+        <span>€250M</span>
+      `;
+    }
+    if (quickAdjustGrid) {
+      quickAdjustGrid.innerHTML = `
+        <button type="button" class="quick-step-btn minus" data-step="-10000000">-10M</button>
+        <button type="button" class="quick-step-btn minus" data-step="-5000000">-5M</button>
+        <button type="button" class="quick-step-btn minus" data-step="-1000000">-1M</button>
+        <button type="button" class="quick-step-btn plus" data-step="1000000">+1M</button>
+        <button type="button" class="quick-step-btn plus" data-step="5000000">+5M</button>
+        <button type="button" class="quick-step-btn plus" data-step="10000000">+10M</button>
+      `;
+    }
+    setGuessValue(45_000_000, false);
+  }
+}
+
+function setGuessValue(val, syncInput = true) {
+  if (currentRoundIsBonus) {
+    const clamped = Math.max(0, Math.min(100_000, Math.round(val * 100) / 100));
+    currentGuessValue = clamped;
+    if (marketValueSlider) marketValueSlider.value = String(Math.round(clamped));
+    if (guessValueDisplay) guessValueDisplay.textContent = formatMarketValue(clamped, true, 'TRY');
+    if (syncInput && bonusExactInput) {
+      bonusExactInput.value = clamped.toFixed(2).replace('.', ',');
+    }
+  } else {
+    const clamped = Math.max(500_000, Math.min(250_000_000, Math.round(val / 500_000) * 500_000));
+    currentGuessValue = clamped;
+    if (marketValueSlider) marketValueSlider.value = String(clamped);
+    if (guessValueDisplay) guessValueDisplay.textContent = formatMarketValue(clamped, true, 'EUR');
+  }
 }
 
 // ==================== EKRAN GEÇİŞLERİ VE RENDER ====================
@@ -158,7 +248,8 @@ function renderWaitingRoom(room) {
   waitingRoomCodeDisplay.textContent = room.code;
   const qCount = room.settings?.questionCount || 10;
   const tSec = room.settings?.roundDurationSec || 15;
-  waitingSettingsBadge.textContent = `${qCount} Soru • ${tSec} Saniye`;
+  const hasBonus = room.settings?.bonusEnabled !== false;
+  waitingSettingsBadge.textContent = `${qCount} Soru • ${tSec} Saniye • Bonus: ${hasBonus ? 'Aktif' : 'Kapalı'}`;
 
   const playersArr = Object.values(room.players || {}).sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
   waitingPlayerCount.textContent = String(playersArr.length);
@@ -191,41 +282,51 @@ function renderWaitingRoom(room) {
 function renderGameArena(room) {
   const roundIdx = room.currentRound || 0;
   const totalQ = room.settings?.questionCount || 10;
+  const hasBonus = room.deckIds?.[0] === BONUS_PLAYER.id;
   const targetId = room.deckIds?.[roundIdx];
   const footballer = getPlayerById(targetId) || PLAYERS[roundIdx % PLAYERS.length];
+  const isBonus = Boolean(footballer?.isBonus);
 
   headerRoomCode.textContent = room.code;
-  currentQuestionNum.textContent = String(roundIdx + 1);
-  totalQuestionNum.textContent = String(totalQ);
 
-  // Adım noktaları
-  renderRoundDots(roundIdx, totalQ);
+  if (roundCounterPill) {
+    if (isBonus) {
+      roundCounterPill.classList.add('is-bonus');
+      roundCounterPill.innerHTML = '🎁 <strong>BONUS SORU</strong> (PUANSIZ)';
+    } else {
+      roundCounterPill.classList.remove('is-bonus');
+      const scoredNum = hasBonus ? roundIdx : roundIdx + 1;
+      roundCounterPill.innerHTML = `SORU <strong id="currentQuestionNum">${scoredNum}</strong> / <span id="totalQuestionNum">${totalQ}</span>`;
+    }
+  }
+
+  renderRoundDots(roundIdx, room.deckIds?.length || totalQ);
 
   // Yeni tura geçildiyse futbolcu kartını ve tahmin konsolunu sıfırla
   if (roundIdx !== lastRenderedRound || lastRenderedStatus === 'lobby' || lastRenderedStatus === 'finished') {
     lastRenderedRound = roundIdx;
     isMyGuessLocked = false;
-    setGuessValue(45_000_000);
     marketValueSlider.disabled = false;
     lockGuessBtn.disabled = false;
     lockGuessBtn.querySelector('span').textContent = '🔒 TAHMİNİ KİLİTLE';
     lockedStatusNote.hidden = true;
     renderFootballerCard(footballer);
+    configureConsoleForPlayer(footballer);
   }
 
   // Eğer bu turda zaten tahmin kilitlediysek durumu koru
   const mySubmission = room.guesses?.[roundIdx]?.[roomClient.clientId];
   if (mySubmission && !isMyGuessLocked) {
     isMyGuessLocked = true;
-    setGuessValue(mySubmission.guess);
+    setGuessValue(mySubmission.guess, true);
     marketValueSlider.disabled = true;
+    if (bonusExactInput) bonusExactInput.disabled = true;
     lockGuessBtn.disabled = true;
     lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN KİLİTLENDİ';
     lockedStatusNote.hidden = false;
   }
 
-  // Sağdaki canlı puan tablosunu her durumda güncelle
-  renderLiveScoreboard(room, roundIdx);
+  renderLiveScoreboard(room, roundIdx, footballer);
 
   if (room.status === 'playing') {
     guessConsoleCard.hidden = false;
@@ -242,9 +343,9 @@ function renderGameArena(room) {
   lastRenderedStatus = room.status;
 }
 
-function renderRoundDots(currentIdx, totalQ) {
+function renderRoundDots(currentIdx, totalCount) {
   const dots = [];
-  for (let i = 0; i < totalQ; i++) {
+  for (let i = 0; i < totalCount; i++) {
     const cls = i < currentIdx ? 'round-dot done' : i === currentIdx ? 'round-dot current' : 'round-dot';
     dots.push(`<span class="${cls}"></span>`);
   }
@@ -256,11 +357,14 @@ function renderFootballerCard(player) {
 
   playerAgeBadge.textContent = `${player.age} YAŞ`;
   playerPositionText.textContent = (player.position || 'Futbolcu').toUpperCase();
+  if (playerSeasonTag) {
+    playerSeasonTag.textContent = player.isBonus ? '🎁 ÖZEL BONUS OYUNCU (PUANSIZ)' : '2026/27 SEZONU';
+  }
   playerNameHeading.textContent = player.name;
   playerClubName.textContent = player.club;
   playerCountryName.textContent = player.country;
 
-  // Fotoğraf yükleme (kayma ve bozulma önleyici)
+  // Fotoğraf yükleme
   playerPortraitFallback.hidden = true;
   playerPortraitImg.hidden = false;
   playerPortraitImg.style.objectPosition = player.objectPosition || '50% 8%';
@@ -272,7 +376,6 @@ function renderFootballerCard(player) {
   };
   playerPortraitImg.src = player.photoUrl;
 
-  // Kulüp logosu
   if (player.clubLogo) {
     playerClubLogo.hidden = false;
     playerClubLogo.src = player.clubLogo;
@@ -281,7 +384,6 @@ function renderFootballerCard(player) {
     playerClubLogo.hidden = true;
   }
 
-  // Ülke bayrağı
   if (player.flagUrl) {
     playerCountryFlag.hidden = false;
     playerCountryEmoji.hidden = true;
@@ -293,10 +395,11 @@ function renderFootballerCard(player) {
   }
 }
 
-function renderLiveScoreboard(room, roundIdx) {
+function renderLiveScoreboard(room, roundIdx, footballer) {
   const playersArr = Object.values(room.players || {});
   const roundGuesses = room.guesses?.[roundIdx] || {};
   const now = Date.now();
+  const currency = footballer?.currency || 'EUR';
 
   sidebarPlayerCountBadge.textContent = `${playersArr.length}/6 Oyuncu`;
 
@@ -311,7 +414,7 @@ function renderLiveScoreboard(room, roundIdx) {
       const hasLocked = Boolean(sub && (!p.isBot || sub.lockedAt <= now || room.status === 'reveal'));
 
       const statusText = room.status === 'reveal'
-        ? (sub ? `Tahmin: ${formatMarketValue(sub.guess)}` : 'Süre Doldu')
+        ? (sub ? `Tahmin: ${formatMarketValue(sub.guess, true, currency)}` : 'Süre Doldu')
         : (hasLocked ? 'Kilitledi ✓' : 'Düşünüyor...');
 
       const statusClass = hasLocked ? 'locked' : 'thinking';
@@ -343,7 +446,6 @@ function checkIfAllPlayersLocked(room, footballer) {
   const playersArr = Object.values(room.players || {});
   const roundGuesses = room.guesses?.[roundIdx] || {};
 
-  // İnsan oyuncuların tamamı tahminini kilitlediyse hemen sonuçları göster
   const humans = playersArr.filter((p) => !p.isBot);
   const allHumansLocked = humans.length > 0 && humans.every((h) => Boolean(roundGuesses[h.id]));
 
@@ -368,30 +470,38 @@ function triggerRoundEvaluation(room, footballer) {
     };
   });
 
-  const roundScores = calculateRoundScores(submissions, footballer.marketValue);
+  const roundScores = calculateRoundScores(submissions, footballer.marketValue, {
+    isBonus: Boolean(footballer.isBonus)
+  });
   roomClient.revealRoundResults(roundScores);
 }
 
 function renderRoundReveal(room, roundIdx, footballer) {
   if (!footballer) return;
+  const isBonus = Boolean(footballer.isBonus);
+  const currency = footballer.currency || 'EUR';
   const roundScores = room.roundHistory?.[roundIdx] || [];
-  revealActualValue.textContent = formatMarketValue(footballer.marketValue, true);
+  revealActualValue.textContent = formatMarketValue(footballer.marketValue, true, currency);
 
   const myResult = roundScores.find((r) => r.playerId === roomClient.clientId);
   const myPts = myResult ? myResult.totalRoundPoints : 0;
-  revealMyPoints.textContent = `+${myPts} Puan`;
+  revealMyPoints.textContent = isBonus ? '0 Puan (Bonus)' : `+${myPts} Puan`;
 
-  // Puan kırılım rozetleri
   const pills = [];
+  if (isBonus) {
+    pills.push('<span class="breakdown-pill"><strong class="amber-txt">🎁 Bonus Soru: Puanlamaya Dahil Edilmez</strong></span>');
+  }
   if (myResult && myResult.guess !== null) {
     const errPct = (myResult.relativeError * 100).toFixed(1);
-    pills.push(`<span class="breakdown-pill">Tahminin: <strong>${formatMarketValue(myResult.guess, true)}</strong> (%${errPct} Sapma)</span>`);
-    pills.push(`<span class="breakdown-pill">İsabet Puanı: <strong class="emerald-txt">+${myResult.accuracyPoints}</strong></span>`);
-    if (myResult.rankBonus > 0) {
-      pills.push(`<span class="breakdown-pill">${myResult.rank}. Sıra Bonusu: <strong class="amber-txt">+${myResult.rankBonus}</strong></span>`);
-    }
-    if (myResult.bullseyeBonus > 0) {
-      pills.push(`<span class="breakdown-pill">🎯 Kâhin Bonusu: <strong class="purple-txt">+${myResult.bullseyeBonus}</strong></span>`);
+    pills.push(`<span class="breakdown-pill">Tahminin: <strong>${formatMarketValue(myResult.guess, true, currency)}</strong> (%${errPct} Sapma)</span>`);
+    if (!isBonus) {
+      pills.push(`<span class="breakdown-pill">İsabet Puanı: <strong class="emerald-txt">+${myResult.accuracyPoints}</strong></span>`);
+      if (myResult.rankBonus > 0) {
+        pills.push(`<span class="breakdown-pill">${myResult.rank}. Sıra Bonusu: <strong class="amber-txt">+${myResult.rankBonus}</strong></span>`);
+      }
+      if (myResult.bullseyeBonus > 0) {
+        pills.push(`<span class="breakdown-pill">🎯 Kâhin Bonusu: <strong class="purple-txt">+${myResult.bullseyeBonus}</strong></span>`);
+      }
     }
   } else {
     pills.push('<span class="breakdown-pill">Bu turda tahmin kilitlenmedi (0 Puan)</span>');
@@ -400,22 +510,23 @@ function renderRoundReveal(room, roundIdx, footballer) {
 
   revealPlayersList.innerHTML = roundScores
     .map((item, idx) => {
-      const guessTxt = item.guess !== null ? formatMarketValue(item.guess, true) : 'Tahmin Yok';
+      const guessTxt = item.guess !== null ? formatMarketValue(item.guess, true, currency) : 'Tahmin Yok';
       const errTxt = item.guess !== null ? `%${(item.relativeError * 100).toFixed(1)} fark` : '-';
+      const ptsTxt = isBonus ? 'Bonus (0 Puan)' : `+${item.totalRoundPoints} Puan`;
       return `
         <div class="reveal-row">
           <div>
             <strong>#${idx + 1} ${escapeHtml(item.name)}</strong>
             <span style="color:#94a3b8;margin-left:8px;">${guessTxt} (${errTxt})</span>
           </div>
-          <strong class="emerald-txt">+${item.totalRoundPoints} Puan</strong>
+          <strong class="emerald-txt">${ptsTxt}</strong>
         </div>
       `;
     })
     .join('');
 
-  const totalQ = room.settings?.questionCount || 10;
-  const isLastQuestion = roundIdx + 1 >= totalQ;
+  const totalRounds = room.deckIds?.length || (room.settings?.questionCount || 10);
+  const isLastQuestion = roundIdx + 1 >= totalRounds;
   nextRoundBtnLabel.textContent = isLastQuestion ? '🏆 FİNAL PODYUMUNU GÖR ➔' : 'SONRAKİ FUTBOLCU ➔';
 }
 
@@ -474,8 +585,7 @@ function startOrSyncCountdown(room, footballer) {
       timerBox.classList.remove('urgent');
     }
 
-    // Botların kilitlenme durumunu canlı tabloya yansıt
-    renderLiveScoreboard(room, room.currentRound || 0);
+    renderLiveScoreboard(room, room.currentRound || 0, footballer);
 
     if (remaining <= 0) {
       stopRoundCountdown();
@@ -529,15 +639,25 @@ function initEvents() {
     });
   });
 
+  // Bonus soru seçimi (Aktif / Aktif Değil)
+  document.querySelectorAll('[data-bonus]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-bonus]').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedBonusEnabled = btn.dataset.bonus === 'true';
+    });
+  });
+
   // Yeni 4 haneli oda oluştur
   createRoomBtn?.addEventListener('click', async () => {
     showLobbyError('');
     const hostName = playerNameInput?.value.trim() || 'Scout_10';
-    const deckIds = buildNewDeck(selectedQuestionCount);
+    const deckIds = buildNewDeck(selectedQuestionCount, selectedBonusEnabled);
     await roomClient.createRoom({
       hostName,
       questionCount: selectedQuestionCount,
       roundDurationSec: selectedTimerSec,
+      bonusEnabled: selectedBonusEnabled,
       deckIds,
       withBots: 0
     });
@@ -547,11 +667,12 @@ function initEvents() {
   quickBotMatchBtn?.addEventListener('click', async () => {
     showLobbyError('');
     const hostName = playerNameInput?.value.trim() || 'Scout_10';
-    const deckIds = buildNewDeck(selectedQuestionCount);
+    const deckIds = buildNewDeck(selectedQuestionCount, selectedBonusEnabled);
     await roomClient.createRoom({
       hostName,
       questionCount: selectedQuestionCount,
       roundDurationSec: selectedTimerSec,
+      bonusEnabled: selectedBonusEnabled,
       deckIds,
       withBots: 3
     });
@@ -604,14 +725,15 @@ function initEvents() {
   startMatchBtn?.addEventListener('click', async () => {
     const state = roomClient.localRoomState;
     if (!state) return;
-    // Eğer odada tek kişi varsa otomatik 2 bot ekle ki yarış heyecanlı olsun
     const playerCount = Object.keys(state.players || {}).length;
     if (playerCount < 2) {
       await roomClient.addBotToRoom();
       await roomClient.addBotToRoom();
     }
     const qCount = state.settings?.questionCount || 10;
-    const deckIds = state.deckIds?.length === qCount ? state.deckIds : buildNewDeck(qCount);
+    const hasBonus = state.settings?.bonusEnabled !== false;
+    const expectedLen = hasBonus ? qCount + 1 : qCount;
+    const deckIds = state.deckIds?.length === expectedLen ? state.deckIds : buildNewDeck(qCount, hasBonus);
     await roomClient.startGame(deckIds, getPlayerById);
   });
 
@@ -625,18 +747,26 @@ function initEvents() {
     lobbyActionsGrid.hidden = false;
   });
 
-  // Slider & Hızlı Butonlar
+  // Slider & Hızlı Butonlar (Event Delegation ile dinamik butonları destekler)
   marketValueSlider?.addEventListener('input', () => {
     if (isMyGuessLocked) return;
-    setGuessValue(Number(marketValueSlider.value));
+    setGuessValue(Number(marketValueSlider.value), true);
   });
 
-  document.querySelectorAll('.quick-step-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (isMyGuessLocked) return;
-      const step = Number(btn.dataset.step) || 0;
-      setGuessValue(currentGuessEuro + step);
-    });
+  bonusExactInput?.addEventListener('input', () => {
+    if (isMyGuessLocked || !currentRoundIsBonus) return;
+    const normalized = bonusExactInput.value.replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '');
+    const parsed = parseFloat(normalized);
+    if (Number.isFinite(parsed)) {
+      setGuessValue(parsed, false);
+    }
+  });
+
+  quickAdjustGrid?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.quick-step-btn');
+    if (!btn || isMyGuessLocked) return;
+    const step = Number(btn.dataset.step) || 0;
+    setGuessValue(currentGuessValue + step, true);
   });
 
   // Tahmini Kilitle
@@ -644,10 +774,11 @@ function initEvents() {
     if (isMyGuessLocked) return;
     isMyGuessLocked = true;
     marketValueSlider.disabled = true;
+    if (bonusExactInput) bonusExactInput.disabled = true;
     lockGuessBtn.disabled = true;
     lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN KİLİTLENDİ';
     lockedStatusNote.hidden = false;
-    await roomClient.submitGuess(currentGuessEuro);
+    await roomClient.submitGuess(currentGuessValue);
   });
 
   // Sonraki Futbolcu
@@ -655,12 +786,13 @@ function initEvents() {
     await roomClient.nextRound(getPlayerById);
   });
 
-  // Tekrar Oyna (Aynı odayla, tekrarsız yeni sorularla)
+  // Tekrar Oyna
   playAgainBtn?.addEventListener('click', async () => {
     const state = roomClient.localRoomState;
     if (!state) return;
     const qCount = state.settings?.questionCount || 10;
-    const freshDeck = buildNewDeck(qCount);
+    const hasBonus = state.settings?.bonusEnabled !== false;
+    const freshDeck = buildNewDeck(qCount, hasBonus);
     await roomClient.startGame(freshDeck, getPlayerById);
   });
 

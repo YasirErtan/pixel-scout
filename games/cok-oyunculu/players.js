@@ -19,6 +19,25 @@ export const DATASET_META = {
   }
 };
 
+export const BONUS_PLAYER = {
+  id: 'bonus-eren-ciftci',
+  tmId: 'bonus-eren',
+  name: 'Eren Çiftçi',
+  age: 22,
+  position: 'Stajyer',
+  club: 'Albaraka',
+  clubLogo: './assets/albaraka-logo.svg',
+  country: 'Türkiye',
+  flagUrl: 'https://img.a.transfermarkt.technology/flagge/verysmall/174.png',
+  marketValue: 28075.50,
+  currency: 'TRY',
+  isBonus: true,
+  scored: false,
+  photoUrl: './assets/eren-ciftci.jpg',
+  objectPosition: '50% 15%',
+  category: 'bonus'
+};
+
 export const PLAYERS = [
   {
     "id": "tm-937958",
@@ -4523,6 +4542,7 @@ export const PLAYERS = [
 ];
 
 const PLAYER_BY_ID = new Map(PLAYERS.map((p) => [p.id, p]));
+PLAYER_BY_ID.set(BONUS_PLAYER.id, BONUS_PLAYER);
 
 export function getPlayerById(id) {
   return PLAYER_BY_ID.get(id) || null;

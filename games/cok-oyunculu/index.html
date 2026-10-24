@@ -72,6 +72,14 @@
             </div>
           </div>
 
+          <div class="setting-group">
+            <span class="setting-label">BONUS SORU (İLK SORU • PUANSIZ)</span>
+            <div class="segmented-control" role="radiogroup" aria-label="Bonus Soru Ayarı">
+              <button type="button" class="seg-btn active" data-bonus="true">Aktif</button>
+              <button type="button" class="seg-btn" data-bonus="false">Aktif Değil</button>
+            </div>
+          </div>
+
           <div class="lobby-btn-stack">
             <button id="createRoomBtn" type="button" class="primary-cta-btn">
               <span>ODA OLUŞTUR (4 HANELİ KOD)</span>
@@ -167,7 +175,7 @@
         </div>
 
         <div class="topbar-center">
-          <span class="round-counter-pill">SORU <strong id="currentQuestionNum">1</strong> / <span id="totalQuestionNum">10</span></span>
+          <span id="roundCounterPill" class="round-counter-pill">SORU <strong id="currentQuestionNum">1</strong> / <span id="totalQuestionNum">10</span></span>
           <div id="roundStepDots" class="round-dots"></div>
         </div>
 
@@ -215,7 +223,7 @@
                   <span class="pos-dot"></span>
                   <span id="playerPositionText">ON NUMARA</span>
                 </span>
-                <span class="season-tag">2026/27 SEZONU</span>
+                <span id="playerSeasonTag" class="season-tag">2026/27 SEZONU</span>
               </div>
 
               <h2 id="playerNameHeading" class="player-name-heading">Jude Bellingham</h2>
@@ -253,12 +261,18 @@
             <section id="guessConsoleCard" class="guess-console-card" aria-label="Piyasa Değeri Tahmin Konsolu">
               <div class="console-top-row">
                 <div>
-                  <span class="console-kicker">SENİN TAHMİNİN</span>
-                  <p class="console-sub">2026/27 Transfermarkt güncel piyasa değerini belirle</p>
+                  <span id="consoleKickerText" class="console-kicker">SENİN TAHMİNİN</span>
+                  <p id="consoleSubText" class="console-sub">2026/27 Transfermarkt güncel piyasa değerini belirle</p>
                 </div>
                 <div class="guess-value-pill">
                   <span id="guessValueDisplay" class="guess-big-number">€50.0M</span>
                 </div>
+              </div>
+
+              <!-- Bonus Soru İçin Hassas TL Giriş Kutusu -->
+              <div id="bonusExactInputRow" class="bonus-exact-row" hidden>
+                <label for="bonusExactInput" class="setting-label">HASSAS TL TAHMİNİ GİR (ÖRN: 28075,50):</label>
+                <input id="bonusExactInput" type="text" inputmode="decimal" class="bonus-exact-input" placeholder="28075,50" autocomplete="off">
               </div>
 
               <!-- Slider -->
@@ -273,7 +287,7 @@
                   class="value-slider"
                   aria-label="Piyasa Değeri Kaydırıcısı"
                 >
-                <div class="slider-scale-labels">
+                <div id="sliderScaleLabels" class="slider-scale-labels">
                   <span>€0.5M</span>
                   <span>€50M</span>
                   <span>€100M</span>
@@ -284,7 +298,7 @@
               </div>
 
               <!-- Hızlı Ayar Butonları -->
-              <div class="quick-adjust-grid">
+              <div id="quickAdjustGrid" class="quick-adjust-grid">
                 <button type="button" class="quick-step-btn minus" data-step="-10000000">-10M</button>
                 <button type="button" class="quick-step-btn minus" data-step="-5000000">-5M</button>
                 <button type="button" class="quick-step-btn minus" data-step="-1000000">-1M</button>

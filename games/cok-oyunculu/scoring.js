@@ -7,6 +7,7 @@
  *  - Kâhin Bonusu (+100) = E <= 0.01 (%1 veya daha az sapma)
  *  - Tur Sıralama Bonusu = 1. En Yakın (+200), 2. En Yakın (+120), 3. En Yakın (+60)
  *    (Eşitlik durumunda tahminini daha erken kilitleyen oyuncu üst sırayı alır)
+ *  - Bonus Soru (Eren Çiftçi): Sıralama gösterilir ancak puanlamaya dahil edilmez (0 Puan).
  */
 
 export const RANK_BONUSES = [200, 120, 60];
@@ -17,19 +18,19 @@ export const ERROR_CUTOFF = 0.50;
 
 /**
  * Tek bir tahmin için bağıl hata ve temel isabet puanını hesaplar.
- * @param {number} guessEuro - Tahmin edilen değer (€)
- * @param {number} actualEuro - Gerçek piyasa değeri (€)
+ * @param {number} guessValue - Tahmin edilen değer
+ * @param {number} actualValue - Gerçek piyasa değeri
  */
-export function calculateAccuracyScore(guessEuro, actualEuro) {
-  if (!Number.isFinite(actualEuro) || actualEuro <= 0) {
+export function calculateAccuracyScore(guessValue, actualValue) {
+  if (!Number.isFinite(actualValue) || actualValue <= 0) {
     return { relativeError: 1, accuracyPoints: 0, bullseyeBonus: 0 };
   }
-  if (!Number.isFinite(guessEuro) || guessEuro < 0) {
+  if (!Number.isFinite(guessValue) || guessValue < 0) {
     return { relativeError: 1, accuracyPoints: 0, bullseyeBonus: 0 };
   }
 
-  const diff = Math.abs(guessEuro - actualEuro);
-  const relativeError = diff / actualEuro;
+  const diff = Math.abs(guessValue - actualValue);
+  const relativeError = diff / actualValue;
 
   const ratio = Math.max(0, 1 - relativeError / ERROR_CUTOFF);
   const accuracyPoints = Math.round(MAX_ACCURACY_POINTS * Math.pow(ratio, 2));
@@ -45,11 +46,14 @@ export function calculateAccuracyScore(guessEuro, actualEuro) {
 
 /**
  * Bir turdaki tüm oyuncuların tahminlerini değerlendirir, sıralar ve puanlarını hesaplar.
+ * Bonus soruda (options.isBonus === true) yakınlık sıralaması yapılır fakat tüm puanlar 0 olur.
  * @param {Array<{playerId: string, name: string, guess: number|null, lockedAt?: number}>} submissions
- * @param {number} actualEuro
+ * @param {number} actualValue
+ * @param {{isBonus?: boolean}} [options]
  */
-export function calculateRoundScores(submissions, actualEuro) {
+export function calculateRoundScores(submissions, actualValue, options = {}) {
   if (!Array.isArray(submissions)) return [];
+  const isBonus = Boolean(options?.isBonus);
 
   const evaluated = submissions.map((sub) => {
     const hasGuess = typeof sub.guess === 'number' && Number.isFinite(sub.guess) && sub.guess >= 0;
@@ -65,11 +69,12 @@ export function calculateRoundScores(submissions, actualEuro) {
         bullseyeBonus: 0,
         rank: null,
         rankBonus: 0,
-        totalRoundPoints: 0
+        totalRoundPoints: 0,
+        isBonus
       };
     }
 
-    const { diff, relativeError, accuracyPoints, bullseyeBonus } = calculateAccuracyScore(sub.guess, actualEuro);
+    const { diff, relativeError, accuracyPoints, bullseyeBonus } = calculateAccuracyScore(sub.guess, actualValue);
     return {
       playerId: sub.playerId,
       name: sub.name || 'Oyuncu',
@@ -77,11 +82,12 @@ export function calculateRoundScores(submissions, actualEuro) {
       lockedAt: typeof sub.lockedAt === 'number' ? sub.lockedAt : Infinity,
       diff,
       relativeError,
-      accuracyPoints,
-      bullseyeBonus,
+      accuracyPoints: isBonus ? 0 : accuracyPoints,
+      bullseyeBonus: isBonus ? 0 : bullseyeBonus,
       rank: null,
       rankBonus: 0,
-      totalRoundPoints: 0
+      totalRoundPoints: 0,
+      isBonus
     };
   });
 
@@ -97,13 +103,12 @@ export function calculateRoundScores(submissions, actualEuro) {
 
   active.forEach((item, index) => {
     const rank = index + 1;
-    const rankBonus = index < RANK_BONUSES.length ? RANK_BONUSES[index] : 0;
+    const rankBonus = !isBonus && index < RANK_BONUSES.length ? RANK_BONUSES[index] : 0;
     item.rank = rank;
     item.rankBonus = rankBonus;
-    item.totalRoundPoints = item.accuracyPoints + item.bullseyeBonus + rankBonus;
+    item.totalRoundPoints = isBonus ? 0 : item.accuracyPoints + item.bullseyeBonus + rankBonus;
   });
 
-  // Sıralı listeyi döndür (tahmin yapmayanlar sonda)
   const inactive = evaluated.filter((item) => item.guess === null);
   return [...active, ...inactive];
 }
@@ -119,22 +124,19 @@ export function selectUniqueGamePlayers(players, questionCount = 10, excludeIds 
   if (!Array.isArray(players) || players.length === 0) return [];
   const excluded = new Set(excludeIds);
 
-  // Önce benzersiz ID filtresi uygula
   const seenIds = new Set();
   const pool = [];
   for (const p of players) {
-    if (!p || !p.id) continue;
+    if (!p || !p.id || p.isBonus) continue;
     if (seenIds.has(p.id) || excluded.has(p.id)) continue;
     seenIds.add(p.id);
     pool.push(p);
   }
 
-  // Eğer havuz yeterli değilse excludeIds'i sıfırlayarak tüm benzersiz havuzu kullan
   const effectivePool = pool.length >= questionCount
     ? pool
-    : Array.from(new Map(players.filter(Boolean).map((p) => [p.id, p])).values());
+    : Array.from(new Map(players.filter((p) => p && !p.isBonus).map((p) => [p.id, p])).values());
 
-  // Fisher-Yates karıştırma
   const shuffled = [...effectivePool];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -145,13 +147,25 @@ export function selectUniqueGamePlayers(players, questionCount = 10, excludeIds 
 }
 
 /**
- * Euro değerini okunaklı milyon Euro formatına çevirir (örn: 180000000 -> "€180.0M" veya "€180M")
- * @param {number} euroValue
+ * Para birimine göre değeri okunaklı formata çevirir:
+ * - EUR: 180000000 -> "€180.0M"
+ * - TRY (Bonus Soru): 28075.50 -> "28.075,50 ₺"
+ * @param {number} value
  * @param {boolean} [alwaysDecimal=false]
+ * @param {'EUR'|'TRY'} [currency='EUR']
  */
-export function formatMarketValue(euroValue, alwaysDecimal = false) {
-  if (!Number.isFinite(euroValue) || euroValue < 0) return '€0M';
-  const millions = euroValue / 1_000_000;
+export function formatMarketValue(value, alwaysDecimal = false, currency = 'EUR') {
+  if (!Number.isFinite(value) || value < 0) {
+    return currency === 'TRY' ? '0,00 ₺' : '€0M';
+  }
+  if (currency === 'TRY') {
+    const formatted = value.toLocaleString('tr-TR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return `${formatted} ₺`;
+  }
+  const millions = value / 1_000_000;
   if (millions >= 100 && !alwaysDecimal && Number.isInteger(millions)) {
     return `€${millions.toFixed(0)}M`;
   }
