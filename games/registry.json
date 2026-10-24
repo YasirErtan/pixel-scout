@@ -16,5 +16,11 @@
     "title": "Piyasa Değeri (Higher or Lower)",
     "description": "Hangi futbol kulübünün piyasa değeri daha yüksek? Transfermarkt kadro değerleri karşılaştırması.",
     "href": "./piyasa-degeri/index.html"
+  },
+  {
+    "id": "cok-oyunculu",
+    "title": "Çok Oyunculu Piyasa Değeri Arenası",
+    "description": "4 haneli oda koduyla arkadaşlarınla canlı yarış! 26/27 Transfermarkt verileriyle 300 yıldız futbolcunun piyasa değerini en yakın tahmin eden kazanır.",
+    "href": "./cok-oyunculu/index.html"
   }
 ]

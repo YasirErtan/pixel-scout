@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <meta name="theme-color" content="#070b14">
+  <title>Çok Oyunculu Piyasa Değeri Arenası — Pixel Scout</title>
+  <meta name="description" content="4 haneli oda koduyla arkadaşlarınla yarış! 2026/27 Transfermarkt verileriyle futbolcu piyasa değerini en yakın tahmin eden kazanır.">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==================== 1. LOBİ EKRANI ==================== -->
+  <section id="lobbyScreen" class="lobby-screen">
+    <div class="lobby-container">
+      <header class="lobby-topbar">
+        <a href="../" class="back-hub-btn" aria-label="Oyunlar menüsüne dön">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Oyunlar</span>
+        </a>
+        <div class="season-pill">
+          <span class="pulse-dot"></span>
+          <span>TRANSFERMARKT 26/27 VERİ SETİ (300 YILDIZ)</span>
+        </div>
+      </header>
+
+      <div class="lobby-hero">
+        <span class="hero-kicker">ÇOK OYUNCULU CANLI ARENA</span>
+        <h1 class="hero-title">Piyasa Değeri Tahmin Yarışı</h1>
+        <p class="hero-subtitle">4 haneli oda koduyla arkadaşlarınla aynı anda yarış veya bot rakiplere karşı kendinizi test edin. En yakın tahmini yapan zirveye çıkar!</p>
+      </div>
+
+      <!-- Oyuncu Adı Girişi -->
+      <div class="nickname-bar">
+        <label for="playerNameInput" class="nickname-label">OYUNCU ADINIZ</label>
+        <input id="playerNameInput" type="text" class="nickname-input" maxlength="18" placeholder="Örn: Ahmet_10" autocomplete="off">
+      </div>
+
+      <p id="lobbyErrorMsg" class="lobby-error" hidden></p>
+
+      <!-- Oda Kur / Odaya Katıl Grid -->
+      <div id="lobbyActionsGrid" class="lobby-grid">
+        <!-- Sol Kart: Oda Kur -->
+        <div class="lobby-card">
+          <div class="lobby-card-head">
+            <span class="card-icon">👑</span>
+            <div>
+              <h2 class="card-title">Yeni Oda Kur</h2>
+              <p class="card-desc">Soru sayısını ve süreyi belirle, 4 haneli kodu paylaş.</p>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <span class="setting-label">SORU SAYISI</span>
+            <div class="segmented-control" role="radiogroup" aria-label="Soru Sayısı">
+              <button type="button" class="seg-btn active" data-qcount="10">10 Soru</button>
+              <button type="button" class="seg-btn" data-qcount="20">20 Soru</button>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <span class="setting-label">SORU BAŞINA SÜRE</span>
+            <div class="segmented-control" role="radiogroup" aria-label="Soru Süresi">
+              <button type="button" class="seg-btn" data-timer="10">10 sn</button>
+              <button type="button" class="seg-btn active" data-timer="15">15 sn</button>
+              <button type="button" class="seg-btn" data-timer="20">20 sn</button>
+              <button type="button" class="seg-btn" data-timer="25">25 sn</button>
+            </div>
+          </div>
+
+          <div class="lobby-btn-stack">
+            <button id="createRoomBtn" type="button" class="primary-cta-btn">
+              <span>ODA OLUŞTUR (4 HANELİ KOD)</span>
+            </button>
+            <button id="quickBotMatchBtn" type="button" class="secondary-cta-btn">
+              <span>⚡ HIZLI MAÇ (3 BOT RAKİPLE HEMEN BAŞLA)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sağ Kart: Odaya Katıl -->
+        <div class="lobby-card">
+          <div class="lobby-card-head">
+            <span class="card-icon">🔑</span>
+            <div>
+              <h2 class="card-title">Odaya Katıl</h2>
+              <p class="card-desc">Arkadaşının paylaştığı 4 haneli oda kodunu gir.</p>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label for="roomCodeInput" class="setting-label">4 HANELİ ODA KODU</label>
+            <input id="roomCodeInput" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" class="room-code-input" placeholder="4819" autocomplete="off">
+          </div>
+
+          <div class="lobby-btn-stack" style="margin-top:auto;">
+            <button id="joinRoomBtn" type="button" class="join-cta-btn">
+              <span>ODAYA KATIL ➔</span>
+            </button>
+          </div>
+
+          <div class="dataset-dist-box">
+            <div class="dist-title">📊 300 Futbolcu Dağılımı</div>
+            <div class="dist-pills">
+              <span class="dist-pill">%80 Avrupa Top Kulüpler</span>
+              <span class="dist-pill">%15 Süper Lig</span>
+              <span class="dist-pill">%5 Arabistan &amp; ABD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bekleme Odası Paneli (Oda kurulduğunda veya katılındığında açılır) -->
+      <div id="waitingRoomPanel" class="waiting-room-card" hidden>
+        <div class="waiting-header">
+          <div>
+            <span class="waiting-kicker">AKTİF ODA KODU (ARKADAŞLARINLA PAYLAŞ)</span>
+            <div class="waiting-code-row">
+              <span id="waitingRoomCodeDisplay" class="waiting-code-digits">4819</span>
+              <button id="copyRoomCodeBtn" type="button" class="copy-code-btn">📋 Kodu Kopyala</button>
+            </div>
+          </div>
+          <div class="waiting-settings-summary">
+            <span id="waitingSettingsBadge" class="settings-pill">10 Soru • 15 Saniye</span>
+          </div>
+        </div>
+
+        <div class="waiting-players-section">
+          <div class="waiting-players-head">
+            <span class="setting-label">ODADAKİ OYUNCULAR (<span id="waitingPlayerCount">1</span>/6)</span>
+            <button id="addBotBtn" type="button" class="add-bot-btn">+ Bot Rakip Ekle</button>
+          </div>
+          <div id="waitingPlayersList" class="waiting-players-grid"></div>
+        </div>
+
+        <div class="waiting-footer">
+          <button id="leaveLobbyRoomBtn" type="button" class="leave-btn">Odadan Ayrıl</button>
+          <button id="startMatchBtn" type="button" class="primary-cta-btn start-match-btn">
+            <span>🚀 MAÇI BAŞLAT</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 2. OYUN EKRANI (MASAÜSTÜ SAĞDAN BOYDAN TABLO + SOL/ORTA ARENA) ==================== -->
+  <div id="gameScreen" class="arena-layout" hidden>
+    <!-- SOL & ORTA KISIM: TAHMİN EKRANI -->
+    <main class="arena-main">
+      <!-- Üst Bilgi Çubuğu -->
+      <header class="arena-topbar">
+        <div class="topbar-left">
+          <button id="exitGameBtn" type="button" class="icon-back-btn" title="Lobiye Dön" aria-label="Lobiye Dön">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="room-badge-group">
+            <span class="arena-brand">Piyasa Değeri Arenası</span>
+            <div class="room-code-chip">
+              <span class="live-dot"></span>
+              <span>ODA #<strong id="headerRoomCode">4819</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <span class="round-counter-pill">SORU <strong id="currentQuestionNum">1</strong> / <span id="totalQuestionNum">10</span></span>
+          <div id="roundStepDots" class="round-dots"></div>
+        </div>
+
+        <div class="topbar-right">
+          <div id="timerBox" class="timer-chip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <span id="timerText" class="timer-digits">00:15</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Süre İlerleme Çubuğu -->
+      <div class="timer-bar-track">
+        <div id="timerProgressBar" class="timer-bar-fill" style="width: 100%;"></div>
+      </div>
+
+      <!-- Orta Sahne: Futbolcu Kartı + Tahmin Konsolu -->
+      <div class="arena-stage">
+        <div class="stage-grid">
+
+          <!-- SOL KART: FUTBOLCU KİMLİK KARTI (Fotoğraf, İsim, Yaş, Takım, Ülke, Mevki) -->
+          <article class="player-identity-card" aria-label="Futbolcu Bilgileri">
+            <div class="player-card-glow"></div>
+
+            <!-- Fotoğraf Çerçevesi (Kayma/Bozulma Önleyici Sabit Oran) -->
+            <div class="portrait-frame">
+              <img
+                id="playerPortraitImg"
+                class="player-portrait-img"
+                src=""
+                alt="Futbolcu Fotoğrafı"
+                loading="eager"
+                decoding="async"
+              >
+              <div id="playerPortraitFallback" class="portrait-fallback" hidden>
+                <span id="playerFallbackInitials">⚽</span>
+              </div>
+              <span id="playerAgeBadge" class="age-floating-badge">23 YAŞ</span>
+            </div>
+
+            <!-- Futbolcu Detayları -->
+            <div class="player-details-col">
+              <div class="position-row">
+                <span id="playerPositionBadge" class="position-chip">
+                  <span class="pos-dot"></span>
+                  <span id="playerPositionText">ON NUMARA</span>
+                </span>
+                <span class="season-tag">2026/27 SEZONU</span>
+              </div>
+
+              <h2 id="playerNameHeading" class="player-name-heading">Jude Bellingham</h2>
+
+              <div class="meta-badges-grid">
+                <!-- Takım Kutusu -->
+                <div class="meta-info-box">
+                  <div class="meta-icon-wrap">
+                    <img id="playerClubLogo" class="club-crest-img" src="" alt="Kulüp Logosu">
+                  </div>
+                  <div class="meta-text-col">
+                    <span class="meta-kicker">KULÜP</span>
+                    <strong id="playerClubName" class="meta-val">Real Madrid</strong>
+                  </div>
+                </div>
+
+                <!-- Ülke Kutusu -->
+                <div class="meta-info-box">
+                  <div class="meta-icon-wrap">
+                    <img id="playerCountryFlag" class="country-flag-img" src="" alt="Ülke Bayrağı">
+                    <span id="playerCountryEmoji" class="country-emoji" hidden>🌍</span>
+                  </div>
+                  <div class="meta-text-col">
+                    <span class="meta-kicker">ÜLKE</span>
+                    <strong id="playerCountryName" class="meta-val">İngiltere</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- SAĞ KART: TAHMİN KONSOLU VEYA TUR SONUÇ EKRANI -->
+          <div class="console-wrapper">
+            <!-- Tahmin Yapma Paneli -->
+            <section id="guessConsoleCard" class="guess-console-card" aria-label="Piyasa Değeri Tahmin Konsolu">
+              <div class="console-top-row">
+                <div>
+                  <span class="console-kicker">SENİN TAHMİNİN</span>
+                  <p class="console-sub">2026/27 Transfermarkt güncel piyasa değerini belirle</p>
+                </div>
+                <div class="guess-value-pill">
+                  <span id="guessValueDisplay" class="guess-big-number">€50.0M</span>
+                </div>
+              </div>
+
+              <!-- Slider -->
+              <div class="slider-block">
+                <input
+                  id="marketValueSlider"
+                  type="range"
+                  min="500000"
+                  max="250000000"
+                  step="500000"
+                  value="50000000"
+                  class="value-slider"
+                  aria-label="Piyasa Değeri Kaydırıcısı"
+                >
+                <div class="slider-scale-labels">
+                  <span>€0.5M</span>
+                  <span>€50M</span>
+                  <span>€100M</span>
+                  <span>€150M</span>
+                  <span>€200M</span>
+                  <span>€250M</span>
+                </div>
+              </div>
+
+              <!-- Hızlı Ayar Butonları -->
+              <div class="quick-adjust-grid">
+                <button type="button" class="quick-step-btn minus" data-step="-10000000">-10M</button>
+                <button type="button" class="quick-step-btn minus" data-step="-5000000">-5M</button>
+                <button type="button" class="quick-step-btn minus" data-step="-1000000">-1M</button>
+                <button type="button" class="quick-step-btn plus" data-step="1000000">+1M</button>
+                <button type="button" class="quick-step-btn plus" data-step="5000000">+5M</button>
+                <button type="button" class="quick-step-btn plus" data-step="10000000">+10M</button>
+              </div>
+
+              <!-- Tahmini Kilitle Butonu -->
+              <div class="lock-action-row">
+                <button id="lockGuessBtn" type="button" class="lock-guess-btn">
+                  <span>🔒 TAHMİNİ KİLİTLE</span>
+                </button>
+                <p id="lockedStatusNote" class="locked-status-note" hidden>
+                  ✓ Tahminin kilitlendi! Diğer oyuncular bekleniyor...
+                </p>
+              </div>
+            </section>
+
+            <!-- Tur Sonucu (Reveal) Paneli -->
+            <section id="roundRevealCard" class="round-reveal-card" hidden aria-live="polite">
+              <div class="reveal-banner">
+                <div>
+                  <span class="reveal-kicker">GERÇEK PİYASA DEĞERİ (26/27)</span>
+                  <div id="revealActualValue" class="reveal-actual-price">€160.0M</div>
+                </div>
+                <div class="reveal-my-earn">
+                  <span class="reveal-kicker">BU TUR KAZANCIN</span>
+                  <div id="revealMyPoints" class="reveal-earned-pts">+940 Puan</div>
+                </div>
+              </div>
+
+              <div id="revealBreakdownRow" class="reveal-breakdown-pills"></div>
+
+              <div class="reveal-table-wrap">
+                <div class="reveal-table-title">TUR SIRALAMASI VE TAHMİNLER</div>
+                <div id="revealPlayersList" class="reveal-players-list"></div>
+              </div>
+
+              <div class="reveal-footer">
+                <button id="nextRoundBtn" type="button" class="primary-cta-btn">
+                  <span id="nextRoundBtnLabel">SONRAKİ FUTBOLCU ➔</span>
+                </button>
+              </div>
+            </section>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- SAĞ TARAF BOYDAN CANLI PUAN TABLOSU -->
+    <aside id="leaderboardSidebar" class="arena-sidebar" aria-label="Canlı Puan Tablosu">
+      <div class="sidebar-header">
+        <div class="sidebar-title-row">
+          <div class="sidebar-title-group">
+            <span class="trophy-icon">🏆</span>
+            <h2 class="sidebar-title">Canlı Puan Durumu</h2>
+          </div>
+          <span id="sidebarPlayerCountBadge" class="sidebar-count-badge">4/6 Oyuncu</span>
+        </div>
+        <p class="sidebar-subtitle">Tahmin durumu ve anlık genel sıralama</p>
+      </div>
+
+      <!-- Oyuncu Sıralama Listesi -->
+      <div id="liveScoreboardList" class="sidebar-players-list"></div>
+
+      <!-- Alt Kısım: Adil Puanlama Sistemi Özeti -->
+      <div class="sidebar-scoring-footer">
+        <div class="scoring-card">
+          <div class="scoring-card-title">⚡ ADİL PUANLAMA SİSTEMİ</div>
+          <div class="scoring-rules-grid">
+            <div class="rule-row"><span>İsabet Puanı (Maks):</span><strong class="emerald-txt">+800 Puan</strong></div>
+            <div class="rule-row"><span>1. En Yakın Tahmin:</span><strong class="amber-txt">+200 Bonus</strong></div>
+            <div class="rule-row"><span>2. / 3. En Yakın:</span><strong class="sky-txt">+120 / +60</strong></div>
+            <div class="rule-row"><span>Kâhin Bonusu (≤%1 Fark):</span><strong class="purple-txt">+100 Bonus</strong></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==================== 3. MAÇ SONU PODYUM EKRANI ==================== -->
+  <section id="podiumScreen" class="podium-screen" hidden>
+    <div class="podium-container">
+      <span class="hero-kicker">MAÇ TAMAMLANDI</span>
+      <h1 class="hero-title">Final Puan Tablosu &amp; Podyum</h1>
+      <p id="podiumWinnerSubtitle" class="hero-subtitle">Tebrikler! Piyasa Değeri Arenası şampiyonu belli oldu.</p>
+
+      <div id="podiumTopThree" class="podium-top-three"></div>
+
+      <div class="podium-standings-card">
+        <h3 class="standings-heading">TÜM OYUNCULARIN FİNAL SIRALAMASI</h3>
+        <div id="podiumFullList" class="podium-full-list"></div>
+      </div>
+
+      <div class="podium-actions">
+        <button id="playAgainBtn" type="button" class="primary-cta-btn">🔄 AYNI ODAYLA TEKRAR OYNA</button>
+        <button id="backToLobbyBtn" type="button" class="secondary-cta-btn">🏠 LOBİYE DÖN</button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
