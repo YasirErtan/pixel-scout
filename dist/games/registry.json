@@ -22,5 +22,11 @@
     "title": "Çok Oyunculu Piyasa Değeri Arenası",
     "description": "4 haneli oda koduyla arkadaşlarınla canlı yarış! 26/27 Transfermarkt verileriyle 300 yıldız futbolcunun piyasa değerini en yakın tahmin eden kazanır.",
     "href": "./cok-oyunculu/index.html"
+  },
+  {
+    "id": "futbol-imposter",
+    "title": "FUTBOL IMPOSTER",
+    "description": "Telefonu elden ele gezdir, gizli futbolcuyu öğren ve tek kelimelik ipuçlarıyla aranızdaki Imposter'ı yakala!",
+    "href": "./futbol-imposter/index.html"
   }
 ]
