@@ -21,6 +21,7 @@ test('FUTBOL IMPOSTER havuzu 10 teknik direktör, Türk futbolcular, güncel yı
   for (const item of IMPOSTER_POOL) {
     assert.ok(item.name && item.name.length > 2);
     assert.ok(item.hint && item.hint.length > 2);
+    assert.ok(!item.hint.includes('•') && !item.hint.includes('/'), `Tek bir ipucu olmalı (${item.name}: ${item.hint})`);
   }
 });
 
