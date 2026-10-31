@@ -151,3 +151,31 @@ test('Bonus oyuncu (Eren Çiftçi) özellikleri, TL formatı ve puansız değerl
   assert.equal(bonusRound[0].totalRoundPoints, 0, 'Bonus soru puanlamaya dahil edilmemeli');
   assert.equal(bonusRound[1].totalRoundPoints, 0, 'Bonus soru puanlamaya dahil edilmemeli');
 });
+
+test('Tahmini kilitleme zorunluluğu olmadan süre bittiğinde oyuncunun o anki değeri puanlanır', async () => {
+  const { MultiplayerRoomClient } = await import('../dist/games/cok-oyunculu/room.js');
+  const client = new MultiplayerRoomClient();
+  client.isOfflineMode = true;
+  client.localRoomState = {
+    code: '4819',
+    status: 'playing',
+    currentRound: 0,
+    players: {
+      [client.clientId]: { id: client.clientId, name: 'TestOyuncu', isBot: false, totalScore: 0 }
+    },
+    guesses: {}
+  };
+
+  // Oyuncu kilitlemeden sadece slider/input değerini değiştirdiğinde (locked = false)
+  await client.submitGuess(75_000_000, false);
+  const draft = client.localRoomState.guesses[0][client.clientId];
+  assert.equal(draft.guess, 75_000_000);
+  assert.equal(draft.locked, false, 'Kilitlenmemiş canlı tahmin olarak kaydedilmeli');
+
+  // Süre bittiğinde bu değer üzerinden puan hesaplanmalı (0 puan almamalı)
+  const scores = calculateRoundScores(
+    [{ playerId: client.clientId, name: 'TestOyuncu', guess: draft.guess, lockedAt: draft.lockedAt }],
+    80_000_000
+  );
+  assert.ok(scores[0].totalRoundPoints > 0, 'Kilitlemeyen oyuncu o anki değeriyle puan almalı, 0 puan almamalı');
+});
