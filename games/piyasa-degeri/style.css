@@ -7,18 +7,19 @@
 
 :root {
   color-scheme: dark;
-  --bg-dark: #0a110d;
-  --panel-left: #101c15;
-  --panel-right: #132219;
-  --ink: #f0ecd9;
-  --muted: #8d9e8c;
-  --line: #273b2d;
+  --bg-dark: #0c1811;
+  --panel-left: #102017;
+  --panel-right: #14261c;
+  --ink: #f2efe2;
+  --muted: #9eb5a3;
+  --line: #2c4c38;
   --lime: #c5e782;
   --green: #4ade80;
-  --red: #f87171;
-  --yellow: #fde047;
+  --red: #eb5757;
+  --yellow: #efc86b;
   --pixel: Silkscreen, 'Courier New', monospace;
-  --body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --display: 'Chakra Petch', system-ui, sans-serif;
+  --body: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {

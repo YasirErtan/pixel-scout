@@ -346,6 +346,7 @@ export class MultiplayerRoomClient {
         this.localRoomState.guesses[roundIdx][p.id] = {
           playerId: p.id,
           guess: botGuess,
+          locked: true,
           lockedAt: now + simulatedDelayMs
         };
       }
@@ -353,19 +354,23 @@ export class MultiplayerRoomClient {
   }
 
   /**
-   * Oyuncunun bu turdaki tahminini kilitler.
+   * Oyuncunun bu turdaki tahminini kaydeder (locked = false ise canlı taslak, locked = true ise sabitlenmiş).
    */
-  async submitGuess(guessVal) {
+  async submitGuess(guessVal, locked = true) {
     if (!this.localRoomState) return;
     const roundIdx = this.localRoomState.currentRound || 0;
     if (!this.localRoomState.guesses) this.localRoomState.guesses = {};
     if (!this.localRoomState.guesses[roundIdx]) this.localRoomState.guesses[roundIdx] = {};
 
+    const existing = this.localRoomState.guesses[roundIdx][this.clientId];
+    if (existing?.locked && !locked) return;
+
     const numericGuess = Math.round((Number(guessVal) || 0) * 100) / 100;
     const payload = {
       playerId: this.clientId,
       guess: numericGuess,
-      lockedAt: Date.now()
+      locked: Boolean(locked),
+      lockedAt: locked ? Date.now() : (existing?.lockedAt || Date.now())
     };
 
     this.localRoomState.guesses[roundIdx][this.clientId] = payload;
@@ -380,7 +385,9 @@ export class MultiplayerRoomClient {
         // ignore
       }
     }
-    this._emit();
+    if (locked) {
+      this._emit();
+    }
   }
 
   /**
@@ -461,6 +468,15 @@ export class MultiplayerRoomClient {
       try {
         const remote = await this._fetchJson(`/mp_rooms/${this.roomCode}`);
         if (remote && remote.code) {
+          const rIdx = remote.currentRound || 0;
+          const myLocalDraft = this.localRoomState?.guesses?.[rIdx]?.[this.clientId];
+          if (myLocalDraft && remote.status === 'playing') {
+            if (!remote.guesses) remote.guesses = {};
+            if (!remote.guesses[rIdx]) remote.guesses[rIdx] = {};
+            if (!remote.guesses[rIdx][this.clientId]?.locked) {
+              remote.guesses[rIdx][this.clientId] = myLocalDraft;
+            }
+          }
           this.localRoomState = remote;
           this._emit();
         }

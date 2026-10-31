@@ -22,6 +22,7 @@ let isMyGuessLocked = false;
 let lastRenderedRound = -1;
 let lastRenderedStatus = '';
 let countdownInterval = null;
+let liveSyncTimer = null;
 const usedPlayerIdsInSession = new Set();
 
 // ==================== DOM REFERANSLARI ====================
@@ -207,6 +208,15 @@ function setGuessValue(val, syncInput = true) {
     if (marketValueSlider) marketValueSlider.value = String(clamped);
     if (guessValueDisplay) guessValueDisplay.textContent = formatMarketValue(clamped, true, 'EUR');
   }
+
+  if (!isMyGuessLocked && roomClient.localRoomState?.status === 'playing') {
+    if (liveSyncTimer) clearTimeout(liveSyncTimer);
+    liveSyncTimer = setTimeout(() => {
+      if (!isMyGuessLocked) {
+        roomClient.submitGuess(currentGuessValue, false);
+      }
+    }, 180);
+  }
 }
 
 // ==================== EKRAN GEÇİŞLERİ VE RENDER ====================
@@ -308,21 +318,22 @@ function renderGameArena(room) {
     isMyGuessLocked = false;
     marketValueSlider.disabled = false;
     lockGuessBtn.disabled = false;
-    lockGuessBtn.querySelector('span').textContent = '🔒 TAHMİNİ KİLİTLE';
+    lockGuessBtn.querySelector('span').textContent = '✓ HAZIRIM (ERKEN ONAYLA)';
     lockedStatusNote.hidden = true;
     renderFootballerCard(footballer);
     configureConsoleForPlayer(footballer);
+    roomClient.submitGuess(currentGuessValue, false);
   }
 
   // Eğer bu turda zaten tahmin kilitlediysek durumu koru
   const mySubmission = room.guesses?.[roundIdx]?.[roomClient.clientId];
-  if (mySubmission && !isMyGuessLocked) {
+  if (mySubmission && mySubmission.locked && !isMyGuessLocked) {
     isMyGuessLocked = true;
     setGuessValue(mySubmission.guess, true);
     marketValueSlider.disabled = true;
     if (bonusExactInput) bonusExactInput.disabled = true;
     lockGuessBtn.disabled = true;
-    lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN KİLİTLENDİ';
+    lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN SABİTLENDİ';
     lockedStatusNote.hidden = false;
   }
 
@@ -411,11 +422,11 @@ function renderLiveScoreboard(room, roundIdx, footballer) {
       const rankClass = rank <= 3 ? `rank-${rank}` : '';
       const isMe = p.id === roomClient.clientId;
       const sub = roundGuesses[p.id];
-      const hasLocked = Boolean(sub && (!p.isBot || sub.lockedAt <= now || room.status === 'reveal'));
+      const hasLocked = Boolean(sub && sub.locked !== false && (!p.isBot || sub.lockedAt <= now || room.status === 'reveal'));
 
       const statusText = room.status === 'reveal'
-        ? (sub ? `Tahmin: ${formatMarketValue(sub.guess, true, currency)}` : 'Süre Doldu')
-        : (hasLocked ? 'Kilitledi ✓' : 'Düşünüyor...');
+        ? (sub ? `Tahmin: ${formatMarketValue(sub.guess, true, currency)}` : 'Değerlendirildi')
+        : (hasLocked ? 'Hazır ✓' : 'Ayarlıyor...');
 
       const statusClass = hasLocked ? 'locked' : 'thinking';
       const delta = p.lastRoundDelta || 0;
@@ -447,7 +458,7 @@ function checkIfAllPlayersLocked(room, footballer) {
   const roundGuesses = room.guesses?.[roundIdx] || {};
 
   const humans = playersArr.filter((p) => !p.isBot);
-  const allHumansLocked = humans.length > 0 && humans.every((h) => Boolean(roundGuesses[h.id]));
+  const allHumansLocked = humans.length > 0 && humans.every((h) => Boolean(roundGuesses[h.id]?.locked));
 
   if (allHumansLocked) {
     triggerRoundEvaluation(room, footballer);
@@ -459,14 +470,19 @@ function triggerRoundEvaluation(room, footballer) {
   const roundIdx = room.currentRound || 0;
   const playersArr = Object.values(room.players || {});
   const roundGuesses = room.guesses?.[roundIdx] || {};
+  const fallbackVal = footballer.isBonus ? 25000 : 45_000_000;
 
   const submissions = playersArr.map((p) => {
     const g = roundGuesses[p.id];
+    const isMe = p.id === roomClient.clientId;
+    const effectiveGuess = isMe
+      ? (g && g.locked ? g.guess : currentGuessValue)
+      : (g && Number.isFinite(g.guess) ? g.guess : fallbackVal);
     return {
       playerId: p.id,
       name: p.name,
-      guess: g ? g.guess : null,
-      lockedAt: g ? g.lockedAt : Infinity
+      guess: effectiveGuess,
+      lockedAt: g && Number.isFinite(g.lockedAt) ? g.lockedAt : Date.now()
     };
   });
 
@@ -769,16 +785,16 @@ function initEvents() {
     setGuessValue(currentGuessValue + step, true);
   });
 
-  // Tahmini Kilitle
+  // Tahmini Sabitle (İsteğe Bağlı Erken Onay)
   lockGuessBtn?.addEventListener('click', async () => {
     if (isMyGuessLocked) return;
     isMyGuessLocked = true;
     marketValueSlider.disabled = true;
     if (bonusExactInput) bonusExactInput.disabled = true;
     lockGuessBtn.disabled = true;
-    lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN KİLİTLENDİ';
+    lockGuessBtn.querySelector('span').textContent = '✓ TAHMİN SABİTLENDİ';
     lockedStatusNote.hidden = false;
-    await roomClient.submitGuess(currentGuessValue);
+    await roomClient.submitGuess(currentGuessValue, true);
   });
 
   // Sonraki Futbolcu
