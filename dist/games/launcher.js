@@ -2,7 +2,8 @@ const GAME_BADGES = {
   'who-are-ya': 'TEK OYUNCULU • KEŞİF',
   'piyasa-degeri': 'TEK OYUNCULU • REKOR',
   'cok-oyunculu': 'CANLI ODA • 1-6 OYUNCU',
-  'futbol-imposter': 'TEK TELEFON • PARTİ'
+  'futbol-imposter': 'TEK TELEFON • PARTİ',
+  'fut-draft': 'AYNI CİHAZ • 3–5 OYUNCU'
 };
 
 async function loadGames() {
