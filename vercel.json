@@ -3,5 +3,6 @@
   "framework": null,
   "buildCommand": "",
   "installCommand": "",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "functions": { "api/transfer-arena.js": { "includeFiles": "dist/games/fut-draft/players.json", "maxDuration": 30 } }
 }

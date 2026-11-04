@@ -28,5 +28,11 @@
     "title": "FUT Draft",
     "description": "3–5 kişiyle 11'ini kur, gizlice futbolcu çal ve 36 takımlı Avrupa Kupası'nda hafta hafta finale yürü.",
     "href": "./fut-draft/index.html"
+  },
+  {
+    "id": "transfer-arenasi",
+    "title": "Transfer Arenası",
+    "description": "Ayrı cihazlardan 3–6 kişi: 200 krediyle sürpriz futbolcu ve hoca ihaleleri, gizli taktikler, lig ve final.",
+    "href": "./transfer-arenasi/index.html"
   }
 ]

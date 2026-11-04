@@ -59,3 +59,7 @@ Kaynak kodu orijinal Who Are Ya uygulamasından kopyalanmamıştır. Oyun, gözl
 Herkese açık adres: https://pixel-scout-nine.vercel.app
 
 Vercel için `vercel.json` derlemesiz statik `dist/` yayını kullanır. Kendi fork'unu kendi hesabında yeni bir projeye bağlayabilirsin. Bu depoda üretim hesabının kimliği veya erişim bilgileri bulunmaz.
+
+## Transfer Arenası
+
+`/games/transfer-arenasi/`: ayrı cihazlardan 3–6 kişilik açık artırma, yedi kişilik kadrolar, gerçek teknik direktörler, gizli taktikler ve lig/final modu. FC 27 veri görüntüsünden özellik kartları ve sonraya ayrılmış fotoğraf alanları kullanır. Kurallar ve sunucu kurulumu: [Transfer Arenası](docs/TRANSFER_ARENA.md). Yerel çevrimiçi test sunucusu: `node scripts/serve-arena.mjs` (4174 portu, geçici odalar). Üretim için yalnız sunucuda Firebase kimliği gerekir; anahtarları tarayıcıya veya GitHub'a koymayın.
