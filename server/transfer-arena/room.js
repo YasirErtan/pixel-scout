@@ -14,12 +14,13 @@ function nextLot(room,now){
 }
 function finishLot(room,now){settle(room.lot,room.teams,room.pool);room.history.push({card:room.lot.card,amount:room.lot.amount,bidder:room.lot.bidder});room.lotIndex++;nextLot(room,now);}
 function activePairs(room){return room.final?[[room.finalists[0],room.finalists[1]]]:room.schedule[room.round];}
+function matchSeed(room,i){return room.seed+room.round*719+i*31+(room.final?100003:0);}
 function startHalf(room,now,half){
  const pairs=activePairs(room);
  room.matches=pairs.map(([a,b],i)=>{
   const teams=[a,b].map(id=>room.teams.find(t=>t.id===id));
   const plans=[a,b].map(id=>room.plans[id]||room.lastPlans?.[id]||DEFAULT_PLAN);
-  const previous=half===1?beginMatch(...teams,room.seed+room.round*719+i*31+(room.final?100003:0)):room.matches[i];
+  const previous=half===1?beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3):room.matches[i];
   return previous.finished?previous:simulateHalf(previous,plans);
  });
  room.lastPlans={...room.lastPlans,...room.plans};room.playbackStart=now;deadline(room,half===1?'firstHalf':'secondHalf',now,30000);
@@ -91,6 +92,7 @@ export function publicView(r,uid,now){
  const minute=live?(r.phase==='firstHalf'?0:r.phase==='secondHalf'?10:20)+Math.min(r.phase==='finalResolution'?r.matches[0].minute-20:10,Math.max(0,(now-r.playbackStart)/3000)):r.phase==='halftime'?10:r.phase==='finished'?Infinity:20;
  return {id:r.id,owner:r.owner,phase:r.phase,version:r.version,phaseVersion:r.phaseVersion,deadline:r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline,
   teams:r.teams,pairs:r.schedule?activePairs(r):[],table:standings(r.teams,r.results||[],r.seed+900001).teams.map(t=>t.id),draws:r.draws||[],lot:r.lot,history:r.history,pool:r.pool,round:r.round,final:r.final||false,champion:r.champion,
+  referees:r.schedule?activePairs(r).map((pair,i)=>({teams:pair,strictness:matchSeed(r,i)%3})):[],
   myPlan:r.plans[uid]||r.lastPlans?.[uid]||DEFAULT_PLAN,locked:Object.keys(r.plans),
   matches:r.matches.map(m=>({minute:Math.min(minute,m.minute),teams:m.teams.map(t=>({id:t.id})),events:m.events.filter(e=>e.minute<=minute),score:m.forfeit&&m.events.some(e=>e.type==='forfeit'&&e.minute<=minute)?m.teams.map(t=>t.goals):m.teams.map(t=>m.events.filter(e=>e.minute<=minute&&e.team===t.id&&e.type==='goal').length),shootout:minute>=m.minute?m.shootout:null}))};
 }

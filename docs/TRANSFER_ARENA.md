@@ -1,6 +1,6 @@
 # Transfer Arenası
 
-Çalışma sürümü: çevrimiçi bağlantı ve tarayıcı kontrolleri tamamlanmadan yayınlanmamalı.
+Çevrimiçi oyun kuralları, yerel geliştirme ve sunucu kurulum rehberi.
 
 3–6 kişi ayrı cihazlardan aynı altı haneli odaya katılır. Her takım 200 krediyle 1 kaleci, 2 savunmacı, 2 orta saha, 2 forvet ve 1 teknik direktör alır. Pazar 7N benzersiz futbolcu ve N benzersiz hocadan oluşur. Yalnızca açık kart ve geçmiş kartlar gösterilir. Futbolcuların ardından hocaların ihalesi başlar.
 

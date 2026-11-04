@@ -77,6 +77,9 @@ function simulatePeriod(m,pp,start,duration,finished){
   const midfield=attackers.filter(p=>p.matchRole==='MID').length-defenders.filter(p=>p.matchRole==='MID').length;
   const space=(attackers.length-defenders.length)*.025+midfield*.008+(wide&&def.width===0?.04:0);
   let chance=.77+(passSkill-pressure)*.004+space-plan.tempo*.025-def.press*.025-(direct?.12:0);
+  // Covering the wings leaves more space through the centre, and vice versa.
+  chance+=(plan.width===0&&short?.02:0)+(plan.width===2&&wide?.02:0);
+  chance+=def.width===0?(wide?.015:-.015):def.width===2?(wide?-.015:.015):0;
   chance+=short?coach(team,'passing')*.6:0;
   if(plan.style==='counter'&&zone<2)chance+=def.risk*.012+def.press*.012+coach(team,'transition')*.3;
   if(actor.overall<=81)chance+=coach(team,'development')*.3;

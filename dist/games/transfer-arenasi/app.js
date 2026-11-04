@@ -37,7 +37,8 @@ function stage(){
  }
  if(['prepare','halftime'].includes(room.phase)){
   const playing=room.pairs.flat().includes(me.id);
-  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${!playing?'<p>Bu hafta maçın yok. Diğer maçları izleyebilirsin.</p>':room.locked.includes(me.id)?'<p>✓ Taktiğin kilitlendi. Rakip bekleniyor.</p>':tactics()}`;
+  const referee=room.referees?.find(r=>r.teams.includes(me.id));
+  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${referee?'<p>Hakem: '+['Toleranslı','Normal','Katı'][referee.strictness]+' · Sertliğin kart riski buna göre değişir.</p>':''}${!playing?'<p>Bu hafta maçın yok. Diğer maçları izleyebilirsin.</p>':room.locked.includes(me.id)?'<p>✓ Taktiğin kilitlendi. Rakip bekleniyor.</p>':tactics()}`;
  }
  if(room.phase==='finished')return `<p class="eyebrow">KUPANIN SAHİBİ</p><h2>🏆 ${names(room.champion)}</h2><p>Tebrikler! Lig ve final tamamlandı.</p><button id="leave">Başlangıca dön</button>`;
  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2><p>Maçlar ortak zaman çizelgesinde oynanıyor.</p>`;
