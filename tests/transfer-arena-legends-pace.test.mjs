@@ -27,7 +27,7 @@ test('every 3–6 seat market auctions exactly one legend with bonus on or off a
   const rng=random(Math.imul(seed,2654435761)>>>0),market=makeMarket(data.players,data.coaches,seats,rng,{bonusEnabled});
   const legends=market.players.filter(p=>p.legend);assert.equal(legends.length,1);seen.add(legends[0].id);
   assert.equal(market.players.length,seats*7);assert.equal(market.players.filter(p=>p.bonus).length,Number(bonusEnabled));
-  assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[seats*2,seats*2,seats*2,seats]);
+  assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[seats,seats,seats*3,seats*2]);
   const teams=Array.from({length:seats},(_,i)=>({id:'t'+i,balance:200,players:[],coach:null}));completePool(teams,market.players,rng);completePool(teams,market.coaches,rng);
   assert.equal(teams.flatMap(t=>t.players).filter(p=>p.legend).length,1);
   for(const t of teams){assert.equal(t.balance,192);for(const [role,count]of Object.entries(LIMITS))assert.equal(t.players.filter(p=>p.position===role).length,count);}

@@ -11,7 +11,7 @@ test('optional bonus enters once and preserves exact role/quality totals and aut
  for(let seats=3;seats<=6;seats++)for(let seed=1;seed<=30;seed++)for(const bonusEnabled of [false,true]){
   const next=random(seed),market=makeMarket(data.players,data.coaches,seats,next,{bonusEnabled});
   assert.equal(market.players.length,7*seats);assert.equal(market.players.filter(p=>p.id===BONUS_PLAYER.id).length,Number(bonusEnabled));
-  assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[2*seats,2*seats,2*seats,seats]);
+  assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[seats,seats,3*seats,2*seats]);
   const teams=Array.from({length:seats},(_,i)=>({id:'t'+i,balance:200,players:[],coach:null}));
   completePool(teams,market.players,next);completePool(teams,market.coaches,next);
   for(const team of teams){assert.equal(team.balance,192);for(const [role,count] of Object.entries(LIMITS))assert.equal(team.players.filter(p=>p.position===role).length,count);}

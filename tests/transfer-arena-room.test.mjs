@@ -20,7 +20,7 @@ test('polling cannot invalidate tactics but an expired phase does',()=>{
 });
 
 test('discipline projection remembers cards without exposing a future dismissal',()=>{
- const r=createRoom('123456','a','A',91,0);r.phase='firstHalf';r.playbackStart=0;
+ const r=createRoom('123456','a','A',91,0);r.phase='firstHalf';r.playbackStart=0;r.rulesVersion=1;
  r.matches=[{minute:10,teams:[{id:'a',players:[{id:'p',name:'Player',red:true}]}],events:[{minute:8,type:'red',team:'a',playerId:'p'}]}];
  assert.equal(publicView(r,'a',3000).discipline[0].teams[0].players[0].red,false);
  assert.equal(publicView(r,'a',24000).discipline[0].teams[0].players[0].red,true);

@@ -1,4 +1,5 @@
 // Small-sided game model. Coefficients are game design, not measured real-match probabilities.
+import {assignFormation} from '../../dist/games/transfer-arenasi/formation.js';
 import {CAPTAIN_BOOST} from '../../dist/games/transfer-arenasi/bonus-player.js';
 export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
@@ -16,19 +17,13 @@ const stat=(p,k)=>Number.isFinite(p.attributes?.[k])?p.attributes[k]:null;
 function required(p,k){const v=stat(p,k);if(v===null)throw Error(`Eksik simülasyon özelliği: ${k}`);return v;}
 export function beginMatch(home,away,seed,referee=1){
  const make=t=>({id:t.id,coach:t.coach,players:t.players.map(p=>({...p,energy:100,yellow:0,red:false})),goals:0,shots:0,onTarget:0,saves:0,xg:0,passes:0,completed:0,losses:0});
- return {version:2,rng:seed>>>0,minute:0,teams:[make(home),make(away)],events:[],half:0,referee,finished:false};
+ return {version:3,rng:seed>>>0,minute:0,teams:[make(home),make(away)],events:[],half:0,referee,finished:false};
 }
 function alive(t){return t.players.filter(p=>!p.red);}
 function keeper(t){return alive(t).find(p=>p.position==='GK')||alive(t).find(p=>p.id===t.emergencyKeeperId);}
 function field(t){return alive(t).filter(p=>p.position!=='GK'&&p.id!==t.emergencyKeeperId);}
-function shape(t,formation){
- const requiredRoles=formation.split('-').flatMap((n,i)=>Array(Number(n)).fill(['DEF','MID','ATT'][i]));
- const players=field(t);for(const p of players){delete p.matchRole;delete p.roleFit;}
- // First fill natural positions, then assign the remaining players to vacant jobs.
- for(const role of requiredRoles){const p=players.find(p=>!p.matchRole&&p.position===role);if(p){p.matchRole=role;p.roleFit=1;}}
- const vacancies=[...requiredRoles];for(const p of players.filter(p=>p.matchRole))vacancies.splice(vacancies.indexOf(p.matchRole),1);
- for(const p of players.filter(p=>!p.matchRole)){p.matchRole=vacancies.shift()||p.position;p.roleFit=.92;}
-}
+export function shape(t,formation){for(const assigned of assignFormation(field(t),formation)){const p=t.players.find(p=>p.id===assigned.id);p.matchRole=assigned.matchRole;p.roleFit=assigned.roleFit;}}
+
 function selectPlayer(m,players,weights){const total=players.reduce((s,p)=>s+(weights[p.matchRole||p.position]||1),0);let draw=next(m)*total;return players.find(p=>(draw-=weights[p.matchRole||p.position]||1)<0)||players.at(-1);}
 function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*.02:0;}
 function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1);}
@@ -41,7 +36,7 @@ export function simulateHalf(previous,plans){
  const m=structuredClone(previous);if(m.finished||m.half>=2)throw Error('Maç tamamlandı');
  const pp=plans.map(validatePlan);m.half++;
  if(m.half===2)for(const t of m.teams)for(const p of alive(t))p.energy=Math.min(100,p.energy+8);
- return simulatePeriod(m,pp,(m.half-1)*10,10,m.half===2);
+ const length=m.version>=3?45:10;return simulatePeriod(m,pp,(m.half-1)*length,length,m.half===2);
 }
 function simulatePeriod(m,pp,start,duration,finished){
  for(let i=0;i<2;i++){
@@ -53,8 +48,9 @@ function simulatePeriod(m,pp,start,duration,finished){
  }
  let possession=next(m)<.5?0:1,zone=1;
  const end=start+duration;
- for(let tick=0;tick<duration*12&&!m.finished;tick++){
-  m.minute=start+(tick+1)/12;
+ const ticks=m.version>=3?Math.round(duration*120/45):duration*12;
+ for(let tick=0;tick<ticks&&!m.finished;tick++){
+  m.minute=start+(tick+1)*duration/ticks;
   const team=m.teams[possession],opp=m.teams[1-possession],plan=pp[possession],def=pp[1-possession];
   const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw Error('Saha oyuncusu kalmadı');
   for(let side=0;side<2;side++)for(const p of alive(m.teams[side])){
@@ -105,9 +101,10 @@ function simulatePeriod(m,pp,start,duration,finished){
 export function resolveFinal(previous,plans){
  if(!previous.finished||previous.half!==2||previous.teams[0].goals!==previous.teams[1].goals||previous.forfeit)throw Error('Uzatma için berabere tamamlanmış final gerekli');
  let m=structuredClone(previous);const pp=plans.map(validatePlan);m.finished=false;
- m.events.push({minute:20,type:'extraTime'});
- m=simulatePeriod(m,pp,20,2,false);
- if(!m.finished)m=simulatePeriod(m,pp,22,2,true);
+ const start=m.version>=3?90:20,length=m.version>=3?15:2;
+ m.events.push({minute:start,type:'extraTime'});
+ m=simulatePeriod(m,pp,start,length,false);
+ if(!m.finished)m=simulatePeriod(m,pp,start+length,length,true);
  if(m.teams[0].goals===m.teams[1].goals&&!m.forfeit)m=shootout(m);
  m.winner=m.shootout?.winner||m.teams.reduce((a,b)=>a.goals>b.goals?a:b).id;
  return m;
@@ -122,7 +119,7 @@ function shootout(m){
   const keeping=keeper?(performance(keeper,'gkReflexes')+performance(keeper,'gkPositioning'))/2:25;
   const probability=cap(.72+(performance(actor,'penalties')-keeping)*.003,.4,.94);
   const scored=next(m)<probability;taken[side]++;goals[side]+=Number(scored);
-  m.minute=24+(taken[0]+taken[1])*.5;
+  m.minute=(m.version>=3?120:24)+(taken[0]+taken[1])*.5;
   m.events.push({minute:m.minute,type:'shootout',team:m.teams[side].id,playerId:actor.id,playerName:actor.name,scored,shootoutScore:[...goals]});
  }
  for(let pair=0;;pair++){
