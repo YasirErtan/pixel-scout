@@ -29,3 +29,11 @@ Havuz 24 gerçek teknik direktörden oluşur. Fatih Terim 5, Okan Buruk 4 ve Emr
 3–5 kişilik odalarda her yıldız seviyesinden en fazla bir hoca seçilir. 6 kişilik odalarda beş seviyeden birer hoca ve rastgele bir seviyeden ikinci bir hoca seçilir. Aynı hoca tekrarlanmaz; hiçbir seviyeden üç hoca gelmez. Hoca sırası karıştırılır ve açılmamış isimler gizli kalır.
 
 İhale ve kadro kartları fotoğrafı, yıldızı, uzmanlığı, sayısal etkiyi ve hangi taktik koşulunda çalıştığını gösterir. Fotoğrafçı/kaynak/lisans kartın ayrıntılarındadır. Lisans kayıtları research/transfer-arena-coach-portraits.json ve coach-portraits.js içinde korunur. Başlamış odaların hoca pazarı ve yıldızları yeniden üretilmez; yeni seçim kuralı yeni başlatılan oyunlarda uygulanır.
+
+## Bonus kartı ve kaptan
+
+Oda kurucusu oluşturma ekranında Eren Çiftçi bonusunu açıp kapatabilir; varsayılan kapalıdır. Açıldığında 70 reytingli bonus forvet, normal düşük reytingli forvet kontenjanından bir yer kullanarak pazara tam bir kez girer. Toplam 7N futbolcu, mevki dağılımı ve kalite bantlarının sayısı değişmez. Kart açık artırma, pas havuzu ve takım tamamlama kurallarına diğer futbolcular gibi tabidir. Ad, fotoğraf ve kurgusal özellikler kullanıcı isteğiyle eklenmiştir; EA verisi değildir.
+
+Maç öncesinde ve devre arasında yalnız kendi takımındaki, kırmızı kart görmemiş bir oyuncu kaptan seçilebilir. Kaptan simülasyonda pas, savunma, bitiricilik ve kalecilik özelliklerine %3 performans çarpanı alır. Kart overall değeri ve kaynak özellikleri değişmez; artış birikmez. Seçilmemişse uygun en yüksek reytingli oyuncu otomatik seçilir. Kaptan atılırsa artışı sahada kalmaz; sonraki devrede uygun oyuncuya kaptanlık atanır. Rakibin taktikleri gizli kalırken kaptan isimleri maç başladığında görünür olur.
+
+Telefon arayüzünde ihale çubuğu altta sabittir; dokunma hedefleri en az 48 piksel, taktikler iki sütun ve kadrolar kompakt kartlar halinde sunulur. Gereksiz uyarı metinleri kaldırılmıştır; bağlantı/komut hataları ve fotoğraf lisans atıfları korunur.
