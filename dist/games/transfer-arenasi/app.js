@@ -55,6 +55,7 @@ function render(){
  const squadsKey=room.teams.map(t=>t.id+':'+t.players.length+':'+t.coach?.id).join('|');
  if($('#squads').dataset.key!==squadsKey){$('#squads').dataset.key=squadsKey;$('#squads').innerHTML=room.teams.map(t=>`<details class="panel"><summary>${esc(t.name)} · ${t.players.length}/7 futbolcu · ${t.balance} kredi</summary><div class="squad-cards">${t.players.map(playerCard).join('')}${t.coach?coachCard(t.coach):''}</div></details>`).join('');}
  $('#history').innerHTML=room.history.map(h=>`<p>${esc(h.card.name)} · ${h.bidder?names(h.bidder)+' · '+h.amount+' kredi':'Pas havuzu'}</p>`).join('');
+ $('#matches').insertAdjacentHTML('beforeend',(['prepare','lobby'].includes(room.phase)?[]:room.discipline||[]).map(m=>'<div class="panel small">'+m.teams.map(t=>{const cards=t.players.filter(p=>p.red||p.yellow);return cards.length?'<p>'+names(t.id)+': '+cards.map(p=>esc(p.name)+' '+(p.red?'🟥 Oyun dışında':'🟨 '+p.yellow)).join(' · ')+'</p>':'';}).filter(Boolean).join('')+'</div>').filter(s=>s!=='<div class="panel small"></div>').join(''));
  tick();
 }
 function bindStage(){
