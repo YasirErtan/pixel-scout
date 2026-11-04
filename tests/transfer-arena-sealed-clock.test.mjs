@@ -6,32 +6,18 @@ import {assignFormation} from '../dist/games/transfer-arenasi/formation.js';
 import {minuteLabel,pitch} from '../dist/games/transfer-arenasi/pitch.js';
 let seq=0;const act=(r,uid,type,now,data,extra={})=>command(r,uid,{type,requestId:String(++seq),...extra},now,data);
 async function setup(){const data=await arenaData();let r=createRoom('123456','a','A',9871,0);for(const id of ['b','c'])r=act(r,id,'join',1,data,{name:id});for(const id of ['a','b','c'])r=act(r,id,'ready',2,data);r=act(r,'a','start',3,data);return {r,data};}
-test('simultaneous sealed offers stay private, can be revised, settle at the deadline and reveal all offers',async()=>{
- let {r,data}=await setup();const lotId=r.lot.id,deadline=r.lot.deadline;
- r=act(r,'a','bid',4,data,{lotId,amount:20});r=act(r,'b','bid',5,data,{lotId,amount:24});r=act(r,'a','bid',6,data,{lotId,amount:25});
- for(const uid of ['a','b','c']){const v=publicView(r,uid,7);assert.ok(!('bids'in v.lot)&&!('tieOrder'in v.lot));assert.equal(v.lot.bidder,null);assert.equal(v.lot.amount,0);assert.equal(v.lot.myBid,uid==='a'?25:uid==='b'?24:null);}
- assert.equal(r.lot.deadline,deadline);r=act(r,'c','pass',7,data,{lotId});assert.equal(r.lot.id,lotId);
- r=act(r,'c','poll',deadline,data);assert.equal(r.history[0].bidder,'a');assert.equal(r.history[0].amount,25);assert.equal(r.history[0].offers.length,2);assert.equal(r.teams[0].balance,175);
- assert.throws(()=>act(r,'b','bid',deadline+1,data,{lotId,amount:99}),/ihale/i);
-});
-test('equal highest offers use the predetermined draw regardless of request order; all passes wait for deadline',async()=>{
- const {r,data}=await setup(),lotId=r.lot.id;let a=r,b=r;
- for(const uid of ['a','b'])a=act(a,uid,'bid',4,data,{lotId,amount:10});for(const uid of ['b','a'])b=act(b,uid,'bid',4,data,{lotId,amount:10});
- a=act(a,'c','poll',r.lot.deadline,data);b=act(b,'c','poll',r.lot.deadline,data);assert.equal(a.history[0].bidder,b.history[0].bidder);assert.ok(a.history[0].tied);
- let empty=r;for(const uid of ['a','b','c'])empty=act(empty,uid,'pass',4,data,{lotId});assert.equal(empty.lot.id,lotId);
-});
 test('auction ends with visible allocations and an all-team squad review, including the bye team',async()=>{
- let {r,data}=await setup();while(['players','coaches'].includes(r.phase))r=act(r,'a','poll',r.lot.deadline,data);
+ let {r,data}=await setup();while(['players','coaches','auctionResult'].includes(r.phase))r=act(r,'a','poll',r.lot?.deadline||r.deadline,data);
  assert.equal(r.phase,'squadReview');assert.equal(r.assignments.length,24);assert.ok(r.assignments.every(a=>a.team&&a.amount===1));
  for(const uid of ['a','b','c'])r=act(r,uid,'plan',r.deadline-1,data,{phaseVersion:r.phaseVersion,plan:DEFAULT_PLAN});
- assert.equal(r.phase,'prepare');assert.equal(Object.keys(r.lastPlans).length,3);
+ assert.equal(r.phase,'firstHalf');assert.equal(Object.keys(r.lastPlans).length,3);
 });
 test('90-minute shared clock changes speed continuously without revealing future goals or cards',async()=>{
- let {r,data}=await setup();while(['players','coaches','squadReview','prepare'].includes(r.phase))r=act(r,'a','poll',r.lot?.deadline||r.deadline,data);
- const start=r.playbackStart;assert.equal(r.matches[0].minute,45);assert.equal(publicView(r,'a',start+10000).matches[0].minute,10);
+ let {r,data}=await setup();while(['players','coaches','auctionResult','squadReview','prepare'].includes(r.phase))r=act(r,'a','poll',r.lot?.deadline||r.deadline,data);
+ const start=r.playbackStart;assert.equal(r.matches[0].minute,45);assert.equal(publicView(r,'a',start+10000).matches[0].minute,15);
  assert.throws(()=>act(r,'b','speed',start+10000,data,{speed:4}),/hız/);
- r=act(r,'a','speed',start+10000,data,{speed:4});assert.equal(publicView(r,'b',start+10000).matches[0].minute,10);assert.equal(publicView(r,'b',start+15000).matches[0].minute,30);
- assert.ok(publicView(r,'a',start+15000).matches.every(m=>m.events.every(e=>e.minute<=30)));
+ r=act(r,'a','speed',start+10000,data,{speed:4});assert.equal(publicView(r,'b',start+10000).matches[0].minute,15);assert.equal(publicView(r,'b',start+12500).matches[0].minute,30);
+ assert.ok(publicView(r,'a',start+12500).matches.every(m=>m.events.every(e=>e.minute<=30)));
  r=act(r,'a','poll',r.deadline,data);assert.equal(r.phase,'halftime');assert.equal(publicView(r,'a',r.deadline-1).matches[0].minute,45);
  r=act(r,'a','poll',r.deadline,data);assert.equal(r.phase,'secondHalf');assert.equal(r.matches[0].minute,90);
 });

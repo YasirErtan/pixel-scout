@@ -13,10 +13,10 @@ export function award(team,card,amount,automatic=false) {
   if(card.kind==='coach')team.coach={...card,price:amount,automatic};
   else team.players.push({...card,price:amount,automatic});
 }
-export function openLot(card,now,id,sealed=false,tieOrder=[]) {return {id,card,deadline:now+(sealed?15000:12000),hardDeadline:now+(sealed?15000:24000),amount:0,bidder:null,passed:[],...(sealed?{sealed:true,bids:{},tieOrder}:{})};}
+export function openLot(card,now,id,sealed=false,tieOrder=[],single=false) {return {id,card,deadline:now+(single?60000:sealed?15000:12000),hardDeadline:now+(single?60000:sealed?15000:24000),amount:0,bidder:null,passed:[],...(sealed?{sealed:true,single,bids:{},tieOrder}:{})};}
 export function bid(lot,team,amount,now,lotId) {
   if(lotId!==lot.id||now>=lot.deadline)throw Error('Bu ihale kapandı');
-  if(lot.sealed){if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw Error('Bütçe veya mevki uygun değil');lot.bids[team.id]=amount;lot.passed=lot.passed.filter(id=>id!==team.id);return;}
+  if(lot.sealed){if(lot.single&&(Object.hasOwn(lot.bids,team.id)||lot.passed.includes(team.id)))throw Error('Bu teklif zaten kilitli');if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw Error('Bütçe veya mevki uygun değil');lot.bids[team.id]=amount;lot.passed=lot.passed.filter(id=>id!==team.id);return;}
   if(lot.passed.includes(team.id)||lot.bidder===team.id)throw Error('Bu teklif verilemez');
   if(!Number.isSafeInteger(amount)||amount<=lot.amount||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw Error('Bütçe veya mevki uygun değil');
   lot.amount=amount;lot.bidder=team.id;

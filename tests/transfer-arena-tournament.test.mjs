@@ -9,7 +9,7 @@ test('complete 3–6 seat tournaments reach one champion, including offline dead
   for(let i=1;i<count;i++)act('t'+i,'join',{name:'Team'+i});
   for(const t of r.teams)act(t.id,'ready');act('t0','start');
   let steps=0;
-  while(r.phase!=='finished'&&steps++<100){now=(r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline)+1;act('t0','poll');}
+  while(r.phase!=='finished'&&steps++<200){now=(r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline)+1;act('t0','poll');}
   assert.equal(r.phase,'finished');assert.ok(r.finalists.includes(r.champion));
   assert.equal(new Set(r.teams.flatMap(t=>t.players.map(p=>p.id))).size,count*7);
   assert.equal(r.teams.flatMap(t=>t.players).filter(p=>p.bonus).length,Number(seed%2===0));
