@@ -13,6 +13,7 @@ test('complete 3–6 seat tournaments reach one champion, including offline dead
   assert.equal(r.phase,'finished');assert.ok(r.finalists.includes(r.champion));
   assert.equal(new Set(r.teams.flatMap(t=>t.players.map(p=>p.id))).size,count*7);
   assert.equal(r.teams.flatMap(t=>t.players).filter(p=>p.bonus).length,Number(seed%2===0));
+  assert.equal(r.teams.flatMap(t=>t.players).filter(p=>p.legend).length,1);
   assert.ok(r.teams.every(t=>t.players.length===7&&t.coach&&t.balance===192));
   assert.equal(r.results.flat().length,count*(count-1)/2);
   const view=publicView(r,'t0',now);assert.ok(view.matches[0].score.every(Number.isInteger));

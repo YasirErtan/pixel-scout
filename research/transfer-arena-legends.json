@@ -1,0 +1,157 @@
+{
+  "retrievedAt": "2026-11-04T14:55:51.116Z",
+  "selectionSource": "https://www.redbull.com/tr-tr/ea-fc-27-tum-efsane-ikonlar",
+  "scope": "15 selected familiar male base icons strictly above 90; overall and all 17 subattributes preserved, no campaign boosts.",
+  "players": [
+    {
+      "id": "legend-237067",
+      "name": "Pelé",
+      "wikiTitle": "Pelé",
+      "url": "https://futmind.com/players/237067/pele",
+      "overall": 95,
+      "position": "CAM",
+      "assetId": 237067,
+      "sha256": "e082f32d5fc4b35a78b31f2db7cd3396336cff6d93056d7c2add43e43b9301e2"
+    },
+    {
+      "id": "legend-190042",
+      "name": "Diego Maradona",
+      "wikiTitle": "Diego Maradona",
+      "url": "https://futmind.com/players/190042/diego-armando-maradona",
+      "overall": 95,
+      "position": "CAM",
+      "assetId": 190042,
+      "sha256": "959a8ee8a2cacf86517b33865a507f50c36fa5374ad42872253b28b112eeddac"
+    },
+    {
+      "id": "legend-37576",
+      "name": "Ronaldo",
+      "wikiTitle": "Ronaldo (Brazilian footballer)",
+      "url": "https://futmind.com/players/37576/ronaldo",
+      "overall": 94,
+      "position": "ST",
+      "assetId": 37576,
+      "sha256": "93e6a01f1487a8b943ee119d7eb7099c6098834c058f45dfe28f998d62995f0c"
+    },
+    {
+      "id": "legend-1397",
+      "name": "Zinedine Zidane",
+      "wikiTitle": "Zinedine Zidane",
+      "url": "https://futmind.com/players/1397/zinedine-zidane",
+      "overall": 94,
+      "position": "CAM",
+      "assetId": 1397,
+      "sha256": "72f260c00e03383285a698d264366553fe5458b276df894f071e98eb66b45102"
+    },
+    {
+      "id": "legend-190045",
+      "name": "Johan Cruyff",
+      "wikiTitle": "Johan Cruyff",
+      "url": "https://futmind.com/players/190045/johan-cruyff",
+      "overall": 93,
+      "position": "CAM",
+      "assetId": 190045,
+      "sha256": "3e3d9ccdd64238454bb61494a73d604bce126913ed6f285bae92d107c53a4d42"
+    },
+    {
+      "id": "legend-238439",
+      "name": "Paolo Maldini",
+      "wikiTitle": "Paolo Maldini",
+      "url": "https://futmind.com/players/238439/paolo-maldini",
+      "overall": 93,
+      "position": "CB",
+      "assetId": 238439,
+      "sha256": "39cd253c0d4307adeee200aa654665169e4d709267558dd4cf45f9ab0adef995"
+    },
+    {
+      "id": "legend-247553",
+      "name": "Garrincha",
+      "wikiTitle": "Garrincha",
+      "url": "https://futmind.com/players/247553/garrincha",
+      "overall": 93,
+      "position": "RW",
+      "assetId": 247553,
+      "sha256": "f81c866aadfa0d07c8088f85d05c8c5f818d4d942794b87be21d17826ca30521"
+    },
+    {
+      "id": "legend-168473",
+      "name": "Franz Beckenbauer",
+      "wikiTitle": "Franz Beckenbauer",
+      "url": "https://futmind.com/players/168473/franz-beckenbauer",
+      "overall": 93,
+      "position": "CB",
+      "assetId": 168473,
+      "sha256": "94e52cecc256031bcfcf7aebaf93db62f2235fffd947ae8639c618454143a475"
+    },
+    {
+      "id": "legend-254642",
+      "name": "Ferenc Puskás",
+      "wikiTitle": "Ferenc Puskás",
+      "url": "https://futmind.com/players/254642/ferenc-puskas",
+      "overall": 92,
+      "position": "ST",
+      "assetId": 254642,
+      "sha256": "31596628925175c458bdb7390a330739ca92085a637d04a3a9c4f0a24bce75c8"
+    },
+    {
+      "id": "legend-41",
+      "name": "Andrés Iniesta",
+      "wikiTitle": "Andrés Iniesta",
+      "url": "https://futmind.com/players/41/iniesta",
+      "overall": 92,
+      "position": "CM",
+      "assetId": 41,
+      "sha256": "c8275faf70c05addb25c9fa9113214dae30adc718c0faeedd0ac353413bbd7c7"
+    },
+    {
+      "id": "legend-190048",
+      "name": "Gerd Müller",
+      "wikiTitle": "Gerd Müller",
+      "url": "https://futmind.com/players/190048/gerd-muller",
+      "overall": 92,
+      "position": "ST",
+      "assetId": 190048,
+      "sha256": "6e77b47d82d261b615ad11542a357a0ca46f9449c16b59b037c190ef46cca81d"
+    },
+    {
+      "id": "legend-1179",
+      "name": "Gianluigi Buffon",
+      "wikiTitle": "Gianluigi Buffon",
+      "url": "https://futmind.com/players/1179/gianluigi-buffon",
+      "overall": 92,
+      "position": "GK",
+      "assetId": 1179,
+      "sha256": "1e3b521075a35eee689a43727d529743a83ac09b8f9af731e3b5d8c0486009e9"
+    },
+    {
+      "id": "legend-1625",
+      "name": "Thierry Henry",
+      "wikiTitle": "Thierry Henry",
+      "url": "https://futmind.com/players/1625/thierry-henry",
+      "overall": 91,
+      "position": "ST",
+      "assetId": 1625,
+      "sha256": "fb361e7f9b3871d2ee07beb80d1d62a9a75fbe499d58d1bf4557084495b6d5cd"
+    },
+    {
+      "id": "legend-10535",
+      "name": "Xavi",
+      "wikiTitle": "Xavi",
+      "url": "https://futmind.com/players/10535/xavi",
+      "overall": 91,
+      "position": "CM",
+      "assetId": 10535,
+      "sha256": "5973a2c539bcfb3dd1fd275ac706c935b7eff28e0dd4d273fbb91f9029a7e14c"
+    },
+    {
+      "id": "legend-488",
+      "name": "Oliver Kahn",
+      "wikiTitle": "Oliver Kahn",
+      "url": "https://futmind.com/players/488/oliver-kahn",
+      "overall": 91,
+      "position": "GK",
+      "assetId": 488,
+      "sha256": "9defb4bd8aa2169ea3fd3a66c74d4b3da9bd35aa4e7dae13b8efcdec538efd99"
+    }
+  ]
+}
