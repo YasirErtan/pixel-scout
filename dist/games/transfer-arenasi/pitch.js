@@ -8,3 +8,5 @@ export function pitch(team,formation,captainId,redIds=[]){
  return `<div class="pitch" role="img" aria-label="${esc(team.name)} · ${formation} dizilişi"><div class="pitch-markings" aria-hidden="true"></div>${['ATT','MID','DEF'].map(role=>'<div class="pitch-row">'+field.filter(p=>p.matchRole===role).map(shirt).join('')+'</div>').join('')}<div class="pitch-row">${keeper?shirt(keeper):''}</div></div>`;
 }
 export function minuteLabel(minute,shootout=false){return shootout?'Penaltı':Math.max(1,Math.ceil(minute))+'′';}
+// Legacy matches keep their calculations; only their displayed 20-minute clock is scaled.
+export function displayMinute(minute,regulationMinutes=90){return regulationMinutes===20?(minute<=20?minute*4.5:90+(minute-20)*7.5):minute;}

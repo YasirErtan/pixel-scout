@@ -1,4 +1,6 @@
-import {pitch,minuteLabel} from './pitch.js';
+import {auctionResult} from './auction-result.js';
+import {coachTactics} from './coach-tactics.js';
+import {pitch,minuteLabel,displayMinute} from './pitch.js';
 import {playerCard,escapeHTML as esc} from './cards.js';
 import {coachCard} from './coach-card.js';
 import {CAPTAIN_BOOST} from './bonus-player.js';
@@ -7,7 +9,7 @@ const $=s=>document.querySelector(s),status=$('#status'),game=$('#game');
 const storage='pixel-scout:transfer-arenasi:v1';
 let room=null,busy=false,key='',offset=0,code='',previewPlayer=null;
 try{code=localStorage.getItem(storage)||'';}catch{}
-const phases={lobby:'Lobi',players:'Futbolcu ihalesi',coaches:'Hoca ihalesi',squadReview:'Takımın ve ilk taktiğin',prepare:'Maç öncesi',firstHalf:'İlk yarı',halftime:'Devre arası',secondHalf:'İkinci yarı',finalResolution:'Uzatma ve penaltılar',finished:'Kupa sahibi belli'};
+const phases={lobby:'Lobi',players:'Futbolcu ihalesi',coaches:'Hoca ihalesi',auctionResult:'İhale sonucu',squadReview:'Takımın ve ilk taktiğin',prepare:'Maç öncesi',firstHalf:'İlk yarı',halftime:'Devre arası',secondHalf:'İkinci yarı',finalResolution:'Uzatma ve penaltılar',finished:'Kupa sahibi belli'};
 const sprintAverage=t=>{const outfield=t.players.filter(p=>p.position!=='GK');return outfield.length?Math.round(outfield.reduce((sum,p)=>sum+p.attributes.sprintSpeed,0)/outfield.length):'—';};
 const names=id=>esc(room.teams.find(t=>t.id===id)?.name||'—');
 async function send(type,extra={}){
@@ -25,27 +27,29 @@ async function send(type,extra={}){
 }
 function button(type,label,disabled=false){return `<button data-action="${type}" ${disabled?'disabled':''}>${label}</button>`;}
 function select(name,label,options,value){return `<label ${name==='captainId'?'class="captain-select"':''}>${label}<select name="${name}">${options.map(([v,l])=>`<option value="${esc(v)}" ${String(v)===String(value)?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;}
+function sentOffIds(id){return room.phase==='halftime'?(room.discipline||[]).flatMap(m=>m.teams.filter(t=>t.id===id).flatMap(t=>t.players.filter(p=>p.red).map(p=>p.id))):[];}
 function tactics(){
  const me=room.teams.find(t=>t.id===room.uid),p=room.myPlan;
- const sentOff=new Set(room.phase==='halftime'?(room.discipline||[]).flatMap(m=>m.teams.filter(t=>t.id===me.id).flatMap(t=>t.players.filter(p=>p.red).map(p=>p.id))):[]);
+ const sentOff=new Set(sentOffIds(me.id));
  const available=me.players.filter(p=>!sentOff.has(p.id));
  const selected=available.find(player=>String(player.id)===String(p.captainId))||available.toSorted((a,b)=>b.overall-a.overall)[0];
- return `<div id="tactic-pitch">${pitch(me,p.formation,selected?.id,[...sentOff])}</div>${room.phase==='squadReview'&&me.coach?'<p class="referee">Teknik direktör: '+esc(me.coach.name)+' · '+me.coach.stars+'★</p>':''}<form id="plan-form" class="tactics-grid">${select('formation','Diziliş',[['2-2-2','2-2-2 Dengeli'],['2-3-1','2-3-1 Orta saha'],['3-2-1','3-2-1 Savunma'],['1-3-2','1-3-2 Hücum']],p.formation)}${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),selected?.id)}${[['press','Pres',['Geri çekil','Dengeli','Yoğun pres']],['risk','Risk',['Temkinli','Dengeli','Hücum']],['tempo','Tempo',['Sakin','Normal','Yüksek']],['width','Genişlik',['Dar','Dengeli','Geniş']],['tackle','Müdahale',['Temiz','Normal','Sert','Çok sert']]].map(([k,label,opts])=>select(k,label,opts.map((l,i)=>[i,l]),p[k])).join('')}<button>Taktiği kilitle</button></form>`;
+ return `<div id="tactic-coach">${coachTactics(me.coach,p,available)}</div><div id="tactic-pitch">${pitch(me,p.formation,selected?.id,[...sentOff])}</div><form id="plan-form" class="tactics-grid">${select('formation','Diziliş',[['2-2-2','2-2-2 Dengeli'],['2-3-1','2-3-1 Orta saha'],['3-2-1','3-2-1 Savunma'],['1-3-2','1-3-2 Hücum']],p.formation)}${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),selected?.id)}${[['press','Pres',['Geri çekil','Dengeli','Yoğun pres']],['risk','Risk',['Temkinli','Dengeli','Hücum']],['tempo','Tempo',['Sakin','Normal','Yüksek']],['width','Genişlik',['Dar','Dengeli','Geniş']],['tackle','Müdahale',['Temiz','Normal','Sert','Çok sert']]].map(([k,label,opts])=>select(k,label,opts.map((l,i)=>[i,l]),p[k])).join('')}<button>Taktiği kilitle</button></form>`;
 }
 function stage(){
  const me=room.teams.find(t=>t.id===room.uid);
  if(room.phase==='lobby')return `<h2>Odan hazır</h2><p>Oda kodu <strong class="room-code">${room.id}</strong></p>${room.options?.bonusEnabled?'<span class="lobby-options">Bonus oyuncu açık</span>':''}<ul class="lobby-list">${room.teams.map(t=>`<li>${esc(t.name)}<span>${t.ready?'✓ Hazır':'Bekliyor'}</span></li>`).join('')}</ul><div class="actions">${button('ready',me.ready?'Hazırsın':'Hazırım',me.ready)}${room.owner===room.uid?button('start','İhaleyi başlat',room.teams.length<3||!room.teams.every(t=>t.ready)):''}</div>`;
+ if(room.phase==='auctionResult')return auctionResult(room.auctionResult,room.teams);
  if(['players','coaches'].includes(room.phase)){
   const lot=room.lot,c=lot.card,allowed=c.kind==='coach'?!me.coach:me.players.filter(p=>p.position===c.position).length<({GK:1,DEF:2,MID:2,ATT:2}[c.position]);
   const max=me.balance-(8-me.players.length-Number(Boolean(me.coach))-1);
-  const sealed=lot.sealed,can=allowed&&(sealed||(!lot.passed.includes(me.id)&&lot.bidder!==me.id&&max>lot.amount));
-  const own=sealed?(lot.myBid?'Teklifin: <strong>'+lot.myBid+' kredi</strong>':lot.passed.includes(me.id)?'Pas geçtin':'Gizli teklifini ver'):lot.bidder?names(lot.bidder)+' · <strong>'+lot.amount+' kredi</strong>':'İlk teklifi ver';
-  return `<h2>${phases[room.phase]}</h2><div class="auction-info"><span>${own}</span><span>Bütçen <strong>${me.balance}</strong></span></div><div class="auction-card">${c.kind==='coach'?coachCard(c):playerCard(c)}</div><p class="bid-limit">Teklif tavanın: ${max} kredi</p><form id="bid-form"><label><input id="amount" aria-label="Teklif miktarı" inputmode="numeric" type="number" min="${sealed?1:lot.amount+1}" max="${max}" step="1" value="${sealed?lot.myBid||1:lot.amount+1}" ${can?'':'disabled'}></label><button ${can?'':'disabled'}>${sealed?(lot.myBid?'Değiştir':'Teklif ver'):'Teklif ver'}</button>${button('pass','Pas geç',lot.passed.includes(me.id)||!allowed)}</form>`;
+  const sealed=lot.sealed,can=allowed&&!(lot.single&&lot.myLocked)&&(sealed||(!lot.passed.includes(me.id)&&lot.bidder!==me.id&&max>lot.amount));
+  const own=sealed?(lot.myBid?(lot.single?'Kilitli teklifin: <strong>':'Teklifin: <strong>')+lot.myBid+' kredi</strong>':lot.passed.includes(me.id)?'Pas geçtin':'Gizli teklifini ver'):lot.bidder?names(lot.bidder)+' · <strong>'+lot.amount+' kredi</strong>':'İlk teklifi ver';
+  return `<h2>${phases[room.phase]}</h2><div class="auction-info"><span>${own}</span><span>Bütçen <strong>${me.balance}</strong></span></div><div class="auction-card">${c.kind==='coach'?coachCard(c):playerCard(c)}</div><p class="bid-limit">Teklif tavanın: ${max} kredi</p><form id="bid-form"><label><input id="amount" aria-label="Teklif miktarı" inputmode="numeric" type="number" min="${sealed?1:lot.amount+1}" max="${max}" step="1" value="${sealed?lot.myBid||1:lot.amount+1}" ${can?'':'disabled'}></label><button ${can?'':'disabled'}>${lot.single?(lot.myLocked?'Kilitlendi':'Teklifi kilitle'):sealed?(lot.myBid?'Değiştir':'Teklif ver'):'Teklif ver'}</button>${button('pass',lot.single?'Pası kilitle':'Pas geç',(lot.single&&lot.myLocked)||lot.passed.includes(me.id)||!allowed)}</form>`;
 
  }
  if(['squadReview','prepare','halftime'].includes(room.phase)){
   const playing=room.phase==='squadReview'||room.pairs.flat().includes(me.id),referee=room.referees?.find(r=>r.teams.includes(me.id));
-  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${referee?'<p class="referee">Hakem: '+['Toleranslı','Normal','Katı'][referee.strictness]+'</p>':''}${!playing?'<p>Bu hafta maçın yok.</p>':room.locked.includes(me.id)?pitch(me,room.myPlan.formation,room.myPlan.captainId)+'<p>✓ Hazırsın. Diğer takımlar bekleniyor.</p>':tactics()}`;
+  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${referee?'<p class="referee">Hakem: '+['Toleranslı','Normal','Katı'][referee.strictness]+'</p>':''}${!playing?'<p>Bu hafta maçın yok.</p>':room.locked.includes(me.id)?coachTactics(me.coach,room.myPlan,me.players.filter(p=>!sentOffIds(me.id).includes(p.id)))+pitch(me,room.myPlan.formation,room.myPlan.captainId,sentOffIds(me.id))+'<p>✓ Hazırsın. Diğer takımlar bekleniyor.</p>':tactics()}`;
  }
  if(room.phase==='finished')return `<p class="eyebrow">KUPANIN SAHİBİ</p><h2>🏆 ${names(room.champion)}</h2><button id="leave">Yeni oyun</button>`;
  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>`;
@@ -54,12 +58,12 @@ function render(){
  $('#connection').hidden=true;document.querySelector('.preview-wrap').hidden=true;
  if(!$('#stage'))game.innerHTML='<div class="room-bar"><strong id="room-label"></strong><span id="timer"></span></div><section id="stage" class="panel"></section><section id="speed-controls" class="panel" hidden></section><section id="allocations" class="panel" hidden></section><section id="matches" class="match-grid"></section><section class="panel"><h2>Puan durumu</h2><div id="table" class="table-scroll"></div></section><section id="squads"></section><details class="panel"><summary>Transfer geçmişi</summary><div id="history"></div></details>';
  $('#room-label').textContent='ODA '+room.id+' · '+(room.final?'Final':room.phase==='lobby'?room.teams.length+'/6 takım':(room.round+1)+'. hafta');
- const nextKey=[room.phase,room.phaseVersion,room.lot?.id,room.lot?.amount,room.lot?.bidder,room.lot?.myBid,room.lot?.passed.includes(room.uid),room.locked.includes(room.uid),room.teams.map(t=>t.id+t.ready).join(),room.champion].join('|');
+ const nextKey=[room.phase,room.phaseVersion,room.lot?.id,room.lot?.amount,room.lot?.bidder,room.lot?.myBid,room.lot?.myLocked,room.lot?.passed.includes(room.uid),room.locked.includes(room.uid),room.teams.map(t=>t.id+t.ready).join(),room.champion].join('|');
  if(nextKey!==key){key=nextKey;$('#stage').innerHTML=stage();bindStage();}
  $('#table').innerHTML='<table><thead><tr><th>Takım</th><th>P</th><th>G</th><th>Av.</th><th>Gol</th></tr></thead><tbody>'+room.table.map(id=>{const t=room.teams.find(t=>t.id===id);return `<tr ${id===room.uid?'class="my-team"':''}><th>${esc(t.name)}</th><td>${t.points}</td><td>${t.wins}</td><td>${t.gf-t.ga}</td><td>${t.gf}:${t.ga}</td></tr>`;}).join('')+'</tbody></table>'+(room.draws.length?'<p class="small">Kura sırası: '+room.draws.map(group=>group.map(names).join(' → ')).join(' / ')+'</p>':'');
  const events={goal:'⚽ Gol',shot:'Şut dışarı',save:'Kaleci kurtardı',yellow:'🟨 Sarı kart',red:'🟥 Kırmızı kart',foul:'Faul',forfeit:'Hükmen sonuç',extraTime:'Uzatmalar başladı',shootout:'Penaltı'};
  const matches=[...room.matches].sort((a,b)=>Number(b.teams.some(t=>t.id===room.uid))-Number(a.teams.some(t=>t.id===room.uid)));
- $('#matches').innerHTML=matches.map(m=>`<article class="panel match"><h3><span>${names(m.teams[0].id)}</span><strong>${m.score.join(' : ')}</strong><span>${names(m.teams[1].id)}</span></h3><p>${minuteLabel(Math.min(m.minute,room.rulesVersion>=2?120:Infinity))} ${m.shootout?'· Penaltılar '+m.shootout.score.join(':'):''}</p>${m.teams.some(t=>t.captainName)?'<p class="match-captains">ⓒ '+m.teams.map(t=>esc(t.captainName||'—')).join(' · ')+'</p>':''}<ol class="event-log">${m.events.slice(-8).reverse().map(e=>`<li>${minuteLabel(e.minute,e.type==='shootout')} ${events[e.type]||esc(e.type)} ${e.playerName?esc(e.playerName):''}${e.type==='shootout'?(e.scored?' ✓':' ✕'):''}</li>`).join('')}</ol></article>`).join('');
+ $('#matches').innerHTML=matches.map(m=>`<article class="panel match"><h3><span>${names(m.teams[0].id)}</span><strong>${m.score.join(' : ')}</strong><span>${names(m.teams[1].id)}</span></h3><p>${minuteLabel(Math.min(displayMinute(m.minute,m.regulationMinutes||(room.rulesVersion>=2?90:20)),120))} ${m.shootout?'· Penaltılar '+m.shootout.score.join(':'):''}</p>${m.teams.some(t=>t.captainName)?'<p class="match-captains">ⓒ '+m.teams.map(t=>esc(t.captainName||'—')).join(' · ')+'</p>':''}<ol class="event-log">${m.events.slice(-8).reverse().map(e=>`<li>${minuteLabel(displayMinute(e.minute,m.regulationMinutes||(room.rulesVersion>=2?90:20)),e.type==='shootout')} ${events[e.type]||esc(e.type)} ${e.playerName?esc(e.playerName):''}${e.type==='shootout'?(e.scored?' ✓':' ✕'):''}</li>`).join('')}</ol></article>`).join('');
  const captains=new Set(room.matches.flatMap(m=>m.teams.map(t=>t.captainId)).filter(id=>id!==undefined));
  const squadsKey=room.phase+'|'+room.teams.map(t=>t.id+':'+t.players.length+':'+t.coach?.id).join('|')+'|'+[...captains].join(',');
  if($('#squads').dataset.key!==squadsKey){$('#squads').dataset.key=squadsKey;$('#squads').innerHTML=[...room.teams].sort((a,b)=>Number(b.id===room.uid)-Number(a.id===room.uid)).map(t=>`<details class="panel" ${room.phase==='squadReview'&&t.id===room.uid?'open':''}><summary>${esc(t.name)} · ${t.players.length}/7 · ${t.balance} kredi</summary><p class="small muted">Sprint ortalaması: ${sprintAverage(t)}</p><div class="squad-cards">${t.players.map(p=>playerCard({...p,isCaptain:captains.has(p.id)})).join('')}${t.coach?coachCard(t.coach):''}</div></details>`).join('');}
@@ -73,7 +77,7 @@ function render(){
 function bindStage(){
  $('#stage').querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();send(b.dataset.action,{lotId:room.lot?.id});}));
  $('#bid-form')?.addEventListener('submit',e=>{e.preventDefault();send('bid',{amount:Number($('#amount').value),lotId:room.lot.id});});
- $('#plan-form')?.addEventListener('change',()=>{const form=$('#plan-form'),me=room.teams.find(t=>t.id===room.uid),reds=room.phase==='halftime'?(room.discipline||[]).flatMap(m=>m.teams.filter(t=>t.id===me.id).flatMap(t=>t.players.filter(p=>p.red).map(p=>p.id))):[];$('#tactic-pitch').innerHTML=pitch(me,form.elements.formation.value,form.elements.captainId.value,reds);});
+ $('#plan-form')?.addEventListener('change',()=>{const form=$('#plan-form'),me=room.teams.find(t=>t.id===room.uid),reds=room.phase==='halftime'?(room.discipline||[]).flatMap(m=>m.teams.filter(t=>t.id===me.id).flatMap(t=>t.players.filter(p=>p.red).map(p=>p.id))):[];$('#tactic-pitch').innerHTML=pitch(me,form.elements.formation.value,form.elements.captainId.value,reds);$('#tactic-coach').innerHTML=coachTactics(me.coach,Object.fromEntries(new FormData(form)),me.players.filter(p=>!reds.includes(p.id)));});
  $('#plan-form')?.addEventListener('submit',e=>{e.preventDefault();const plan=Object.fromEntries(new FormData(e.currentTarget));for(const k of ['press','risk','tempo','width','tackle'])plan[k]=Number(plan[k]);send('plan',{phaseVersion:room.phaseVersion,plan});});
  $('#leave')?.addEventListener('click',()=>{try{localStorage.removeItem(storage);}catch{}location.reload();});
 }
