@@ -8,3 +8,5 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 .status:empty{display:none}.match h3 span{overflow-wrap:anywhere}#stage>p{margin-top:10px}#stage>#leave{margin-top:18px}
 .squad-cards .card-stats{display:none}th:first-child{max-width:140px;overflow-wrap:anywhere}@media(min-width:720px) and (min-height:600px){.squad-cards .card-stats{display:grid}}
+
+.legend-card{background:linear-gradient(135deg,#fff8df,#d8bd79 48%,#f8edca);color:#382d17;border-color:#f4d57c;box-shadow:0 0 0 3px #f4d57c20,0 12px 34px #0005}.legend-card .edition{max-width:100px;letter-spacing:.06em}.legend-card .card-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.legend-card .photo-credit{color:#534321}.legend-card .photo-credit a{color:#3e381a}.football-card .card-stats div:last-child:nth-child(3n + 1){grid-column:2}

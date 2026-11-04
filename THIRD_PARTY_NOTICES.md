@@ -37,3 +37,8 @@ FUT Draft model 4 additionally uses factual FC 27 player subattributes and verif
 ## Transfer Arenası bonus portresi
 
 `dist/games/transfer-arenasi/assets/bonus/eren-oiftci.jpg`, proje sahibinin bonus oyuncu olarak oyun içinde yayımlanmasını açıkça istediği, kendisinin sağladığı görseldir. Bu kişisel fotoğraf kodun MIT lisansına otomatik olarak dahil değildir. EXIF/IPTC/yorum metadata blokları kaldırılmıştır; sıkıştırılmış JPEG görüntü verisi değiştirilmemiştir. Bonus karakterin oyun özellikleri kurgusaldır.
+
+
+## Transfer Arenası efsane kartları
+
+Efsane seçimi ve temel reytingler kullanıcının belirttiği Red Bull FC27 ikon listesinden, 17 alt özellik FUT Mind kamuya açık FC27 base icon sayfalarından alınan olgusal alanlardır. Kaynak ve görüntü SHA256 kayıtları research/transfer-arena-legends.json içindedir. EA kart resimleri dağıtılmaz. dist/games/transfer-arenasi/assets/legends içindeki 15 fotoğraf Wikimedia Commons kaynaklıdır; yazar, kaynak, lisans ve varsa lisans URL kaydı legend-portraits.js içinde ve her efsane kartının ayrıntılarında korunur. Public domain/CC0 ve CC BY/CC BY-SA görseller kendi kaynak koşullarıyla sunulur; MIT lisansı bu görsellere otomatik uygulanmaz. Wikimedia önizleme boyutu ve CSS yakın kadraj kullanılır; iletişim içeren JPEG metadata varsa temizlenir. CC BY-SA uyarlamalarında aynı lisans korunmalıdır.

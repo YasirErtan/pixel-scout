@@ -37,3 +37,14 @@ Oda kurucusu oluşturma ekranında Eren Çiftçi bonusunu açıp kapatabilir; va
 Maç öncesinde ve devre arasında yalnız kendi takımındaki, kırmızı kart görmemiş bir oyuncu kaptan seçilebilir. Kaptan simülasyonda pas, savunma, bitiricilik ve kalecilik özelliklerine %3 performans çarpanı alır. Kart overall değeri ve kaynak özellikleri değişmez; artış birikmez. Seçilmemişse uygun en yüksek reytingli oyuncu otomatik seçilir. Kaptan atılırsa artışı sahada kalmaz; sonraki devrede uygun oyuncuya kaptanlık atanır. Rakibin taktikleri gizli kalırken kaptan isimleri maç başladığında görünür olur.
 
 Telefon arayüzünde ihale çubuğu altta sabittir; dokunma hedefleri en az 48 piksel, taktikler iki sütun ve kadrolar kompakt kartlar halinde sunulur. Gereksiz uyarı metinleri kaldırılmıştır; bağlantı/komut hataları ve fotoğraf lisans atıfları korunur.
+
+
+## Efsane Kart ve simülasyon modeli 2
+
+Her yeni pazarda 15 kişilik efsane havuzundan eşit olasılıkla tam bir oyuncu seçilir; ismi ve ihale sırası önceden açıklanmaz. Efsane, 88+ kalite bandında ve kendi mevkisinde normal bir oyuncunun yerine geçer. Böylece 7N toplam, mevki kapasiteleri ve kalite bantları aynıdır. Bonus oyuncu seçeneğiyle birlikte çalışır. Teklif gelmezse aynı pas havuzu kurallarıyla mutlaka bir takıma gider. İhale bütçesi ve maç motorunda ayrıca efsane çarpanı yoktur. Reytingler91–95 FC27 base icon değerleridir; 99 puanlı kampanya kartları kullanılmaz. Seçki kullanıcının Red Bull listesinden, 17 alt özellik FUT Mind FC27 görüntülerinden doğrulanmıştır. Kaynak/SHA256 kayıtları research/transfer-arena-legends.json içindedir.
+
+Model2 normal şut gücü = bitiricilik ×0,75 + şut gücü ×0,25. Önceki bitiricilik katsayısı0,003 bu birleşik değere uygulanır. Penaltılar yalnız penaltı özelliğini kullanmaya devam eder. Kart özetinde şut gücü bitiriciliğin yanındadır; normal kartlarda FC27 etiketi kaldırılmıştır.
+
+Kaleci ve kırmızı kartlılar dışındaki aktif saha oyuncularının sprint ortalaması, enerji/görev uyumu/kaptan çarpanlarıyla hesaplanır. Rakiple fark ×0,002, başarılı pas sonrası bir bölge ilerleme ihtimaline eklenir; etki −0,06 ile +0,06 arasında sınırlıdır. 10 puan avantaj +2 yüzde puandır. Kadro ayrıntısındaki sprint ortalaması ham kadro değeridir; maç içindeki etkin ortalama yorgunlukla değişir. Bu etki pas doğruluğunu veya şut gücünü doğrudan artırmaz. Önceden başlamış version1 maçlar eski modeliyle devre/uzatma tamamlar; yeni maçlar version2 başlar.
+
+15 portre Wikimedia Commons serbest lisanslı fotoğraflardır; atıflar kart ayrıntısında ve legend-portraits.js içinde, SHA256/araştırma kayıtları research/transfer-arena-legend-portraits.json içinde tutulur.

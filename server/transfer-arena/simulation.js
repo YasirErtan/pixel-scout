@@ -16,7 +16,7 @@ const stat=(p,k)=>Number.isFinite(p.attributes?.[k])?p.attributes[k]:null;
 function required(p,k){const v=stat(p,k);if(v===null)throw Error(`Eksik simülasyon özelliği: ${k}`);return v;}
 export function beginMatch(home,away,seed,referee=1){
  const make=t=>({id:t.id,coach:t.coach,players:t.players.map(p=>({...p,energy:100,yellow:0,red:false})),goals:0,shots:0,onTarget:0,saves:0,xg:0,passes:0,completed:0,losses:0});
- return {version:1,rng:seed>>>0,minute:0,teams:[make(home),make(away)],events:[],half:0,referee,finished:false};
+ return {version:2,rng:seed>>>0,minute:0,teams:[make(home),make(away)],events:[],half:0,referee,finished:false};
 }
 function alive(t){return t.players.filter(p=>!p.red);}
 function keeper(t){return alive(t).find(p=>p.position==='GK')||alive(t).find(p=>p.id===t.emergencyKeeperId);}
@@ -33,6 +33,9 @@ function selectPlayer(m,players,weights){const total=players.reduce((s,p)=>s+(we
 function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*.02:0;}
 function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1);}
 function effective(p,k){return performance(p,k)*(0.8+0.2*p.energy/100)*(p.roleFit||1);}
+// Exclude the goalkeeper; live energy, captain and role fit affect usable pace.
+export function teamSprint(team){const players=field(team);return players.length?players.reduce((sum,p)=>sum+effective(p,'sprintSpeed'),0)/players.length:0;}
+export function sprintAdvantage(team,opponent){return cap((teamSprint(team)-teamSprint(opponent))*.002,-.06,.06);}
 function forceResult(m,loser){const other=m.teams[1-loser],team=m.teams[loser];if(other.goals-team.goals<=3){other.goals=3;team.goals=0;}m.finished=true;m.forfeit=team.id;m.events.push({minute:m.minute,type:'forfeit',team:team.id});}
 export function simulateHalf(previous,plans){
  const m=structuredClone(previous);if(m.finished||m.half>=2)throw Error('Maç tamamlandı');
@@ -93,7 +96,7 @@ function simulatePeriod(m,pp,start,duration,finished){
   if(plan.style==='counter'&&zone<2)chance+=def.risk*.012+def.press*.012+coach(team,'transition')*.3;
   if(actor.overall<=81)chance+=coach(team,'development')*.3;
   if(direct&&def.press===2)chance+=.035;
-  if(next(m)<cap(chance,.3,.95)){team.completed++;if(next(m)<(direct?.8:.48)+plan.tempo*.035)zone=Math.min(2,zone+1);}
+  if(next(m)<cap(chance,.3,.95)){team.completed++;const pace=m.version>=2?sprintAdvantage(team,opp):0;if(next(m)<cap((direct?.8:.48)+plan.tempo*.035+pace,.3,.95))zone=Math.min(2,zone+1);}
   else{team.losses++;possession=1-possession;zone=plan.risk===2?1:0;}
  }
  m.minute=end;if(finished)m.finished=true;return m;
@@ -139,7 +142,8 @@ function shoot(m,side,actor,plans,penalty=false){
  const defense=plans[1-side].risk===0?coach(opp,'defense')*.25:0;
  const attackRoles=field(t).filter(p=>p.matchRole==='ATT').length,defenseRoles=field(opp).filter(p=>p.matchRole==='DEF').length;
  const shotQuality=penalty?.72:cap(.13+plans[side].risk*.025+(field(t).length-field(opp).length)*.035+(attackRoles-defenseRoles)*.009-defense,.03,.45);
- const probability=cap(shotQuality+(performance(actor,penalty?'penalties':'finishing')-keeping)*.003,.01,.94);
+ const shooting=penalty?performance(actor,'penalties'):m.version>=2?performance(actor,'finishing')*.75+performance(actor,'shotPower')*.25:performance(actor,'finishing');
+ const probability=cap(shotQuality+(shooting-keeping)*.003,.01,.94);
  t.shots++;t.xg+=probability;
  const draw=next(m);let type='shot';
  if(draw<probability){t.goals++;t.onTarget++;type='goal';}

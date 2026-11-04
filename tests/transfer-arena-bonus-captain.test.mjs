@@ -18,7 +18,7 @@ test('optional bonus enters once and preserves exact role/quality totals and aut
  }
  const html=playerCard(BONUS_PLAYER);assert.ok(html.includes(BONUS_PLAYER.portraitURL));assert.ok(html.includes('BONUS'));assert.ok(!html.includes('FC 27'));
 });
-const keys=['finishing','vision','shortPassing','ballControl','defensiveAwareness','interceptions','standingTackle','stamina','gkReflexes','gkPositioning','penalties'];
+const keys=['finishing','shotPower','sprintSpeed','vision','shortPassing','ballControl','defensiveAwareness','interceptions','standingTackle','stamina','gkReflexes','gkPositioning','penalties'];
 const team=id=>({id,players:['GK','DEF','DEF','MID','MID','ATT','ATT'].map((position,i)=>({id:id+i,name:id+i,position,overall:80,attributes:Object.fromEntries(keys.map(k=>[k,80]))}))});
 test('captain boost affects a real shooting opportunity without changing ratings or stacking across halves',()=>{
  const start=beginMatch(team('a'),team('b'),139);
