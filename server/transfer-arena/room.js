@@ -2,7 +2,7 @@ import {random,makeMarket,openLot,bid,settle,completePool,eligible} from './mark
 import {fixtures,validatePlan,DEFAULT_PLAN,beginMatch,simulateHalf,resolveFinal} from './simulation.js';
 import {standings} from './standings.js';
 
-export function createRoom(id,owner,name,seed,now){return {id,owner,seed,createdAt:now,phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name)],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
+export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,createdAt:now,options:{bonusEnabled:options.bonusEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name)],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
 function member(id,name){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,ready:false,points:0,gf:0,ga:0,wins:0};}
 function deadline(room,phase,now,ms){room.phase=phase;room.phaseVersion++;room.deadline=now+ms;room.plans={};}
 function nextLot(room,now){
@@ -62,7 +62,7 @@ export function command(input,uid,action,now,data){
    case 'ready':if(r.phase!=='lobby')throw Error('Lobi kapandı');t.ready=true;break;
    case 'start':{
     if(uid!==r.owner||r.phase!=='lobby'||r.teams.length<3||!r.teams.every(x=>x.ready))throw Error('En az üç hazır takım ve kurucu gerekli');
-    r.market=makeMarket(data.players,data.coaches,r.teams.length,random(r.seed));r.phase='players';nextLot(r,now);break;
+    r.market=makeMarket(data.players,data.coaches,r.teams.length,random(r.seed),r.options);r.phase='players';nextLot(r,now);break;
    }
    case 'bid':if(!['players','coaches'].includes(r.phase))throw Error('İhale açık değil');bid(r.lot,t,action.amount,now,action.lotId);break;
    case 'pass':{
@@ -74,7 +74,14 @@ export function command(input,uid,action,now,data){
    case 'plan':{
     if(!['prepare','halftime'].includes(r.phase)||action.phaseVersion!==r.phaseVersion)throw Error('Taktik süresi değişti');
     if(!activePairs(r).flat().includes(uid))throw Error('Bu hafta maçın yok');
-    if(r.plans[uid])throw Error('Taktik zaten kilitli');r.plans[uid]=validatePlan(action.plan);
+    if(r.plans[uid])throw Error('Taktik zaten kilitli');
+    const plan=validatePlan(action.plan);
+    if(plan.captainId!==null){
+     const player=t.players.find(p=>String(p.id)===String(plan.captainId));
+     const sentOff=r.phase==='halftime'&&r.matches.some(m=>m.teams.some(team=>team.id===uid&&team.players.some(p=>p.id===player?.id&&p.red)));
+     if(!player||sentOff)throw Error('Geçersiz kaptan seçimi');plan.captainId=player.id;
+    }
+    r.plans[uid]=plan;
     if(activePairs(r).flat().every(id=>r.plans[id]))startHalf(r,now,r.phase==='prepare'?1:2);break;
    }
    default:throw Error('Bilinmeyen komut');
@@ -90,10 +97,10 @@ export function publicView(r,uid,now){
  if(!r.teams.some(t=>t.id===uid))throw Error('Oda üyesi değilsin');
  const live=['firstHalf','secondHalf','finalResolution'].includes(r.phase);
  const minute=live?(r.phase==='firstHalf'?0:r.phase==='secondHalf'?10:20)+Math.min(r.phase==='finalResolution'?r.matches[0].minute-20:10,Math.max(0,(now-r.playbackStart)/3000)):r.phase==='halftime'?10:r.phase==='finished'?Infinity:20;
- return {id:r.id,owner:r.owner,phase:r.phase,version:r.version,phaseVersion:r.phaseVersion,deadline:r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline,
+ return {id:r.id,owner:r.owner,options:r.options||{bonusEnabled:false},phase:r.phase,version:r.version,phaseVersion:r.phaseVersion,deadline:r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline,
   teams:r.teams,pairs:r.schedule?activePairs(r):[],table:standings(r.teams,r.results||[],r.seed+900001).teams.map(t=>t.id),draws:r.draws||[],lot:r.lot,history:r.history,pool:r.pool,round:r.round,final:r.final||false,champion:r.champion,
   referees:r.schedule?activePairs(r).map((pair,i)=>({teams:pair,strictness:matchSeed(r,i)%3})):[],
   discipline:r.matches.map(m=>({teams:m.teams.map(t=>({id:t.id,players:t.players.map(p=>({id:p.id,name:p.name,red:m.events.some(e=>e.type==='red'&&e.playerId===p.id&&e.minute<=minute),yellow:m.events.filter(e=>e.type==='yellow'&&e.playerId===p.id&&e.minute<=minute).length}))}))})),
   myPlan:r.plans[uid]||r.lastPlans?.[uid]||DEFAULT_PLAN,locked:Object.keys(r.plans),
-  matches:r.matches.map(m=>({minute:Math.min(minute,m.minute),teams:m.teams.map(t=>({id:t.id})),events:m.events.filter(e=>e.minute<=minute),score:m.forfeit&&m.events.some(e=>e.type==='forfeit'&&e.minute<=minute)?m.teams.map(t=>t.goals):m.teams.map(t=>m.events.filter(e=>e.minute<=minute&&e.team===t.id&&e.type==='goal').length),shootout:minute>=m.minute?m.shootout:null}))};
+  matches:r.matches.map(m=>({minute:Math.min(minute,m.minute),teams:m.teams.map(t=>({id:t.id,captainId:t.captainId,captainName:t.players.find(p=>p.id===t.captainId)?.name})),events:m.events.filter(e=>e.minute<=minute),score:m.forfeit&&m.events.some(e=>e.type==='forfeit'&&e.minute<=minute)?m.teams.map(t=>t.goals):m.teams.map(t=>m.events.filter(e=>e.minute<=minute&&e.team===t.id&&e.type==='goal').length),shootout:minute>=m.minute?m.shootout:null}))};
 }

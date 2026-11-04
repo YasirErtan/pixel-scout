@@ -33,3 +33,7 @@ FUT Draft model 4 additionally uses factual FC 27 player subattributes and verif
 ## Transfer Arenası teknik direktör fotoğrafları
 
 `dist/games/transfer-arenasi/assets/coaches/` görselleri Wikimedia Commons kaynaklıdır. Fotoğrafçı, dosya kaynağı, CC BY / CC BY-SA / CC0 lisansı ve lisans bağlantısı her hoca kartındaki “Fotoğraf kaynağı ve lisansı” bölümünde ve `dist/games/transfer-arenasi/coach-portraits.js` içinde korunur. Araştırma ve SHA-256 kayıtları `research/transfer-arena-coach-portraits.json` içindedir. Wikimedia önizleme boyutu kullanılır, CSS ile yakın kadraj yapılır. Fotoğraflar kendi lisanslarıyla dağıtılır; projenin MIT lisansı bu görsellerin lisansını değiştirmez. CC BY-SA görsel uyarlamalarında aynı lisans koşullarını koruyun.
+
+## Transfer Arenası bonus portresi
+
+`dist/games/transfer-arenasi/assets/bonus/eren-oiftci.jpg`, proje sahibinin bonus oyuncu olarak oyun içinde yayımlanmasını açıkça istediği, kendisinin sağladığı görseldir. Bu kişisel fotoğraf kodun MIT lisansına otomatik olarak dahil değildir. EXIF/IPTC/yorum metadata blokları kaldırılmıştır; sıkıştırılmış JPEG görüntü verisi değiştirilmemiştir. Bonus karakterin oyun özellikleri kurgusaldır.

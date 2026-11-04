@@ -1,9 +1,11 @@
 // Small-sided game model. Coefficients are game design, not measured real-match probabilities.
-export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1});
+import {CAPTAIN_BOOST} from '../../dist/games/transfer-arenasi/bonus-player.js';
+export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
  const p={...DEFAULT_PLAN,...input};
  if(!['2-2-2','2-3-1','3-2-1','1-3-2'].includes(p.formation))throw Error('Geçersiz diziliş');
  if(!['short','wide','direct','counter'].includes(p.style))throw Error('Geçersiz oyun planı');
+ if(p.captainId!==null&&!((typeof p.captainId==='string'&&p.captainId.length>0&&p.captainId.length<=80)||Number.isSafeInteger(p.captainId)))throw Error('Geçersiz kaptan seçimi');
  for(const key of ['press','risk','tempo','width','tackle'])if(!Number.isInteger(p[key])||p[key]<0||p[key]>(key==='tackle'?3:2))throw Error('Geçersiz taktik değeri');
  return Object.fromEntries(Object.keys(DEFAULT_PLAN).map(k=>[k,p[k]]));
 }
@@ -29,7 +31,8 @@ function shape(t,formation){
 }
 function selectPlayer(m,players,weights){const total=players.reduce((s,p)=>s+(weights[p.matchRole||p.position]||1),0);let draw=next(m)*total;return players.find(p=>(draw-=weights[p.matchRole||p.position]||1)<0)||players.at(-1);}
 function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*.02:0;}
-function effective(p,k){return required(p,k)*(0.8+0.2*p.energy/100)*(p.roleFit||1);}
+function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1);}
+function effective(p,k){return performance(p,k)*(0.8+0.2*p.energy/100)*(p.roleFit||1);}
 function forceResult(m,loser){const other=m.teams[1-loser],team=m.teams[loser];if(other.goals-team.goals<=3){other.goals=3;team.goals=0;}m.finished=true;m.forfeit=team.id;m.events.push({minute:m.minute,type:'forfeit',team:team.id});}
 export function simulateHalf(previous,plans){
  const m=structuredClone(previous);if(m.finished||m.half>=2)throw Error('Maç tamamlandı');
@@ -38,7 +41,13 @@ export function simulateHalf(previous,plans){
  return simulatePeriod(m,pp,(m.half-1)*10,10,m.half===2);
 }
 function simulatePeriod(m,pp,start,duration,finished){
- for(let i=0;i<2;i++)shape(m.teams[i],pp[i].formation);
+ for(let i=0;i<2;i++){
+  const t=m.teams[i],requested=pp[i].captainId;
+  if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw Error('Geçersiz kaptan seçimi');
+  const captain=alive(t).find(p=>String(p.id)===String(requested))||alive(t).find(p=>p.captain)||alive(t).toSorted((a,b)=>(b.overall||0)-(a.overall||0))[0];
+  t.captainId=captain.id;for(const p of t.players)p.captain=p.id===captain.id;
+  shape(t,pp[i].formation);
+ }
  let possession=next(m)<.5?0:1,zone=1;
  const end=start+duration;
  for(let tick=0;tick<duration*12&&!m.finished;tick++){
@@ -107,8 +116,8 @@ function shootout(m){
  const goals=[0,0],taken=[0,0];const first=next(m)<.5?0:1;
  function kick(side){
   const actor=order[side][taken[side]%count],keeper=alive(m.teams[1-side]).find(p=>p.position==='GK');
-  const keeping=keeper?(required(keeper,'gkReflexes')+required(keeper,'gkPositioning'))/2:25;
-  const probability=cap(.72+(required(actor,'penalties')-keeping)*.003,.4,.94);
+  const keeping=keeper?(performance(keeper,'gkReflexes')+performance(keeper,'gkPositioning'))/2:25;
+  const probability=cap(.72+(performance(actor,'penalties')-keeping)*.003,.4,.94);
   const scored=next(m)<probability;taken[side]++;goals[side]+=Number(scored);
   m.minute=24+(taken[0]+taken[1])*.5;
   m.events.push({minute:m.minute,type:'shootout',team:m.teams[side].id,playerId:actor.id,playerName:actor.name,scored,shootoutScore:[...goals]});
@@ -126,11 +135,11 @@ function shootout(m){
 function shoot(m,side,actor,plans,penalty=false){
  const t=m.teams[side],opp=m.teams[1-side],goalkeeper=keeper(opp);
  // No factual outfield GK attributes are invented: 25 is the explicit emergency-keeper model.
- const keeping=goalkeeper?.position==='GK'?(required(goalkeeper,'gkReflexes')+required(goalkeeper,'gkPositioning'))/2:25;
+ const keeping=goalkeeper?.position==='GK'?(performance(goalkeeper,'gkReflexes')+performance(goalkeeper,'gkPositioning'))/2:25;
  const defense=plans[1-side].risk===0?coach(opp,'defense')*.25:0;
  const attackRoles=field(t).filter(p=>p.matchRole==='ATT').length,defenseRoles=field(opp).filter(p=>p.matchRole==='DEF').length;
  const shotQuality=penalty?.72:cap(.13+plans[side].risk*.025+(field(t).length-field(opp).length)*.035+(attackRoles-defenseRoles)*.009-defense,.03,.45);
- const probability=cap(shotQuality+(required(actor,penalty?'penalties':'finishing')-keeping)*.003,.01,.94);
+ const probability=cap(shotQuality+(performance(actor,penalty?'penalties':'finishing')-keeping)*.003,.01,.94);
  t.shots++;t.xg+=probability;
  const draw=next(m);let type='shot';
  if(draw<probability){t.goals++;t.onTarget++;type='goal';}

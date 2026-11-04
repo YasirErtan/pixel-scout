@@ -1,3 +1,4 @@
+import {BONUS_PLAYER} from '../../dist/games/transfer-arenasi/bonus-player.js';
 export const LIMITS = Object.freeze({GK:1,DEF:2,MID:2,ATT:2});
 export function random(seed) { let n=seed>>>0; return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;}; }
 export function shuffle(items,next) {const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(next()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -46,13 +47,14 @@ export function selectCoaches(coaches,count,next){
   }
   return shuffle(selected,next).map(c=>({...c,kind:'coach'}));
 }
-export function makeMarket(players,coaches,count,next) {
+export function makeMarket(players,coaches,count,next,{bonusEnabled=false}={}) {
   if(!Number.isInteger(count)||count<3||count>6)throw Error('3–6 takım gerekli');
   const market=[],remaining=Object.fromEntries(Object.entries(LIMITS).map(([role,n])=>[role,n*count]));
+  if(bonusEnabled){market.push({...BONUS_PLAYER,attributes:{...BONUS_PLAYER.attributes},kind:'player'});remaining.ATT--;}
   const bands=[[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>Object.fromEntries(Object.keys(LIMITS).map(role=>[role,shuffle(players.filter(p=>p.position===role&&p.overall>=lo&&p.overall<=hi),next)])));
   // Exact whole-market mix, without dictating any team's share of weak or elite cards.
   // Reserve the scarce elite cards first. The shipped snapshot has ample lower bands.
-  for(const index of [3,2,1,0])for(let i=0;i<count*(index===3?1:2);i++){
+  for(const index of [3,2,1,0])for(let i=0;i<count*(index===3?1:2)-(bonusEnabled&&index===0?1:0);i++){
     const candidates=Object.keys(LIMITS).flatMap(role=>bands[index][role].length?Array(remaining[role]).fill(role):[]);
     if(!candidates.length)throw Error('Mevki ve kalite havuzu yetersiz');
     const role=candidates[Math.floor(next()*candidates.length)],p=bands[index][role].pop();
