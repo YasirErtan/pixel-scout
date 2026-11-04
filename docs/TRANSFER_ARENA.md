@@ -21,3 +21,11 @@ Tek devre tarafsız lig: galibiyet 3, beraberlik 1 puan. Sıra puan, averaj, gol
 Üretim ortamı değişkenleri yalnız sunucuda: `ARENA_SERVICE_ACCOUNT`, `ARENA_FIREBASE_API_KEY`, `ARENA_DATABASE_URL`. Kimlik, proje IAM rolü olmayan özel bir servis hesabının imzaladığı Firebase Auth custom token ile `transfer-arena-server` kullanıcısına giriş yapar. Bu kimlik yalnız `transfer_arena_v1` altında yetkilendirilmelidir. Mevcut oyunların kuralları korunur. Kimlik dosyasını veya özel anahtarı depoya koyma. Ayrıntılar: [custom tokens](https://firebase.google.com/docs/auth/admin/create-custom-tokens), [REST auth](https://firebase.google.com/docs/reference/rest/auth), [ETag kayıtları](https://firebase.google.com/docs/database/rest/save-data#section-conditional-requests).
 
 Depolama bütün odayı ETag koşullu yazmayla atomik günceller. Çakışma taze durumla yeniden denenir. Açılmamış pazar, simülasyon tohumu ve rakibin taktikleri publicView dışındadır. İstemci bütçe, maç sonucu veya futbolcu özelliği göndermez; bunları sunucu belirler. Süreler istemci saatine güvenmez. Poll yalnız kalan olayları gösterir; gelecek golleri ve penaltı sonuçlarını açıklamaz.
+
+## Teknik direktör kartları
+
+Havuz 24 gerçek teknik direktörden oluşur. Fatih Terim 5, Okan Buruk 4 ve Emre Belözoğlu 2 yıldızdır. Ek 1 yıldızlı hocalar Frank de Boer ve Steven Gerrard; ek 2 yıldızlı hocalar Sergen Yalçın ve İsmail Kartal'dır. Tüm yıldızlar ve uzmanlıklar oyun tasarımıdır.
+
+3–5 kişilik odalarda her yıldız seviyesinden en fazla bir hoca seçilir. 6 kişilik odalarda beş seviyeden birer hoca ve rastgele bir seviyeden ikinci bir hoca seçilir. Aynı hoca tekrarlanmaz; hiçbir seviyeden üç hoca gelmez. Hoca sırası karıştırılır ve açılmamış isimler gizli kalır.
+
+İhale ve kadro kartları fotoğrafı, yıldızı, uzmanlığı, sayısal etkiyi ve hangi taktik koşulunda çalıştığını gösterir. Fotoğrafçı/kaynak/lisans kartın ayrıntılarındadır. Lisans kayıtları research/transfer-arena-coach-portraits.json ve coach-portraits.js içinde korunur. Başlamış odaların hoca pazarı ve yıldızları yeniden üretilmez; yeni seçim kuralı yeni başlatılan oyunlarda uygulanır.
