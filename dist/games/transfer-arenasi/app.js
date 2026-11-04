@@ -1,10 +1,10 @@
 import {playerCard,escapeHTML as esc} from './cards.js';
+import {coachCard} from './coach-card.js';
 import {ATTRIBUTE_KEYS,PLAYER_ATTRIBUTES} from '../fut-draft/player-attributes.js';
 const $=s=>document.querySelector(s),status=$('#status'),game=$('#game');
 const storage='pixel-scout:transfer-arenasi:v1';
 let room=null,busy=false,key='',offset=0,code='';
 try{code=localStorage.getItem(storage)||'';}catch{}
-const specialties={press:'Pres',passing:'Pas oyunu',defense:'Savunma',transition:'Geçiş hücumu',development:'Gelişim',discipline:'Disiplin'};
 const phases={lobby:'Lobi',players:'Futbolcu ihalesi',coaches:'Teknik direktör ihalesi',prepare:'Maç öncesi',firstHalf:'İlk yarı',halftime:'Devre arası',secondHalf:'İkinci yarı',finalResolution:'Uzatma ve penaltılar',finished:'Kupa sahibi belli'};
 const names=id=>esc(room.teams.find(t=>t.id===id)?.name||'—');
 async function send(type,extra={}){
@@ -19,7 +19,6 @@ async function send(type,extra={}){
  }catch(e){status.textContent=e.message==='Failed to fetch'?'Bağlantı koptu; yeniden deneniyor…':e.message;}
  finally{busy=false;}
 }
-function coachCard(c){return `<article class="panel coach-card"><span class="eyebrow">TEKNİK DİREKTÖR</span><div class="coach-silhouette" aria-hidden="true">♟</div><h2>${esc(c.name)}</h2><p>${esc(specialties[c.specialty])} · ${'★'.repeat(c.stars)}${'☆'.repeat(5-c.stars)}</p><p class="muted small">Uzmanlık ve yıldızlar bu oyunun tasarımıdır; FC reytingi değildir.</p></article>`;}
 function button(type,label,disabled=false){return `<button data-action="${type}" ${disabled?'disabled':''}>${label}</button>`;}
 function select(name,label,options,value){return `<label>${label}<select name="${name}">${options.map(([v,l])=>`<option value="${v}" ${String(v)===String(value)?'selected':''}>${l}</option>`).join('')}</select></label>`;}
 function tactics(){

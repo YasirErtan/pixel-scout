@@ -29,3 +29,7 @@ Silkscreen: Jason Kottke, SIL Open Font License 1.1. Tam lisans: `dist/assets/Si
 Who Are Ya oyununun gözlenen davranışı referans alınmış, uygulama bağımsız geliştirilmiştir. Orijinal oyunun kodu, markası veya görsel varlıkları dağıtılmaz. Kamuya açık davranış inceleme notları `research/reverse/behavior-notes.md` dosyasındadır.
 
 FUT Draft model 4 additionally uses factual FC 27 player subattributes and verified primary/alternate positions from the same public EA ratings source. The current UEFA participant list and supplementary full-club sources are recorded in research/fut-draft-season.json. These third-party data are not relicensed under the code's MIT license.
+
+## Transfer Arenası teknik direktör fotoğrafları
+
+`dist/games/transfer-arenasi/assets/coaches/` görselleri Wikimedia Commons kaynaklıdır. Fotoğrafçı, dosya kaynağı, CC BY / CC BY-SA / CC0 lisansı ve lisans bağlantısı her hoca kartındaki “Fotoğraf kaynağı ve lisansı” bölümünde ve `dist/games/transfer-arenasi/coach-portraits.js` içinde korunur. Araştırma ve SHA-256 kayıtları `research/transfer-arena-coach-portraits.json` içindedir. Wikimedia önizleme boyutu kullanılır, CSS ile yakın kadraj yapılır. Fotoğraflar kendi lisanslarıyla dağıtılır; projenin MIT lisansı bu görsellerin lisansını değiştirmez. CC BY-SA görsel uyarlamalarında aynı lisans koşullarını koruyun.

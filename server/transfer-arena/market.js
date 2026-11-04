@@ -33,6 +33,19 @@ export function completePool(teams,pool,next) {
     const winner=candidates[0];award(winner,card,1,true);quality.get(winner.id).push(card.overall??card.stars);weak=!weak;
   }
 }
+export function selectCoaches(coaches,count,next){
+  if(!Number.isInteger(count)||count<3||count>6)throw Error('3–6 takım gerekli');
+  const groups=new Map([1,2,3,4,5].map(stars=>[stars,shuffle(coaches.filter(c=>c.stars===stars),next)]));
+  const levels=shuffle([...groups.keys()].filter(stars=>groups.get(stars).length),next);
+  if(levels.length<Math.min(count,5))throw Error('Hoca yıldız seviyeleri yetersiz');
+  const selected=levels.slice(0,Math.min(count,5)).map(stars=>groups.get(stars).pop());
+  if(count===6){
+    const extraLevels=levels.filter(stars=>groups.get(stars).length);
+    if(!extraLevels.length)throw Error('Altıncı hoca için havuz yetersiz');
+    selected.push(groups.get(extraLevels[Math.floor(next()*extraLevels.length)]).pop());
+  }
+  return shuffle(selected,next).map(c=>({...c,kind:'coach'}));
+}
 export function makeMarket(players,coaches,count,next) {
   if(!Number.isInteger(count)||count<3||count>6)throw Error('3–6 takım gerekli');
   const market=[],remaining=Object.fromEntries(Object.entries(LIMITS).map(([role,n])=>[role,n*count]));
@@ -46,5 +59,5 @@ export function makeMarket(players,coaches,count,next) {
     remaining[role]--;market.push({...p,kind:'player'});
   }
   if(coaches.length<count)throw Error('Hoca havuzu yetersiz');
-  return {players:shuffle(market,next),coaches:shuffle(coaches,next).slice(0,count).map(c=>({...c,kind:'coach'}))};
+  return {players:shuffle(market,next),coaches:selectCoaches(coaches,count,next)};
 }
