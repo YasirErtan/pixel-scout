@@ -7,7 +7,7 @@ const teams=n=>Array.from({length:n},(_,i)=>({id:`team-${i}`,balance:200,players
 test('every no-bid player and coach is assigned once for 3–6 teams, with legal squads and conserved budget',()=>{
  for(let n=3;n<=6;n++)for(let seed=1;seed<=50;seed++){
  const next=random(seed),market=makeMarket(players,coaches,n,next),ts=teams(n);
- assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[2*n,2*n,2*n,n]);
+ assert.deepEqual([[70,75],[76,81],[82,87],[88,100]].map(([lo,hi])=>market.players.filter(p=>p.overall>=lo&&p.overall<=hi).length),[n,n,3*n,2*n]);
  assert.equal(market.players.length,7*n);completePool(ts,market.players,next);completePool(ts,market.coaches,next);
  assert.equal(new Set(ts.flatMap(t=>t.players.map(p=>p.id))).size,7*n);
  assert.equal(new Set(ts.map(t=>t.coach.id)).size,n);
