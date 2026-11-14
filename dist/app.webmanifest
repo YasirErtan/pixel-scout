@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "Pixel Scout Futbol Oyunları",
+  "short_name": "Pixel Scout",
+  "description": "Pixel Scout futbol oyunları",
+  "lang": "tr",
+  "start_url": "./games/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1811",
+  "theme_color": "#0c1811",
+  "icons": [
+    {"src":"./mobile/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./mobile/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

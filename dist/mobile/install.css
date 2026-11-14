@@ -1,0 +1,6 @@
+.hub-header { padding-top: env(safe-area-inset-top); }
+.hub-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.hub-main { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+#app-install { min-height: 44px; padding: 8px 12px; border: 1px solid #b9e87c; border-radius: 10px; color: #d3f7ad; background: #17291e; font: inherit; cursor: pointer; }
+#app-install-help { margin: 12px 0; padding: 10px 14px; border-radius: 10px; background: #17291e; color: #e5f6eb; }
+#app-install-help p { margin: 6px 0; }

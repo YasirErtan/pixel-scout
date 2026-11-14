@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0c1811">
   <title>Pixel Scout — Futbol Oyunları</title>
   <link rel="icon" href="../assets/ball.svg" type="image/svg+xml">
@@ -10,6 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./launcher.css">
+  <link rel="manifest" href="../app.webmanifest">
+  <link rel="apple-touch-icon" href="../mobile/icon-192.png">
+  <script type="module" src="../mobile/install.js"></script>
+  <link rel="stylesheet" href="../mobile/install.css">
 </head>
 <body>
   <div class="pitch-bg" aria-hidden="true">
@@ -23,6 +27,7 @@
         <img src="../assets/ball.svg" alt="" width="34" height="34">
         <span class="brand-name">PIXEL<span>SCOUT</span></span>
       </div>
+      <button id="app-install" type="button" aria-controls="app-install-help" aria-expanded="false" hidden>Yükle</button>
     </div>
   </header>
 
@@ -31,6 +36,10 @@
       <h1>SAHAYA ÇIK</h1>
     </div>
 
+    <aside id="app-install-help" hidden>
+      <p><strong>Android:</strong> Chrome menüsünden “Uygulamayı yükle” veya “Ana ekrana ekle”.</p>
+      <p><strong>iPhone:</strong> Safari’de Paylaş → Ana Ekrana Ekle → Web Uygulaması Olarak Aç.</p>
+    </aside>
     <div id="games" class="games" aria-label="Oyun listesi"></div>
     <p id="message" role="status" aria-live="polite"></p>
   </main>
