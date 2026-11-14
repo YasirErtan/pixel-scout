@@ -1,3 +1,11 @@
+export const FORMATIONS = Object.freeze(['2-2-2', '2-3-1', '3-2-1', '1-3-2']);
+
+export function formationLimits(formation) {
+ if (!FORMATIONS.includes(formation)) throw Error('Geçersiz diziliş');
+ const [DEF, MID, ATT] = formation.split('-').map(Number);
+ return {GK:1,DEF,MID,ATT};
+}
+
 // Shared by the pitch preview and server match roles; natural positions fill first.
 export function assignFormation(players,formation){
  const roles=formation.split('-').flatMap((n,i)=>Array(Number(n)).fill(['DEF','MID','ATT'][i]));

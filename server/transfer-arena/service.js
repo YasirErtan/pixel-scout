@@ -22,8 +22,8 @@ export function arenaService({store,data,clock=Date.now}){
     try{
      const room=await store.transaction('rooms/'+code,current=>{
       if(current&&now<current.createdAt+86400000)throw Error('CODE_COLLISION');
-      if(action.bonusEnabled!==undefined&&typeof action.bonusEnabled!=='boolean')throw Error('Geçersiz bonus seçimi');
-      return createRoom(code,uid,action.name,randomInt(0,4294967296),now,{bonusEnabled:action.bonusEnabled===true});
+      if(['bonusEnabled','bonusCardsEnabled'].some(key=>action[key]!==undefined&&typeof action[key]!=='boolean'))throw Error('Geçersiz bonus seçimi');
+      return createRoom(code,uid,action.name,randomInt(0,4294967296),now,{bonusEnabled:action.bonusEnabled===true,bonusCardsEnabled:action.bonusCardsEnabled===true});
      });return {...publicView(room,uid,now),uid,serverNow:now};
     }catch(e){if(e.message!=='CODE_COLLISION')throw e;}
    }

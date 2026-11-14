@@ -8,3 +8,13 @@ export const BONUS_PLAYER=Object.freeze({
   gkPositioning:9,gkReflexes:11,penalties:68})
 });
 export const CAPTAIN_BOOST=.03;
+
+export function ratedBonusPlayer(overall) {
+ return {
+  ...BONUS_PLAYER,
+  overall,
+  attributes:Object.fromEntries(Object.entries(BONUS_PLAYER.attributes).map(([key,value])=>[
+   key,Math.min(99,value+(key.startsWith('gk')?0:overall-BONUS_PLAYER.overall))
+  ]))
+ };
+}

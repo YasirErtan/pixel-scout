@@ -5,7 +5,7 @@ import {DEFAULT_PLAN,beginMatch,simulateHalf,resolveFinal,shape} from '../server
 import {assignFormation} from '../dist/games/transfer-arenasi/formation.js';
 import {minuteLabel,pitch} from '../dist/games/transfer-arenasi/pitch.js';
 let seq=0;const act=(r,uid,type,now,data,extra={})=>command(r,uid,{type,requestId:String(++seq),...extra},now,data);
-async function setup(){const data=await arenaData();let r=createRoom('123456','a','A',9871,0);for(const id of ['b','c'])r=act(r,id,'join',1,data,{name:id});for(const id of ['a','b','c'])r=act(r,id,'ready',2,data);r=act(r,'a','start',3,data);return {r,data};}
+async function setup(){const data=await arenaData();let r=createRoom('123456','a','A',9871,0);for(const id of ['b','c'])r=act(r,id,'join',1,data,{name:id});r.rulesVersion=3;for(const id of ['a','b','c'])r=act(r,id,'ready',2,data);r=act(r,'a','start',3,data);return {r,data};}
 test('auction ends with visible allocations and an all-team squad review, including the bye team',async()=>{
  let {r,data}=await setup();while(['players','coaches','auctionResult'].includes(r.phase))r=act(r,'a','poll',r.lot?.deadline||r.deadline,data);
  assert.equal(r.phase,'squadReview');assert.equal(r.assignments.length,24);assert.ok(r.assignments.every(a=>a.team&&a.amount===1));

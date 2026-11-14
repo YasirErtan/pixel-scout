@@ -4,7 +4,7 @@ import {LIMITS} from '../server/transfer-arena/market.js';
 const data={players:Object.keys(LIMITS).flatMap((position,r)=>Array.from({length:50},(_,i)=>({id:r*100+i,name:'Test',position,overall:70+i%22}))),coaches:Array.from({length:6},(_,i)=>({id:'c'+i,stars:i+1}))};
 test('hidden market and plans never appear in member projection; commands are idempotent',()=>{
  let r=createRoom('1234','a','A',91,0);let seq=0;const cmd=(uid,type,extra={})=>{r=command(r,uid,{type,requestId:String(++seq),...extra},1,data);};
- cmd('b','join',{name:'B'});cmd('c','join',{name:'C'});for(const uid of ['a','b','c'])cmd(uid,'ready');cmd('a','start');
+ cmd('b','join',{name:'B'});cmd('c','join',{name:'C'});for(const uid of ['a','b','c']){cmd(uid,'formation',{formation:'2-2-2'});cmd(uid,'ready');}cmd('a','start');
  const view=publicView(r,'a',1);assert.ok(!('market' in view));assert.ok(!('seed' in view));assert.ok(!('requests' in view));assert.throws(()=>publicView(r,'stranger',1));
  const action={type:'bid',amount:2,lotId:r.lot.id,requestId:'fixed'};r=command(r,'a',action,2,data);assert.deepEqual(command(r,'a',action,2,data),r);
 });
