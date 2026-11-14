@@ -6,7 +6,7 @@ import {auctionResult} from '../dist/games/transfer-arenasi/auction-result.js';
 import {coachTactics,coachBoostActive} from '../dist/games/transfer-arenasi/coach-tactics.js';
 import {displayMinute} from '../dist/games/transfer-arenasi/pitch.js';
 let seq=0;const act=(r,uid,type,now,data,extra={})=>command(r,uid,{type,requestId:String(++seq),...extra},now,data);
-async function setup(){const data=await arenaData();let r=createRoom('123456','a','A',9871,0);for(const uid of ['b','c'])r=act(r,uid,'join',1,data,{name:uid==='b'?'<B>':uid});for(const uid of ['a','b','c'])r=act(r,uid,'ready',2,data);r=act(r,'a','start',3,data);return {r,data};}
+async function setup(){const data=await arenaData();let r=createRoom('123456','a','A',9871,0);for(const uid of ['b','c'])r=act(r,uid,'join',1,data,{name:uid==='b'?'<B>':uid});for(const uid of ['a','b','c']){r=act(r,uid,'formation',2,data,{formation:'2-2-2'});r=act(r,uid,'ready',2,data);}r=act(r,'a','start',3,data);return {r,data};}
 const marketPhases=['players','coaches','auctionResult'];
 function finishMarket(r,data){while(marketPhases.includes(r.phase))r=act(r,'a','poll',r.lot?.deadline||r.deadline,data);return r;}
 test('one secret offer or pass is irreversible; everyone locking opens a complete result immediately',async()=>{
@@ -58,4 +58,16 @@ test('existing v2 rooms upgrade once without extending the timer on every poll o
  for(const uid of ['a','b','c'])r=act(r,uid,'plan',201,data,{phaseVersion:r.phaseVersion,plan:DEFAULT_PLAN});
  r.rulesVersion=2;const matches=structuredClone(r.matches);r=act(r,'a','poll',202,data);assert.equal(r.rulesVersion,2);assert.deepEqual(r.matches,matches);
  r=act(r,'a','poll',r.deadline,data);assert.equal(r.rulesVersion,3);assert.equal(r.phase,'halftime');
+});
+
+test('equal bids award a new room lot to the earliest accepted lock even in the same millisecond',async()=>{
+ let {r,data}=await setup();
+ const lotId=r.lot.id;
+ r=act(r,'c','bid',4,data,{lotId,amount:15});
+ r=act(r,'a','bid',4,data,{lotId,amount:15});
+ assert.ok(!('bidOrder' in publicView(r,'b',4).lot));
+ r=act(r,'b','pass',4,data,{lotId});
+ assert.equal(r.auctionResult.bidder,'c');
+ assert.equal(r.auctionResult.tieBreak,'firstLocked');
+ assert.deepEqual(r.auctionResult.offers.map(offer=>offer.team),['c','a']);
 });

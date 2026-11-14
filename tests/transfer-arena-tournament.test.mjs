@@ -7,7 +7,7 @@ test('complete 3–6 seat tournaments reach one champion, including offline dead
   let r=createRoom('123456','t0','Team0',seed,0,{bonusEnabled:seed%2===0}),now=0,seq=0;
   const act=(uid,type,extra={})=>{r=command(r,uid,{type,requestId:String(++seq),...extra},now,data);};
   for(let i=1;i<count;i++)act('t'+i,'join',{name:'Team'+i});
-  for(const t of r.teams)act(t.id,'ready');act('t0','start');
+  r.rulesVersion=3;for(const t of r.teams)act(t.id,'ready');act('t0','start');
   let steps=0;
   while(r.phase!=='finished'&&steps++<200){now=(r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline)+1;act('t0','poll');}
   assert.equal(r.phase,'finished');assert.ok(r.finalists.includes(r.champion));

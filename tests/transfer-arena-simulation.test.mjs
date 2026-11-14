@@ -24,3 +24,26 @@ test('tied finals carry discipline into extra time and settle reproducibly witho
  }
  assert.ok(penalties>0);assert.throws(()=>resolveFinal(beginMatch(team('a'),team('b'),1),[DEFAULT_PLAN,DEFAULT_PLAN]));
 });
+
+test('home support is venue-bound and fitness and passing change the modeled match',()=>{
+ const plans=[{...DEFAULT_PLAN,press:2,tempo:2},{...DEFAULT_PLAN,press:2,tempo:2}];
+ const totals={};
+ for(const [bonusCard,neutral,side] of [[null,false,0],['fan',false,0],['fan',true,0],['fan',false,1],['fitness',false,0],['passing',false,0]]){
+  let xg=0,energy=0,completed=0,passes=0;
+  for(let seed=1;seed<=100;seed++){
+   const teams=[team('a'),team('b')];
+   teams[side].bonusCard=bonusCard;
+   const start=beginMatch(...teams,seed*29423,1,{version:4,neutral});
+   const match=simulateHalf(simulateHalf(start,plans),plans);
+   const [home,away]=match.teams;
+   xg+=home.xg-away.xg;energy+=home.players[0].energy;completed+=home.completed;passes+=home.passes;
+  }
+  totals[[bonusCard,neutral,side].join(':')]={xg,energy,accuracy:completed/passes};
+ }
+ const baseline=totals[':false:0'];
+ assert.ok(totals['fan:false:0'].xg>baseline.xg);
+ assert.deepEqual(totals['fan:true:0'],baseline);
+ assert.deepEqual(totals['fan:false:1'],baseline);
+ assert.ok(totals['fitness:false:0'].energy>=baseline.energy+900);
+ assert.ok(totals['passing:false:0'].accuracy>baseline.accuracy);
+});

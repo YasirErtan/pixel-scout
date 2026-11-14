@@ -1,10 +1,11 @@
 // Small-sided game model. Coefficients are game design, not measured real-match probabilities.
-import {assignFormation} from '../../dist/games/transfer-arenasi/formation.js';
+import {assignFormation,FORMATIONS} from '../../dist/games/transfer-arenasi/formation.js';
 import {CAPTAIN_BOOST} from '../../dist/games/transfer-arenasi/bonus-player.js';
+import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
  const p={...DEFAULT_PLAN,...input};
- if(!['2-2-2','2-3-1','3-2-1','1-3-2'].includes(p.formation))throw Error('Geçersiz diziliş');
+ if(!FORMATIONS.includes(p.formation))throw Error('Geçersiz diziliş');
  if(!['short','wide','direct','counter'].includes(p.style))throw Error('Geçersiz oyun planı');
  if(p.captainId!==null&&!((typeof p.captainId==='string'&&p.captainId.length>0&&p.captainId.length<=80)||Number.isSafeInteger(p.captainId)))throw Error('Geçersiz kaptan seçimi');
  for(const key of ['press','risk','tempo','width','tackle'])if(!Number.isInteger(p[key])||p[key]<0||p[key]>(key==='tackle'?3:2))throw Error('Geçersiz taktik değeri');
@@ -15,9 +16,9 @@ function next(state){state.rng=(Math.imul(state.rng,1664525)+1013904223)>>>0;ret
 function pick(state,a){return a[Math.floor(next(state)*a.length)];}
 const stat=(p,k)=>Number.isFinite(p.attributes?.[k])?p.attributes[k]:null;
 function required(p,k){const v=stat(p,k);if(v===null)throw Error(`Eksik simülasyon özelliği: ${k}`);return v;}
-export function beginMatch(home,away,seed,referee=1){
- const make=t=>({id:t.id,coach:t.coach,players:t.players.map(p=>({...p,energy:100,yellow:0,red:false})),goals:0,shots:0,onTarget:0,saves:0,xg:0,passes:0,completed:0,losses:0});
- return {version:3,rng:seed>>>0,minute:0,teams:[make(home),make(away)],events:[],half:0,referee,finished:false};
+export function beginMatch(home,away,seed,referee=1,{version=3,neutral=false}={}){
+ const make=(t,side)=>({id:t.id,coach:t.coach,...(version>=4?{bonusCard:t.bonusCard||null,homeBonus:!neutral&&side===0?(bonusCardById(t.bonusCard)?.homeBoost||0):0}:{}),players:t.players.map(p=>({...p,energy:100,yellow:0,red:false})),goals:0,shots:0,onTarget:0,saves:0,xg:0,passes:0,completed:0,losses:0});
+ return {version,...(version>=4?{neutral}:{}),rng:seed>>>0,minute:0,teams:[make(home,0),make(away,1)],events:[],half:0,referee,finished:false};
 }
 function alive(t){return t.players.filter(p=>!p.red);}
 function keeper(t){return alive(t).find(p=>p.position==='GK')||alive(t).find(p=>p.id===t.emergencyKeeperId);}
@@ -47,6 +48,7 @@ function simulatePeriod(m,pp,start,duration,finished){
   shape(t,pp[i].formation);
  }
  let possession=next(m)<.5?0:1,zone=1;
+ let passer=null,receiver=null;
  const end=start+duration;
  const ticks=m.version>=3?Math.round(duration*120/45):duration*12;
  for(let tick=0;tick<ticks&&!m.finished;tick++){
@@ -55,9 +57,10 @@ function simulatePeriod(m,pp,start,duration,finished){
   const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw Error('Saha oyuncusu kalmadı');
   for(let side=0;side<2;side++)for(const p of alive(m.teams[side])){
    const cost=(.07+pp[side].tempo*.045+pp[side].press*.035)*(1-coach(m.teams[side],'press')*(pp[side].press===2));
-   p.energy=Math.max(15,p.energy-cost*(1.5-required(p,'stamina')/100));
+   p.energy=Math.max(15,p.energy-cost*(1-(bonusCardById(m.teams[side].bonusCard)?.fatigueReduction||0))*(1.5-required(p,'stamina')/100));
   }
-  const actor=selectPlayer(m,attackers,zone===2?{ATT:4,MID:2,DEF:1}:zone===1?{MID:4,DEF:2,ATT:2}:{DEF:4,MID:2,ATT:1});
+  const recipient=receiver&&attackers.find(p=>p.id===receiver.id);
+  const actor=recipient||selectPlayer(m,attackers,zone===2?{ATT:4,MID:2,DEF:1}:zone===1?{MID:4,DEF:2,ATT:2}:{DEF:4,MID:2,ATT:1});
   const marker=zone===2&&keeper(opp)&&next(m)<.08?keeper(opp):selectPlayer(m,defenders,{DEF:4,MID:2,ATT:1});
   const intensity=[.9,1,1.1,1.15][def.tackle];
   if(next(m)<(.20+def.press*.065)*intensity){
@@ -70,18 +73,19 @@ function simulatePeriod(m,pp,start,duration,finished){
     m.events.push({minute:m.minute,type:marker.red?'red':yellow?'yellow':'foul',team:opp.id,playerId:marker.id,playerName:marker.name});
     if(alive(opp).length<4){forceResult(m,1-possession);break;}
     if(marker.red&&marker.position==='GK')opp.emergencyKeeperId=alive(opp).toSorted((a,b)=>required(a,'finishing')-required(b,'finishing'))[0].id;
+    passer=receiver=null;
     if(zone===2&&next(m)<.2){shoot(m,possession,actor,pp,true);possession=1-possession;zone=0;}
     continue;
    }
-   const win=cap(.30+(effective(marker,'standingTackle')-effective(actor,'ballControl'))*.006,.1,.7);
-   if(next(m)<win){team.losses++;possession=1-possession;zone=plan.risk===2?1:0;continue;}
+   const win=cap(.30+(effective(marker,'standingTackle')*(1+(opp.homeBonus||0))-effective(actor,'ballControl')*(1+(team.homeBonus||0)))*.006,.1,.7);
+   if(next(m)<win){team.losses++;possession=1-possession;zone=plan.risk===2?1:0;passer=receiver=null;continue;}
   }
   const shootChance=zone===2?.38+plan.risk*.08:zone===1?.025:0;
-  if(next(m)<shootChance){shoot(m,possession,actor,pp);possession=1-possession;zone=0;continue;}
+  if(next(m)<shootChance){shoot(m,possession,actor,pp,false,recipient?passer:null);possession=1-possession;zone=0;passer=receiver=null;continue;}
   team.passes++;
   const direct=plan.style==='direct',wide=plan.style==='wide',short=plan.style==='short';
-  const passSkill=effective(actor,'shortPassing')*.65+effective(actor,'vision')*.35;
-  const pressure=effective(marker,'interceptions')*.6+effective(marker,'defensiveAwareness')*.4;
+  const passSkill=(effective(actor,'shortPassing')*.65+effective(actor,'vision')*.35)*(1+(team.homeBonus||0))*(1+(bonusCardById(team.bonusCard)?.passingBoost||0));
+  const pressure=(effective(marker,'interceptions')*.6+effective(marker,'defensiveAwareness')*.4)*(1+(opp.homeBonus||0));
   const midfield=attackers.filter(p=>p.matchRole==='MID').length-defenders.filter(p=>p.matchRole==='MID').length;
   const space=(attackers.length-defenders.length)*.025+midfield*.008+(wide&&def.width===0?.04:0);
   let chance=.77+(passSkill-pressure)*.004+space-plan.tempo*.025-def.press*.025-(direct?.12:0);
@@ -92,8 +96,17 @@ function simulatePeriod(m,pp,start,duration,finished){
   if(plan.style==='counter'&&zone<2)chance+=def.risk*.012+def.press*.012+coach(team,'transition')*.3;
   if(actor.overall<=81)chance+=coach(team,'development')*.3;
   if(direct&&def.press===2)chance+=.035;
-  if(next(m)<cap(chance,.3,.95)){team.completed++;const pace=m.version>=2?sprintAdvantage(team,opp):0;if(next(m)<cap((direct?.8:.48)+plan.tempo*.035+pace,.3,.95))zone=Math.min(2,zone+1);}
-  else{team.losses++;possession=1-possession;zone=plan.risk===2?1:0;}
+  if(next(m)<cap(chance,.3,.95)){
+   team.completed++;
+   const pace=m.version>=2?sprintAdvantage(team,opp):0;
+   if(next(m)<cap((direct?.8:.48)+plan.tempo*.035+pace,.3,.95))zone=Math.min(2,zone+1);
+   if(m.version>=4){
+    passer=actor;
+    const targets=attackers.filter(p=>p.id!==actor.id);
+    receiver=selectPlayer(m,targets,zone===2?{ATT:4,MID:2,DEF:1}:zone===1?{MID:4,DEF:2,ATT:2}:{DEF:4,MID:2,ATT:1});
+   }
+  }
+  else{team.losses++;possession=1-possession;zone=plan.risk===2?1:0;passer=receiver=null;}
  }
  m.minute=end;if(finished)m.finished=true;return m;
 }
@@ -132,7 +145,7 @@ function shootout(m){
   if(pair>=2&&goals[0]!==goals[1]){m.shootout={score:goals,winner:m.teams[goals[0]>goals[1]?0:1].id};return m;}
  }
 }
-function shoot(m,side,actor,plans,penalty=false){
+function shoot(m,side,actor,plans,penalty=false,passer=null){
  const t=m.teams[side],opp=m.teams[1-side],goalkeeper=keeper(opp);
  // No factual outfield GK attributes are invented: 25 is the explicit emergency-keeper model.
  const keeping=goalkeeper?.position==='GK'?(performance(goalkeeper,'gkReflexes')+performance(goalkeeper,'gkPositioning'))/2:25;
@@ -140,14 +153,26 @@ function shoot(m,side,actor,plans,penalty=false){
  const attackRoles=field(t).filter(p=>p.matchRole==='ATT').length,defenseRoles=field(opp).filter(p=>p.matchRole==='DEF').length;
  const shotQuality=penalty?.72:cap(.13+plans[side].risk*.025+(field(t).length-field(opp).length)*.035+(attackRoles-defenseRoles)*.009-defense,.03,.45);
  const shooting=penalty?performance(actor,'penalties'):m.version>=2?performance(actor,'finishing')*.75+performance(actor,'shotPower')*.25:performance(actor,'finishing');
- const probability=cap(shotQuality+(shooting-keeping)*.003,.01,.94);
+ const probability=cap(shotQuality+(shooting*(1+(t.homeBonus||0))-keeping*(1+(opp.homeBonus||0)))*.003,.01,.94);
  t.shots++;t.xg+=probability;
  const draw=next(m);let type='shot';
  if(draw<probability){t.goals++;t.onTarget++;type='goal';}
  else if(draw<probability+(1-probability)*.45){t.onTarget++;opp.saves++;type='save';}
- m.events.push({minute:m.minute,type,penalty,team:t.id,playerId:actor.id,playerName:actor.name,xg:probability,score:m.teams.map(x=>x.goals)});
+ const assist=type==='goal'&&!penalty&&passer&&passer.id!==actor.id?{assisterId:passer.id,assisterName:passer.name}:{};
+ m.events.push({minute:m.minute,type,penalty,...assist,team:t.id,playerId:actor.id,playerName:actor.name,xg:probability,score:m.teams.map(x=>x.goals)});
 }
-export function fixtures(ids){
+export function fixtures(ids,balanced=false){
  const ring=[...ids];if(ring.length%2)ring.push(null);const rounds=[];
- for(let r=0;r<ring.length-1;r++){const pairs=[];for(let i=0;i<ring.length/2;i++){const a=ring[i],b=ring.at(-1-i);if(a!==null&&b!==null)pairs.push([a,b]);}rounds.push(pairs);ring.splice(1,0,ring.pop());}return rounds;
+ for(let r=0;r<ring.length-1;r++){const pairs=[];for(let i=0;i<ring.length/2;i++){const a=ring[i],b=ring.at(-1-i);if(a!==null&&b!==null)pairs.push(balanced?homePair(ids,a,b):[a,b]);}rounds.push(pairs);ring.splice(1,0,ring.pop());}return rounds;
+}
+
+// Orient the round robin so the venue count differs by at most one per team.
+function homePair(ids,a,b){
+ const size=ids.length%2?ids.length:ids.length-1;
+ const i=ids.indexOf(a),j=ids.indexOf(b);
+ if(i===size||j===size){
+  const lastHome=Math.min(i,j)%2===0;
+  return (i===size)===lastHome?[a,b]:[b,a];
+ }
+ return (j-i+size)%size<=Math.floor(size/2)?[a,b]:[b,a];
 }
