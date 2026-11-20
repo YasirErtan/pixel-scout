@@ -56,7 +56,7 @@ Kaynak kodu orijinal Who Are Ya uygulamasından kopyalanmamıştır. Oyun, gözl
 
 ## Vercel üretim yayını
 
-Herkese açık adres: https://pixel-scout-nine.vercel.app
+Herkese açık adres: https://pixel-scout-vert.vercel.app (Transfer Arenası: https://pixel-scout-vert.vercel.app/games/transfer-arenasi/)
 
 Vercel için `vercel.json` derlemesiz statik `dist/` yayını kullanır. Kendi fork'unu kendi hesabında yeni bir projeye bağlayabilirsin. Bu depoda üretim hesabının kimliği veya erişim bilgileri bulunmaz.
 
