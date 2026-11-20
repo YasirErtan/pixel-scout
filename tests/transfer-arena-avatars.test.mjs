@@ -67,8 +67,10 @@ test('all 96 elite (85+) players have star fine-tuning with distinct visual trai
   assert.notEqual(cucurella, salah);
   assert.notEqual(yamal, modric);
   // Mask path stroke color #3b4048 appears on Osimhen but not Mbappe
+  const mbappe = playerAvatarSVG(byId['231747']);
   assert.ok(osimhen.includes('#3b4048'));
-  assert.ok(!playerAvatarSVG(byId['231747']).includes('#3b4048'));
+  assert.ok(!mbappe.includes('#3b4048'));
+  assert.ok(mbappe.includes(SKIN_PALETTE[10][0]));
   // Headband fill #181b20 stroke #ffffff26 appears on Haaland & Modric
   assert.ok(haaland.includes('#ffffff26'));
   assert.ok(modric.includes('#ffffff26'));

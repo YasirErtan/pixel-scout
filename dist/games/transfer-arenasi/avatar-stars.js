@@ -1,6 +1,6 @@
 // 85+ tüm 96 yıldız ve seçkin dünya/Türk yıldızları için gerçeğe yakın FM-tarzı görsel ince ayarlar
 export const STAR_AVATARS = {
-  "231747": {"hairStyle": 1, "hairColor": 0, "beard": 1, "faceShape": 0, "faceWidth": 2, "brows": 1, "eyes": 0, "hairVol": 0, "expr": 2, "noseW": 1, "cheekShade": 1},
+  "231747": {"skin": 10, "hairStyle": 1, "hairColor": 0, "beard": 1, "faceShape": 0, "faceWidth": 2, "brows": 1, "eyes": 0, "hairVol": 0, "expr": 2, "noseW": 1, "cheekShade": 1},
   "239085": {"hairStyle": 17, "hairColor": 9, "beard": 0, "faceShape": 1, "faceWidth": 3, "brows": 0, "eyes": 2, "hairVol": 2, "expr": 0, "headband": 1, "jawSharp": 1, "noseW": 1},
   "192119": {"hairStyle": 3, "hairColor": 2, "beard": 2, "faceShape": 2, "faceWidth": 1, "brows": 1, "eyes": 1, "hairVol": 1, "expr": 1, "jawSharp": 1},
   "202126": {"hairStyle": 5, "hairColor": 5, "beard": 5, "faceShape": 2, "faceWidth": 2, "brows": 1, "eyes": 2, "hairVol": 2, "expr": 1, "noseW": 0},
