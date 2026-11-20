@@ -180,7 +180,7 @@
     "penalties"
   ],
   "attributePlayers": 4934,
-  "baseSourceManifest": "research/fut-draft-data.json",
+  "baseSourceManifest": "research/transfer-arena-players.json",
   "fullClubSnapshots": [
     {
       "url": "https://www.ea.com/games/ea-sports-fc/ratings?team=101059",

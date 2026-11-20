@@ -4,7 +4,7 @@ import {pitch,minuteLabel,displayMinute} from './pitch.js';
 import {playerCard,escapeHTML as esc} from './cards.js';
 import {coachCard} from './coach-card.js';
 import {CAPTAIN_BOOST} from './bonus-player.js';
-import {ATTRIBUTE_KEYS,PLAYER_ATTRIBUTES} from '../fut-draft/player-attributes.js';
+import {ATTRIBUTE_KEYS,PLAYER_ATTRIBUTES} from './player-attributes.js';
 import {hasBidSlot} from './ui-rules.js';
 import {BONUS_CARDS} from './bonus-cards.js';
 import {LOGOS,logoSVG} from './logos.js';
@@ -117,7 +117,7 @@ $('#create').disabled=false;$('#join').disabled=false;
 $('#create').addEventListener('click',()=>send('create',{name:$('#name').value,bonusEnabled:$('#bonus-enabled').checked,bonusCardsEnabled:$('#bonus-cards-enabled').checked}));$('#join').addEventListener('click',()=>send('join',{name:$('#name').value}));
 
 setInterval(()=>{if(room&&!['finished','closed'].includes(room.phase))send('poll');},1500);setInterval(tick,200);
-try{const response=await fetch('../fut-draft/players.json');const data=await response.json(),p=data.players[0],values=PLAYER_ATTRIBUTES[p.id]||[];previewPlayer={...p,attributes:Object.fromEntries(ATTRIBUTE_KEYS.map((k,i)=>[k,values[i]]))};renderPreview();}catch{}
+try{const response=await fetch('./players.json');const data=await response.json(),p=data.players[0],values=PLAYER_ATTRIBUTES[p.id]||[];previewPlayer={...p,attributes:Object.fromEntries(ATTRIBUTE_KEYS.map((k,i)=>[k,values[i]]))};renderPreview();}catch{}
 $('#mechanics-help').innerHTML=mechanicsHTML();
 status.textContent='';
 if(code)send('poll');

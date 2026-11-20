@@ -5,7 +5,6 @@ import {hasBidSlot} from '../dist/games/transfer-arenasi/ui-rules.js';
 import {playerCard,displayPosition} from '../dist/games/transfer-arenasi/cards.js';
 import {squadBoard} from '../dist/games/transfer-arenasi/formation-board.js';
 import {pitch} from '../dist/games/transfer-arenasi/pitch.js';
-import {SEASON_TEAMS} from '../dist/games/fut-draft/season-data.js';
 
 const team=(formation,positions)=>({formation,players:positions.map((position,id)=>({id,position}))});
 
@@ -22,9 +21,12 @@ test('legacy teams without a saved formation keep the original slot defaults',()
 });
 
 test('RM and LM positions are converted to RW and LW across datasets and UI renderers',()=>{
- const data=JSON.parse(fs.readFileSync(new URL('../dist/games/fut-draft/players.json',import.meta.url),'utf8'));
+ const data=JSON.parse(fs.readFileSync(new URL('../dist/games/transfer-arenasi/players.json',import.meta.url),'utf8'));
  assert.equal(data.players.filter(p=>p.detailPosition==='RM'||p.detailPosition==='LM').length,0);
- assert.equal(SEASON_TEAMS.flatMap(t=>t.roster).filter(p=>p.detailPosition==='RM'||p.detailPosition==='LM').length,0);
+
+ const registry=JSON.parse(fs.readFileSync(new URL('../dist/games/registry.json',import.meta.url),'utf8'));
+ assert.equal(registry.some(g=>g.id==='fut-draft'),false);
+ assert.equal(fs.existsSync(new URL('../dist/games/fut-draft',import.meta.url)),false);
 
  const byId=Object.fromEntries(data.players.map(p=>[p.id,p]));
  assert.equal(byId[209331].detailPosition,'RW'); // Mohamed Salah

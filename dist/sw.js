@@ -1,4 +1,4 @@
-const cacheName = 'pixel-scout-mobile-v1';
+const cacheName = 'pixel-scout-mobile-v2';
 const scope = new URL(self.registration.scope);
 const hub = new URL('games/', scope).href;
 const shell = ['games/', 'games/launcher.js', 'games/launcher.css', 'games/registry.json',

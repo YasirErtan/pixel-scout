@@ -24,7 +24,7 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT_JSON = ROOT / "dist" / "games" / "fut-draft" / "players.json"
+INPUT_JSON = ROOT / "dist" / "games" / "transfer-arenasi" / "players.json"
 OUTPUT_JS = ROOT / "dist" / "games" / "transfer-arenasi" / "avatar-data.js"
 
 BASE36 = "0123456789abcdefghijklmnopqrstuvwxyz"

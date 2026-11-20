@@ -4,5 +4,5 @@
   "buildCommand": "",
   "installCommand": "",
   "outputDirectory": "dist",
-  "functions": { "api/transfer-arena.js": { "includeFiles": "dist/games/fut-draft/players.json", "maxDuration": 30 } }
+  "functions": { "api/transfer-arena.js": { "includeFiles": "dist/games/transfer-arenasi/players.json", "maxDuration": 30 } }
 }

@@ -10,7 +10,7 @@ import {BONUS_PLAYER} from '../dist/games/transfer-arenasi/bonus-player.js';
 import {LEGENDS} from '../server/transfer-arena/legends.js';
 import {LEGEND_PORTRAITS} from '../dist/games/transfer-arenasi/legend-portraits.js';
 
-const playersData = JSON.parse(fs.readFileSync(new URL('../dist/games/fut-draft/players.json', import.meta.url), 'utf8'));
+const playersData = JSON.parse(fs.readFileSync(new URL('../dist/games/transfer-arenasi/players.json', import.meta.url), 'utf8'));
 
 test('all 4,847 Transfer Arenasi players have valid FM avatar profiles and balanced SVG output', () => {
   assert.equal(playersData.players.length, 4847);
