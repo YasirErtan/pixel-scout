@@ -98,3 +98,17 @@
 @keyframes fm-idle{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-1.4px) rotate(.6deg)}}
 @keyframes fm-torso{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.018)}}
 @keyframes fm-blink{0%,93%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+
+/* Eren Çiftçi bonus kartı: kenardan kenara kadrajlı stüdyo portre görünümü */
+.bonus-card .portrait-slot:has(img){height:230px;margin:6px -18px 0;border-radius:0;border-bottom:0;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+.bonus-card .portrait-photo{position:relative}
+.bonus-card .portrait-photo img{filter:contrast(1.06) saturate(1.05)}
+.bonus-card .portrait-photo:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 68% 72% at 50% 42%,transparent 50%,#09130e66 100%)}
+.bonus-card h2{margin-top:2px}
+.squad-cards .bonus-card .portrait-slot:has(img){height:160px;margin:4px -9px 0;-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}
+.squad-cards .bonus-card .portrait-photo img{object-position:50% 22%!important;transform-origin:50% 22%!important;transform:scale(1.10) translateX(-5%)!important}
+@media(min-width:720px) and (min-height:600px){.bonus-card .portrait-slot:has(img){height:252px}}
+.board-chip .chip-photo{display:block;width:42px;height:42px;margin-top:12px;border-radius:50%;overflow:hidden;border:2px solid #fff8}
+.board-chip .chip-photo img{width:100%;height:100%;margin:0;border:0;border-radius:0;object-fit:cover;display:block}
+.board-chip .chip-photo+strong{margin-top:3px}
+.board-chip:has(.chip-photo) em{right:14px;top:40px;bottom:auto}

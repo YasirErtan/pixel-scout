@@ -2,6 +2,8 @@
 export const BONUS_PLAYER=Object.freeze({
  id:'bonus-eren-oiftci',name:'Eren Çiftçi',overall:70,position:'ATT',detailPosition:'ST',
  club:'Bonus',country:'',bonus:true,portraitURL:'./assets/bonus/eren-oiftci.jpg',
+ portraitFocus:Object.freeze([50,16,1.18,-6.5]),
+ chipFocus:Object.freeze([50,10,1.32,-10]),
  attributes:Object.freeze({finishing:75,positioning:72,composure:68,shotPower:74,
   vision:60,shortPassing:62,ballControl:69,defensiveAwareness:25,interceptions:28,
   standingTackle:24,stamina:64,sprintSpeed:72,gkDiving:8,gkHandling:10,

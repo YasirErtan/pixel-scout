@@ -14,9 +14,17 @@ function rows(team){
   return {role,cells:Array.from({length:slots},(_,i)=>players[i]||null)};
  });
 }
+function chipPhoto(p){
+ if(p.bonus||p.chipFocus||p.portraitFocus){
+  const [x,y,zoom,shiftX=0]=p.chipFocus||p.portraitFocus||[50,10,1.32,-10];
+  const shift=shiftX?` translateX(${shiftX}%)`:'';
+  return `<span class="chip-photo"><img src="${esc(p.portraitURL)}" alt="" loading="lazy" width="48" height="48" style="object-position:${x}% ${y}%;transform-origin:${x}% ${y}%;transform:scale(${zoom})${shift}"></span>`;
+ }
+ return `<img src="${esc(p.portraitURL)}" alt="" loading="lazy" width="48" height="48">`;
+}
 function chip(p,role,captains){
  if(!p)return `<div class="board-chip empty"><span>${ROLE_NAMES[role]}</span><small>Boş</small></div>`;
- const photo=p.portraitURL?`<img src="${esc(p.portraitURL)}" alt="" loading="lazy" width="48" height="48">`:`<span class="chip-avatar">${playerAvatarSVG(p,{compact:true})}</span>`;
+ const photo=p.portraitURL?chipPhoto(p):`<span class="chip-avatar">${playerAvatarSVG(p,{compact:true})}</span>`;
  return `<div class="board-chip tier-${tier(p)}" title="${esc(p.name)} · ${p.overall}"><b>${p.overall}</b><i>${esc(p.detailPosition||p.position)}</i>${photo}<strong>${esc(p.name)}</strong>${captains.has(p.id)?'<em aria-label="Kaptan">ⓒ</em>':''}</div>`;
 }
 // İhalede kendi dizilişin (boş yerler kesikli) ve rakip kadrolarının saha görünümü.

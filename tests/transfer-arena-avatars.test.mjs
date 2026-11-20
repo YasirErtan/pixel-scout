@@ -87,9 +87,11 @@ test('playerCard preserves legend/bonus photos, replaces fallback silhouette wit
   assert.ok(legCard.includes('portrait-photo'));
   assert.ok(!legCard.includes('fm-avatar'));
 
-  // Bonus player keeps personal photo
+  // Bonus player keeps personal photo with centered portrait framing
   const bonusCard = playerCard(BONUS_PLAYER);
   assert.ok(bonusCard.includes(BONUS_PLAYER.portraitURL));
+  assert.ok(bonusCard.includes('bonus-card'));
+  assert.ok(bonusCard.includes('translateX(-6.5%)'));
   assert.ok(!bonusCard.includes('fm-avatar'));
 
   // Missing ID & unsafe name
@@ -98,7 +100,7 @@ test('playerCard preserves legend/bonus photos, replaces fallback silhouette wit
   assert.ok(!weird.includes('<script>'));
 });
 
-test('squadBoard renders chip-avatar for normal players, img for legends, and unique SVG defs IDs', () => {
+test('squadBoard renders chip-avatar for normal players, img for legends, chip-photo for bonus, and unique SVG defs IDs', () => {
   const leg = {...LEGENDS[0], portraitURL: LEGEND_PORTRAITS[LEGENDS[0].id].path, position: 'MID'};
   const normal = playersData.players[0]; // Mbappe (ATT)
   const normal2 = playersData.players[2]; // Courtois (GK)
@@ -106,12 +108,14 @@ test('squadBoard renders chip-avatar for normal players, img for legends, and un
     id: 't1',
     name: 'Test FC',
     formation: '2-2-2',
-    players: [normal, normal2, leg],
+    players: [normal, normal2, leg, BONUS_PLAYER],
     coach: null
   };
   const html = squadBoard(team);
-  assert.equal((html.match(/board-chip empty/g) || []).length, 4);
+  assert.equal((html.match(/board-chip empty/g) || []).length, 3);
   assert.equal((html.match(/class="chip-avatar"/g) || []).length, 2);
+  assert.equal((html.match(/class="chip-photo"/g) || []).length, 1);
+  assert.ok(html.includes(BONUS_PLAYER.portraitURL) && html.includes('translateX(-10%)'));
   assert.ok(html.includes(LEGEND_PORTRAITS[LEGENDS[0].id].path));
 
   // Ensure every <defs> gradient/clipPath id is unique across multiple renders in one document
