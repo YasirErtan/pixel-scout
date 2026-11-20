@@ -1,5 +1,5 @@
 import {formationLimits} from './formation.js';
-import {escapeHTML as esc} from './cards.js';
+import {escapeHTML as esc,displayPosition} from './cards.js';
 import {SPECIALTIES} from './coach-card.js';
 import {playerAvatarSVG} from './avatar.js';
 
@@ -25,7 +25,7 @@ function chipPhoto(p){
 function chip(p,role,captains){
  if(!p)return `<div class="board-chip empty"><span>${ROLE_NAMES[role]}</span><small>Boş</small></div>`;
  const photo=p.portraitURL?chipPhoto(p):`<span class="chip-avatar">${playerAvatarSVG(p,{compact:true})}</span>`;
- return `<div class="board-chip tier-${tier(p)}" title="${esc(p.name)} · ${p.overall}"><b>${p.overall}</b><i>${esc(p.detailPosition||p.position)}</i>${photo}<strong>${esc(p.name)}</strong>${captains.has(p.id)?'<em aria-label="Kaptan">ⓒ</em>':''}</div>`;
+ return `<div class="board-chip tier-${tier(p)}" title="${esc(p.name)} · ${p.overall}"><b>${p.overall}</b><i>${esc(displayPosition(p))}</i>${photo}<strong>${esc(p.name)}</strong>${captains.has(p.id)?'<em aria-label="Kaptan">ⓒ</em>':''}</div>`;
 }
 // İhalede kendi dizilişin (boş yerler kesikli) ve rakip kadrolarının saha görünümü.
 export function squadBoard(team,{captains=new Set(),coach=true}={}){

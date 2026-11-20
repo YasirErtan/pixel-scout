@@ -16,7 +16,7 @@ function lineup(players){
  const limits=[1,4,3,3],roles=['GK','DEF','MID','ATT'];let states=new Map([['0,0,0,0',{score:0,roster:[]}]]);
  for(const p of players){const next=new Map(states),allowed=new Set([p.position,...(p.alternatePositions||[])].map(pos=>role(pos.shortLabel)).filter(Boolean));
   for(const [key,value] of states){const counts=key.split(',').map(Number);for(let i=0;i<4;i++){if(!allowed.has(roles[i])||counts[i]===limits[i])continue;const c=[...counts];c[i]++;const k=c.join(','),score=value.score+p.overallRating;
-   if(score>(next.get(k)?.score??-1)){const player={id:p.id,name:p.commonName||`${p.firstName} ${p.lastName}`.trim(),overall:p.overallRating,position:roles[i],detailPosition:p.position.shortLabel,club:p.team.label,clubId:p.team.id,league:p.leagueName,country:p.nationality?.label||null};next.set(k,{score,roster:[...value.roster,player]});}
+   if(score>(next.get(k)?.score??-1)){const rawPos=p.position.shortLabel,detailPosition=rawPos==='RM'?'RW':rawPos==='LM'?'LW':rawPos;const player={id:p.id,name:p.commonName||`${p.firstName} ${p.lastName}`.trim(),overall:p.overallRating,position:roles[i],detailPosition,club:p.team.label,clubId:p.team.id,league:p.leagueName,country:p.nationality?.label||null};next.set(k,{score,roster:[...value.roster,player]});}
   }}states=next;
  }return states.get('1,4,3,3')?.roster;
 }

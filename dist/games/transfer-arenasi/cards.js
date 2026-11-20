@@ -8,6 +8,7 @@ export const ATTRIBUTES = {
   gkDiving:'Uzanma',gkHandling:'Top tutma',gkPositioning:'Kaleci konumu',gkReflexes:'Refleks',penalties:'Penaltı'
 };
 export const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export const displayPosition = p => { const pos = p?.detailPosition || p?.position || ''; return pos === 'RM' ? 'RW' : pos === 'LM' ? 'LW' : pos; };
 // Fotoğrafı çerçeveye oturtur: focus=[x%,y%,yakınlaştırma,shiftX%] yüzü merkezde tutar.
 export function framedPhoto(src,alt,focus,className,width=240,height=240){
   const [x,y,zoom,shiftX=0]=focus||[50,15,1,0];
@@ -20,7 +21,7 @@ export function playerCard(player) {
   const photo=player.legend?LEGEND_PORTRAITS[player.id]:null;
   const focus=photo?.focus||player.portraitFocus||(player.bonus?[50,16,1.18,-6.5]:null);
   return `<article class="football-card ${player.legend?'legend-card ':''}${player.bonus?'bonus-card ':''}tier-${player.overall>=88?'elite':player.overall>=82?'gold':'silver'}" aria-label="${escapeHTML(player.name)}, ${player.overall} overall">
-    <div class="card-top"><div class="overall"><strong>${player.overall}</strong><span>${escapeHTML(player.detailPosition||player.position)}</span></div><span class="edition">${player.legend?'EFSANE KART':player.bonus?'BONUS':''}${player.isCaptain?'<b class="captain-badge" aria-label="Kaptan">ⓒ</b>':''}</span></div>
+    <div class="card-top"><div class="overall"><strong>${player.overall}</strong><span>${escapeHTML(displayPosition(player))}</span></div><span class="edition">${player.legend?'EFSANE KART':player.bonus?'BONUS':''}${player.isCaptain?'<b class="captain-badge" aria-label="Kaptan">ⓒ</b>':''}</span></div>
     <div class="portrait-slot">${player.portraitURL?framedPhoto(player.portraitURL,player.name,focus,'portrait-photo'):playerAvatarSVG(player)}</div>
     <h2>${escapeHTML(player.name)}</h2><p class="identity">${[player.country,player.club].filter(Boolean).map(escapeHTML).join(' · ')}</p>
     <dl class="card-stats">${keys.map(k=>`<div><dd>${value(k)}</dd><dt>${ATTRIBUTES[k]}</dt></div>`).join('')}</dl>

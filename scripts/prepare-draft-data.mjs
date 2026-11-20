@@ -19,7 +19,8 @@ for (const file of fs.readdirSync(input).filter(f => /^\d+\.json$/.test(f)).sort
     // Wide midfielders count as attacking wingers in this game's broad 4-3-3 roles.
     const position = p.position?.shortLabel === 'GK' ? 'GK' : ['ST','CF','LW','RW','LM','RM'].includes(p.position?.shortLabel) ? 'ATT' : ({defense:'DEF',midfielder:'MID',attack:'ATT'})[p.position?.positionType?.id];
     if (!position || !Number.isInteger(p.overallRating) || !p.team?.label) throw new Error(`Incomplete player ${p.id}`);
-    unique.set(p.id, { id:p.id, name:p.commonName || `${p.firstName} ${p.lastName}`.trim(), overall:p.overallRating, position, detailPosition:p.position.shortLabel, club:p.team.label, clubId:p.team.id, league:p.leagueName, country:p.nationality?.label || null });
+    const detailPosition = p.position?.shortLabel === 'RM' ? 'RW' : p.position?.shortLabel === 'LM' ? 'LW' : p.position.shortLabel;
+    unique.set(p.id, { id:p.id, name:p.commonName || `${p.firstName} ${p.lastName}`.trim(), overall:p.overallRating, position, detailPosition, club:p.team.label, clubId:p.team.id, league:p.leagueName, country:p.nationality?.label || null });
   }
 }
 const players = [...unique.values()].sort((a,b)=>b.overall-a.overall || a.id-b.id);
