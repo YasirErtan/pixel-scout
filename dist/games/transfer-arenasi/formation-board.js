@@ -1,6 +1,7 @@
 import {formationLimits} from './formation.js';
 import {escapeHTML as esc} from './cards.js';
 import {SPECIALTIES} from './coach-card.js';
+import {playerAvatarSVG} from './avatar.js';
 
 const ROLE_NAMES={GK:'KL',DEF:'DEF',MID:'OS',ATT:'FV'};
 const tier=p=>p.legend?'legend':p.overall>=88?'elite':p.overall>=82?'gold':'silver';
@@ -15,7 +16,7 @@ function rows(team){
 }
 function chip(p,role,captains){
  if(!p)return `<div class="board-chip empty"><span>${ROLE_NAMES[role]}</span><small>Boş</small></div>`;
- const photo=p.portraitURL?`<img src="${esc(p.portraitURL)}" alt="" loading="lazy" width="48" height="48">`:'';
+ const photo=p.portraitURL?`<img src="${esc(p.portraitURL)}" alt="" loading="lazy" width="48" height="48">`:`<span class="chip-avatar">${playerAvatarSVG(p,{compact:true})}</span>`;
  return `<div class="board-chip tier-${tier(p)}" title="${esc(p.name)} · ${p.overall}"><b>${p.overall}</b><i>${esc(p.detailPosition||p.position)}</i>${photo}<strong>${esc(p.name)}</strong>${captains.has(p.id)?'<em aria-label="Kaptan">ⓒ</em>':''}</div>`;
 }
 // İhalede kendi dizilişin (boş yerler kesikli) ve rakip kadrolarının saha görünümü.

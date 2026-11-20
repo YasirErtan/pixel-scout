@@ -62,10 +62,11 @@ Vercel için `vercel.json` derlemesiz statik `dist/` yayını kullanır. Kendi f
 
 ## Transfer Arenası
 
-`/games/transfer-arenasi/`: ayrı cihazlardan 3–6 kişilik açık artırma, yedi kişilik kadrolar, gerçek teknik direktörler, gizli taktikler ve lig/final modu. FC 27 veri görüntüsünden özellik kartları ve sonraya ayrılmış fotoğraf alanları kullanır. Kurallar ve sunucu kurulumu: [Transfer Arenası](docs/TRANSFER_ARENA.md). Yerel çevrimiçi test sunucusu: `node scripts/serve-arena.mjs` (4174 portu, geçici odalar). Üretim için yalnız sunucuda Firebase kimliği gerekir; anahtarları tarayıcıya veya GitHub'a koymayın. Logo seçimi, ihale sayacı, saha dizilişi görünümü, simülasyon rehberi ve turnuva sonu töreni eklendi.
+`/games/transfer-arenasi/`: ayrı cihazlardan 3–6 kişilik açık artırma, yedi kişilik kadrolar, gerçek teknik direktörler, gizli taktikler ve lig/final modu. FC 27 veri görüntüsünden özellik kartları ile 4.847 futbolcu için yerel analizden üretilen FM tarzı animasyonlu SVG avatar portreleri kullanır (Efsane ve Bonus kartlar kendi fotoğraflarını korur). Kurallar ve sunucu kurulumu: [Transfer Arenası](docs/TRANSFER_ARENA.md). Yerel çevrimiçi test sunucusu: `node scripts/serve-arena.mjs` (4174 portu, geçici odalar). Üretim için yalnız sunucuda Firebase kimliği gerekir; anahtarları tarayıcıya veya GitHub'a koymayın. Logo seçimi, ihale sayacı, saha dizilişi görünümü, simülasyon rehberi ve turnuva sonu töreni eklendi.
 
 ## Notlar
 
+- Tarih: 2026-11-20. Transfer Arenası futbolcu kartlarına ve saha diziliş çiplerine FM tarzı hafif animasyonlu SVG avatar portreleri eklendi (`dist/games/transfer-arenasi/avatar.js`, `avatar-data.js`, `avatar-stars.js`). 4.847 oyuncunun tamamı `scripts/analyze-arena-avatars.py` ile RAM içinde analiz edildi (4.642 gerçek analiz, 205 deterministik yedek; telifli fotoğraf dosyası kaydedilmedi) ve 127 yıldız oyuncu için ince ayar profilleri eklendi. Testler: `tests/transfer-arena-avatars.test.mjs`.
 - Tarih: 2026-11-20. feat/arena-gelistirmeler dalında Transfer Arenası geliştirmeleri yapıldı: logo seçimi, ihale sayacı, saha dizilişi görünümü, simülasyon rehberi, turnuva sonu töreni, 44 hocalık havuz ve yeni efsane portreleri (ayrıntı: docs/TRANSFER_ARENA.md).
-- Yerel test: `node scripts/serve-arena.mjs`. Kontrol: `npm run check`. Yeni testler: tests/transfer-arena-features.test.mjs.
+- Yerel test: `node scripts/serve-arena.mjs`. Kontrol: `npm run check`. Yeni testler: tests/transfer-arena-features.test.mjs, tests/transfer-arena-avatars.test.mjs.
 - Kaldığı yer: Değişiklikler commit edilip origin/feat/arena-gelistirmeler dalına push edildi; PR açılmadı, main ile birleştirme ve üretim yayını kullanıcı kararına bağlı. Hoca yıldızı çarpanı (rulesVersion 5) yalnız yeni odalarda geçerlidir.

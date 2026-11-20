@@ -91,3 +91,11 @@ Efsane kart portreleri oyunculuk döneminden, yüzü net Commons fotoğraflarıy
 ## Hoca yıldızının takım gücüne etkisi (rulesVersion 5, maç modeli 5)
 
 Yeni odalar rulesVersion 5 ile açılır ve maç modeli 5 kullanır. Bu modelde hocanın yıldızı, uzmanlık boost'una ek olarak takımdaki bütün futbolcuların maç özelliklerine (pas, mücadele, şut, kalecilik, penaltı, sprint) çarpan olarak eklenir: 5★ +%8, 4★ +%4,5, 3★ +%2, 2★ +%0,8, 1★ +%0,2. Kart overall değerleri değişmez; çarpan kaptan bonusuyla birlikte uygulanır. Değerler `COACH_RATING_BOOST` (coach-card.js) içinde tek yerde tutulur; hoca kartı ve taktik ekranı yüzdeyi gösterir. Eşit kadrolarla 1.500 maçlık deneyde 5★ hoca, 5★ rakibe karşı yaklaşık %35, 3★ rakibe karşı %51, 1★ rakibe karşı %55 galibiyet aldı. Model 4 ve öncesiyle başlamış maçlar bu çarpanı almaz.
+
+## FM Tarzı Animasyonlu SVG Avatar Portreleri
+
+Transfer Arenası'ndaki tüm standart futbolcu kartları ve saha dizilişi çipleri (`formation-board.js`), 15 Efsane ve Eren Çiftçi bonus kartının gerçek fotoğraflarını koruyarak özgün, katmanlı ve hafif animasyonlu FM tarzı SVG portre motorunu (`dist/games/transfer-arenasi/avatar.js`) kullanır (`prefers-reduced-motion: reduce` tercihiyle animasyonlar kapanır).
+
+- **Yerel analiz (`scripts/analyze-arena-avatars.py`):** 4.847 futbolcunun portreleri yalnızca bellek içinde (diske veya Git'e telifli fotoğraf kaydedilmeden) analiz edilerek ten tonu, saç rengi/stili/hacmi, sakal, yüz şekli/genişliği, kaş, göz ve ifade parametreleri çıkarılır; `dist/games/transfer-arenasi/avatar-data.js` dosyasına kompakt base36 profiller ve 145 kulüp forması (`CLUB_KITS`) olarak yazılır (4.642 gerçek analiz + 205 deterministik yedek).
+- **Yıldız ince ayarları (`dist/games/transfer-arenasi/avatar-stars.js`):** 85+ tüm 96 yıldız ve 31 ek dünya/Türk yıldızı (toplam 127 futbolcu) için saç stili, boyalı uçlar, sakal, yüz maskesi (ör. Victor Osimhen) ve saç bandı (ör. Erling Haaland, Luka Modrić) gibi karakteristik özellikler tanımlanır.
+- **Doğrulama:** `tests/transfer-arena-avatars.test.mjs` 4.847 profilin tamamını, 96 elit yıldızın ince ayarlarını, Efsane/Bonus fotoğraf korumasını, XSS kaçışını ve çoklu kart SVG `<defs>` kimlik benzersizliğini test eder.
