@@ -3,9 +3,11 @@ import {fixtures,validatePlan,DEFAULT_PLAN,beginMatch,simulateHalf,resolveFinal}
 import {formationLimits} from '../../dist/games/transfer-arenasi/formation.js';
 import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {standings} from './standings.js';
+import {LOGO_IDS} from '../../dist/games/transfer-arenasi/logos.js';
 
-export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:4,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name)],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
-function member(id,name){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,ready:false,points:0,gf:0,ga:0,wins:0};}
+export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:5,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
+function freeLogo(teams){return LOGO_IDS.find(id=>!teams.some(team=>team.logo===id))||null;}
+function member(id,name,logo=null){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,logo,ready:false,points:0,gf:0,ga:0,wins:0};}
 function deadline(room,phase,now,ms){if(room.rulesVersion===2&&['squadReview','prepare','halftime'].includes(phase)){room.rulesVersion=3;ms=180000;}room.phase=phase;room.phaseVersion++;room.deadline=now+ms;room.plans={};}
 function nextLot(room,now){
  const market=room.phase==='players'?room.market.players:room.market.coaches;
@@ -41,7 +43,7 @@ function startHalf(room,now,half){
  room.matches=pairs.map(([a,b],i)=>{
   const teams=[a,b].map(id=>room.teams.find(t=>t.id===id));
   const plans=[a,b].map(id=>room.plans[id]||room.lastPlans?.[id]||initialPlan(room,id));
-  const previous=half===1?beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3,{version:room.rulesVersion>=4?4:3,neutral:!!room.final}):room.matches[i];
+  const previous=half===1?beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3,{version:room.rulesVersion>=5?5:room.rulesVersion>=4?4:3,neutral:!!room.final}):room.matches[i];
   if(half===1&&!(room.rulesVersion>=2))previous.version=2;
   return previous.finished?previous:simulateHalf(previous,plans);
  });
@@ -87,7 +89,7 @@ export function command(input,uid,action,now,data){
   throw Error('Oda kapatıldı');
  }
  if(action.type==='join'){
-  if(!t){if(r.phase!=='lobby'||r.teams.length>=6)throw Error('Oda katılıma kapalı');r.teams.push(member(uid,action.name));if(r.departed)r.departed=r.departed.filter(id=>id!==uid);}
+  if(!t){if(r.phase!=='lobby'||r.teams.length>=6)throw Error('Oda katılıma kapalı');r.teams.push(member(uid,action.name,freeLogo(r.teams)));if(r.departed)r.departed=r.departed.filter(id=>id!==uid);}
  }else{
   if(!t){if(['leave','poll'].includes(action.type)&&r.departed?.includes(uid))return r;throw Error('Oda üyesi değilsin');}
   switch(action.type){
@@ -96,6 +98,12 @@ export function command(input,uid,action,now,data){
     if(r.phase!=='lobby'||r.rulesVersion<4||t.ready)throw Error('Diziliş seçimi kapalı');
     formationLimits(action.formation);
     t.formation=action.formation;
+    break;
+   case 'logo':
+    if(r.phase!=='lobby'||t.ready)throw Error('Logo seçimi kapalı');
+    if(!LOGO_IDS.includes(action.logo))throw Error('Geçersiz logo');
+    if(r.teams.some(team=>team.id!==uid&&team.logo===action.logo))throw Error('Bu logo başka bir takımda');
+    t.logo=action.logo;
     break;
    case 'bonusCard':
     if(r.phase!=='lobby'||r.rulesVersion<4||!r.options.bonusCardsEnabled||t.ready)throw Error('Bonus kartı seçimi kapalı');
@@ -203,6 +211,12 @@ function scoringLeaders(room,minute){
  return [...players.values()].sort((a,b)=>b.total-a.total||b.goals-a.goals||String(a.name).localeCompare(String(b.name),'tr')||String(a.id).localeCompare(String(b.id)));
 }
 
+// İhalede kaçıncı kartta olunduğu: açık kart için sırası, sonuç ekranında az önce kapanan kart.
+function lotProgress(r){
+ const kind=['players','coaches'].includes(r.phase)?r.phase:r.phase==='auctionResult'?r.auctionKind:null;
+ const market=kind&&r.market?.[kind];if(!market)return {lotNumber:null,lotTotal:null,lotKind:null};
+ return {lotNumber:Math.min(market.length,r.phase==='auctionResult'?r.lotIndex:r.lotIndex+1),lotTotal:market.length,lotKind:kind};
+}
 export function publicView(r,uid,now){
  const member=r.teams.find(t=>t.id===uid);
  if(!member){
@@ -215,7 +229,7 @@ export function publicView(r,uid,now){
  const minute=live?currentMinute(r,now):r.phase==='halftime'?length:r.phase==='finished'?Infinity:length*2;
  const lot=r.lot?.sealed?{id:r.lot.id,card:r.lot.card,deadline:r.lot.deadline,sealed:true,single:r.lot.single||false,myLocked:Object.hasOwn(r.lot.bids,uid)||r.lot.passed.includes(uid),myBid:r.lot.bids[uid]??null,passed:r.lot.passed.includes(uid)?[uid]:[],amount:0,bidder:null}:r.lot;
  return {id:r.id,owner:r.owner,rulesVersion:r.rulesVersion||1,playbackSpeed:r.playbackSpeed||1,assignments:r.assignments||[],auctionResult:r.auctionResult||null,options:r.options||{bonusEnabled:false},phase:r.phase,version:r.version,phaseVersion:r.phaseVersion,deadline:r.lot&&['players','coaches'].includes(r.phase)?r.lot.deadline:r.deadline,
-  teams:r.teams.map(({bonusCard,...team})=>team),myBonusCard:member.bonusCard||null,bonusCardSelected:r.teams.filter(team=>team.bonusCard).map(team=>team.id),nextMatch:upcomingMatch(r,uid),leaderboard:scoringLeaders(r,minute),pairs:r.schedule?activePairs(r):[],table:standings(r.teams,r.results||[],r.seed+900001).teams.map(t=>t.id),draws:r.draws||[],lot,history:r.history,pool:r.pool,round:r.round,final:r.final||false,champion:r.champion,
+  teams:r.teams.map(({bonusCard,...team})=>team),myBonusCard:member.bonusCard||null,bonusCardSelected:r.teams.filter(team=>team.bonusCard).map(team=>team.id),nextMatch:upcomingMatch(r,uid),leaderboard:scoringLeaders(r,minute),pairs:r.schedule?activePairs(r):[],table:standings(r.teams,r.results||[],r.seed+900001).teams.map(t=>t.id),draws:r.draws||[],lot,...lotProgress(r),history:r.history,pool:r.pool,round:r.round,final:r.final||false,finalists:r.finalists||[],champion:r.champion,
   referees:r.schedule?activePairs(r).map((pair,i)=>({teams:pair,strictness:matchSeed(r,i)%3})):[],
   discipline:r.matches.map(m=>({teams:m.teams.map(t=>({id:t.id,players:t.players.map(p=>({id:p.id,name:p.name,red:m.events.some(e=>e.type==='red'&&e.playerId===p.id&&e.minute<=minute),yellow:m.events.filter(e=>e.type==='yellow'&&e.playerId===p.id&&e.minute<=minute).length}))}))})),
   myPlan:r.plans[uid]||r.lastPlans?.[uid]||initialPlan(r,uid),locked:Object.keys(r.plans),

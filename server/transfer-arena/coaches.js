@@ -16,5 +16,16 @@ export const COACHES=[
  ['sergen-yalcin','Sergen Yalçın','passing',2],['ismail-kartal','İsmail Kartal','discipline',2],
  ['conte','Antonio Conte','defense',4],['tuchel','Thomas Tuchel','press',4],
  ['luis-enrique','Luis Enrique','passing',4],['pochettino','Mauricio Pochettino','press',3],
- ['senol-gunes','Şenol Güneş','development',3],['aykut-kocaman','Aykut Kocaman','defense',3]
+ ['senol-gunes','Şenol Güneş','development',3],['aykut-kocaman','Aykut Kocaman','defense',3],
+ // Genişletilmiş havuz: yeni uzmanlıklar (attack, fitness) ve farklı dönemlerden hocalar.
+ ['alex-ferguson','Alex Ferguson','attack',5],['jupp-heynckes','Jupp Heynckes','fitness',5],
+ ['fabio-capello','Fabio Capello','discipline',4],['hansi-flick','Hansi Flick','attack',4],
+ ['xabi-alonso','Xabi Alonso','passing',4],['simone-inzaghi','Simone Inzaghi','transition',4],
+ ['didier-deschamps','Didier Deschamps','defense',4],['mircea-lucescu','Mircea Lucescu','development',4],
+ ['mikel-arteta','Mikel Arteta','press',3],['arne-slot','Arne Slot','passing',3],
+ ['julian-nagelsmann','Julian Nagelsmann','transition',3],['roberto-mancini','Roberto Mancini','discipline',3],
+ ['abdullah-avci','Abdullah Avcı','fitness',3],['vincenzo-montella','Vincenzo Montella','attack',3],
+ ['maurizio-sarri','Maurizio Sarri','passing',2],['ruben-amorim','Rúben Amorim','fitness',2],
+ ['erik-ten-hag','Erik ten Hag','development',2],['ange-postecoglou','Ange Postecoglou','attack',2],
+ ['ersun-yanal','Ersun Yanal','attack',1],['mustafa-denizli','Mustafa Denizli','discipline',1]
 ].map(([id,name,specialty,stars])=>({id:'coach-'+id,name,specialty,stars,kind:'coach'}));

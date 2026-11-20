@@ -7,12 +7,11 @@ import {coachCard,coachEffect} from '../dist/games/transfer-arenasi/coach-card.j
 import {COACH_PORTRAITS} from '../dist/games/transfer-arenasi/coach-portraits.js';
 import {selectCoaches,random} from '../server/transfer-arena/market.js';
 
-test('expanded coach pool retains requested stars and adds two one-star and two two-star coaches',()=>{
- assert.equal(COACHES.length,24);assert.equal(new Set(COACHES.map(c=>c.id)).size,24);
+test('expanded coach pool retains requested stars and keeps every star level varied',()=>{
+ assert.equal(COACHES.length,44);assert.equal(new Set(COACHES.map(c=>c.id)).size,44);
+ for(const stars of [1,2,3,4,5])assert.ok(COACHES.filter(c=>c.stars===stars).length>=5,'her yıldız seviyesinde en az 5 hoca');
  const find=name=>COACHES.find(c=>c.name===name);
  assert.equal(find('Fatih Terim').stars,5);assert.equal(find('Okan Buruk').stars,4);assert.equal(find('Emre Belözoğlu').stars,2);
- assert.equal(COACHES.filter(c=>c.stars===1&&c.id!=='coach-keller').length,2);
- assert.equal(COACHES.filter(c=>c.stars===2&&!['coach-emre-belozoglu','coach-di-matteo'].includes(c.id)).length,2);
 });
 test('every coach has a bundled licensed photo with attribution and a visible conditional effect',()=>{
  for(const coach of COACHES){
@@ -35,4 +34,12 @@ test('coach auctions use distinct star levels, with exactly one repeated level f
   if(seats<6)assert.ok(counts.every(n=>n<=1));
   else assert.deepEqual(counts.toSorted(),[1,1,1,1,2]);
  }
+});
+
+test('new attack and fitness specialties show their effect and activation condition',async()=>{
+ const {coachBoostActive}=await import('../dist/games/transfer-arenasi/coach-tactics.js');
+ const ferguson=COACHES.find(c=>c.name==='Alex Ferguson'),heynckes=COACHES.find(c=>c.name==='Jupp Heynckes');
+ assert.match(coachEffect(ferguson),/Hücum riski.*2,5 yüzde puan/);assert.match(coachEffect(heynckes),/enerjiyi %7,5/);
+ assert.equal(coachBoostActive(ferguson,{risk:2}),true);assert.equal(coachBoostActive(ferguson,{risk:1}),false);
+ assert.equal(coachBoostActive(heynckes,{}),true);
 });

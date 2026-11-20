@@ -4,14 +4,21 @@ import {createHash} from 'node:crypto';
 import {COACHES} from '../server/transfer-arena/coaches.js';
 const headers={'User-Agent':'PixelScout/1.0 (free coach portraits, attribution retained)'};
 async function api(host,params,attempt=0){const url=new URL('/w/api.php',host);url.search=new URLSearchParams({action:'query',format:'json',...params});const res=await fetch(url,{headers});if(res.status===429){if(attempt>=4)throw Error('Wikimedia rate limit; try later');const seconds=Number(res.headers.get('retry-after'))||30;console.log('Wikimedia rate limit; waiting',seconds,'seconds');await new Promise(resolve=>setTimeout(resolve,seconds*1000));return api(host,params,attempt+1);}if(!res.ok)throw Error('Wikimedia '+res.status);return res.json();}
-const wiki=await api('https://en.wikipedia.org',{titles:COACHES.map(c=>c.name).join('|'),redirects:'1',prop:'pageimages',piprop:'name|thumbnail',pithumbsize:'320'});
+// Mevcut, doğrulanmış kayıtlar korunur; yalnızca fotoğrafı olmayan hocalar indirilir. Hepsini yenilemek için: --all
+const all=process.argv.includes('--all');
+const previous=all?[]:JSON.parse(await fs.readFile('research/transfer-arena-coach-portraits.json','utf8').catch(()=>'{"portraits":[]}')).portraits.filter(r=>COACHES.some(c=>c.id===r.id));
+const missing=COACHES.filter(c=>!previous.some(r=>r.id===c.id));
+// Wikipedia başlığı hoca adından farklıysa burada eşlenir.
+const WIKI_TITLES={'coach-alex-ferguson':'Alex Ferguson','coach-ruben-amorim':'Rúben Amorim','coach-xabi-alonso':'Xabi Alonso'};
+const wikiTitle=c=>WIKI_TITLES[c.id]||c.name;
+const wiki=await api('https://en.wikipedia.org',{titles:missing.map(wikiTitle).join('|')||'Main Page',redirects:'1',prop:'pageimages',piprop:'name|thumbnail',pithumbsize:'320'});
 const redirects=new Map([...(wiki.query.normalized||[]),...(wiki.query.redirects||[])].map(x=>[x.from,x.to]));
 function title(name){let t=name;for(let i=0;i<4&&redirects.has(t);i++)t=redirects.get(t);return t;}
-const pages=Object.values(wiki.query.pages),records=[];const commons=await api('https://commons.wikimedia.org',{titles:pages.filter(p=>p.pageimage).map(p=>'File:'+p.pageimage).join('|'),prop:'imageinfo',iiprop:'url|extmetadata|mime',iiurlwidth:'320'});const images=Object.values(commons.query.pages);
+const pages=Object.values(wiki.query.pages),records=[...previous];const commons=await api('https://commons.wikimedia.org',{titles:pages.filter(p=>p.pageimage).map(p=>'File:'+p.pageimage).join('|')||'File:Example.jpg',prop:'imageinfo',iiprop:'url|extmetadata|mime',iiurlwidth:'320'});const images=Object.values(commons.query.pages);
 const plain=value=>String(value||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(+n)).trim();
 await fs.mkdir('dist/games/transfer-arenasi/assets/coaches',{recursive:true});
-for(const coach of COACHES){
- const page=pages.find(p=>p.title===title(coach.name));
+for(const coach of missing){
+ const page=pages.find(p=>p.title===title(wikiTitle(coach)));
  if(!page?.pageimage){console.log('MISSING',coach.name);continue;}
  const data={query:{pages:images.filter(p=>p.title===('File:'+page.pageimage).replaceAll('_',' '))}};
  const info=Object.values(data.query.pages)[0]?.imageinfo?.[0],meta=info?.extmetadata;
@@ -24,6 +31,6 @@ for(const coach of COACHES){
  records.push({id:coach.id,name:coach.name,path:'./assets/coaches/'+filename,source:info.descriptionurl,author:plain(meta.Artist?.value),license,licenseURL:meta.LicenseUrl?.value||'',changes:'Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop',sha256:createHash('sha256').update(bytes).digest('hex'),width:info.thumbwidth,height:info.thumbheight});
  console.log('OK',coach.name,license);
 }
-await fs.writeFile('research/transfer-arena-coach-portraits.json',JSON.stringify({retrievedAt:new Date().toISOString(),portraits:records},null,2)+'\n');
-await fs.writeFile('dist/games/transfer-arenasi/coach-portraits.js','// Photo attribution must accompany redistributed images.\nexport const COACH_PORTRAITS='+JSON.stringify(Object.fromEntries(records.map(r=>[r.id,r])))+';\n');
+await fs.writeFile('research/transfer-arena-coach-portraits.json',JSON.stringify({retrievedAt:new Date().toISOString(),portraits:COACHES.map(c=>records.find(r=>r.id===c.id)).filter(Boolean)},null,2)+'\n');
+await fs.writeFile('dist/games/transfer-arenasi/coach-portraits.js','// Photo attribution must accompany redistributed images.\nexport const COACH_PORTRAITS='+JSON.stringify(Object.fromEntries(COACHES.map(c=>records.find(r=>r.id===c.id)).filter(Boolean).map(r=>[r.id,r])))+';\n');
 console.log('TOTAL',records.length,'of',COACHES.length);

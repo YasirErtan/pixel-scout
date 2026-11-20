@@ -1,5 +1,5 @@
 {
-  "retrievedAt": "2026-11-04T14:57:17.673Z",
+  "retrievedAt": "2026-11-20T14:02:50.375Z",
   "portraits": [
     {
       "id": "legend-237067",
@@ -9,10 +9,15 @@
       "author": "Unknown authorUnknown author",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "ac3c9b0952198da36b6a5bf65adf5476955edae69fadde5da1836ebd45d09b30",
-      "width": 320,
-      "height": 434
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        22,
+        1.15
+      ],
+      "sha256": "5697f065847351a1ed64543c87d0f882ec53ccb6d3fff64aad70da3958e2598b",
+      "width": 500,
+      "height": 678
     },
     {
       "id": "legend-190042",
@@ -22,36 +27,51 @@
       "author": "Unknown authorUnknown author",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "04351a09d66ec77e9038913ec5dc21af5e730cf1487ba0f5303d77be2434a6d7",
-      "width": 320,
-      "height": 501
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        42,
+        20,
+        1.7
+      ],
+      "sha256": "1f5563e842acfa4f85528ee3a83c45cda8a63dedbfd334e32151cba28d844a6c",
+      "width": 500,
+      "height": 784
     },
     {
       "id": "legend-37576",
       "name": "Ronaldo (Brazilian footballer)",
       "path": "./assets/legends/37576.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:12.12.2025_%E2%80%93_Cerim%C3%B4nia_de_lan%C3%A7amento_do_SBT_News_-_54980664160_(cropped2).jpg",
-      "author": "Lula Oficial",
+      "source": "https://commons.wikimedia.org/wiki/File:Ronaldo_2002_cropped.jpg",
+      "author": "Milly barzellai",
       "license": "CC BY-SA 4.0",
       "licenseURL": "https://creativecommons.org/licenses/by-sa/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "c883d91e888fa6c3049f550a3125ea245e78662721a2592847f0b153d60e3df2",
-      "width": 320,
-      "height": 461
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        24,
+        1.2
+      ],
+      "sha256": "d4b352621dbed6e0813f266db83f4220a6f88385ff909e80726f7bcea3a34b75",
+      "width": 500,
+      "height": 750
     },
     {
       "id": "legend-1397",
       "name": "Zinedine Zidane",
       "path": "./assets/legends/1397.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Zinedine_Zidane_by_Tasnim_03.jpg",
-      "author": "Hadi Abyar",
-      "license": "CC BY 4.0",
-      "licenseURL": "https://creativecommons.org/licenses/by/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "ac86165f04e730ac0038e49e5e19a8ede4c89a6183e860c7825b2108c4c31f49",
-      "width": 320,
-      "height": 425
+      "source": "https://commons.wikimedia.org/wiki/File:Zidane_Zizu.jpg",
+      "author": "Walterlan Papetti",
+      "license": "CC BY-SA 4.0",
+      "licenseURL": "https://creativecommons.org/licenses/by-sa/4.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        20,
+        1.2
+      ],
+      "sha256": "ad43dc50c989956188cda6cd772cbb988d716a7dc34309fab3298fc825ac6632",
+      "width": 500,
+      "height": 750
     },
     {
       "id": "legend-190045",
@@ -61,23 +81,33 @@
       "author": "Rob Mieremet / Anefo",
       "license": "CC0",
       "licenseURL": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "cbcd74cd46a01cfb1ba093f3a8023ac880e53f3a136459de0fa8b6ac6ed1f6d5",
-      "width": 320,
-      "height": 427
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        45,
+        25,
+        1.1
+      ],
+      "sha256": "8bfb8a8b5c5daf9fd6e9d358dac45c91207e3aef7d26dd20403d23b4c7e03144",
+      "width": 500,
+      "height": 667
     },
     {
       "id": "legend-238439",
       "name": "Paolo Maldini",
       "path": "./assets/legends/238439.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Paolo_Maldini_AC_Milan_Technical_director_2018.jpg",
-      "author": "GOAL TV",
-      "license": "CC BY 3.0",
-      "licenseURL": "https://creativecommons.org/licenses/by/3.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "7a5f71a54f1d42f3a257f2529532acaf2af25f30211cce24f653c63daeb0d366",
-      "width": 320,
-      "height": 329
+      "source": "https://commons.wikimedia.org/wiki/File:Maldini2008.JPG",
+      "author": "Yelena Rybakova",
+      "license": "CC BY-SA 1.0",
+      "licenseURL": "https://creativecommons.org/licenses/by-sa/1.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        30,
+        1.15
+      ],
+      "sha256": "e8543292e26a8026792795d7ae38f2c6e0dbc1ca137fd32de6c63029c555cbba",
+      "width": 500,
+      "height": 619
     },
     {
       "id": "legend-247553",
@@ -87,10 +117,15 @@
       "author": "El Gráfico, n° 2233",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "48604683c4855256e6d6d505a424e5053f4ef709b0cb8ef048bd00e426666102",
-      "width": 320,
-      "height": 422
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        10,
+        2.4
+      ],
+      "sha256": "db7f0d014c39877b9e9d5980e218eefd56cb9642a32852237a1dea24921ff79e",
+      "width": 500,
+      "height": 660
     },
     {
       "id": "legend-168473",
@@ -100,10 +135,15 @@
       "author": "Panini Group",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "2996a44a4bf2e0f8b6b4d870d393c31785b8968acbe7f617405901cedd995f46",
-      "width": 320,
-      "height": 438
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        22,
+        1.15
+      ],
+      "sha256": "e5a69816c4af5789f8150e7ef2b95700815137e60cf693355453ec66d1de5a08",
+      "width": 500,
+      "height": 684
     },
     {
       "id": "legend-254642",
@@ -113,23 +153,33 @@
       "author": "Panini",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        48,
+        24,
+        1.2
+      ],
       "sha256": "4b9039e53c7c4b62204d4c7a917f8df116e688d7c8ddcf5ac0542c6897f5d1e9",
-      "width": 320,
-      "height": 413
+      "width": 500,
+      "height": 645
     },
     {
       "id": "legend-41",
       "name": "Andrés Iniesta",
       "path": "./assets/legends/41.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Iniesta_Argentina_v_Spain_19_July_2026-034_(cropped).jpg",
-      "author": "Bryan Berlin",
-      "license": "CC BY-SA 4.0",
-      "licenseURL": "https://creativecommons.org/licenses/by-sa/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "1e3f7bdd94b22b9fe4b2101ce9d74d7b1a38bc10b69ea9ef776d41d838f71586",
-      "width": 320,
-      "height": 405
+      "source": "https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Iniesta_Euro_2012_vs_France_01.jpg",
+      "author": "Дмитрий Неймырок",
+      "license": "CC BY-SA 3.0",
+      "licenseURL": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        20,
+        1.15
+      ],
+      "sha256": "034ff42f35fefaf4366ce316c0e72130a7d7389383f75f3f1c1ad6898cc755c3",
+      "width": 500,
+      "height": 751
     },
     {
       "id": "legend-190048",
@@ -139,62 +189,87 @@
       "author": "Unknown authorUnknown author",
       "license": "Public domain",
       "licenseURL": "",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "9b13f6452ab60e332ae92a4d40cd971248e4f35de320d93fc94bea5cfa06efb5",
-      "width": 320,
-      "height": 426
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        24,
+        1.15
+      ],
+      "sha256": "011a2d312182c38d8fb44709b6eaa4f821d23ee2b136d36377d2b23985f60812",
+      "width": 500,
+      "height": 665
     },
     {
       "id": "legend-1179",
       "name": "Gianluigi Buffon",
       "path": "./assets/legends/1179.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Norway_Italy_-_June_2025_A_44_(Gianluigi_Buffon).jpg",
-      "author": "MichaelEmilio",
-      "license": "CC BY 4.0",
-      "licenseURL": "https://creativecommons.org/licenses/by/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "8ebe644f48080e757c33d657826439fbdd0ddbc4391415d922c2577936bc546b",
-      "width": 320,
-      "height": 403
+      "source": "https://commons.wikimedia.org/wiki/File:Gianluigi_Buffon_(31784615942)_(cropped).jpg",
+      "author": "Original: Doha Stadium Plus Qatar from Doha, Qatar Derivative work: Alza08 Author:",
+      "license": "CC BY 2.0",
+      "licenseURL": "https://creativecommons.org/licenses/by/2.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        22,
+        1.2
+      ],
+      "sha256": "5b8c773ec59e47af642121f3caaecbdf4f3ec495d65ec1ef4fd8551fe40cdde6",
+      "width": 500,
+      "height": 715
     },
     {
       "id": "legend-1625",
       "name": "Thierry Henry",
       "path": "./assets/legends/1625.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Thierry_Henry_(51649035951)_(cropped).jpg",
-      "author": "Web Summit",
-      "license": "CC BY 2.0",
-      "licenseURL": "https://creativecommons.org/licenses/by/2.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "8fe817efb83bc82f589c2b52de64553ae685e8e6e32a297917f3d1c72b434b6f",
-      "width": 320,
-      "height": 427
+      "source": "https://commons.wikimedia.org/wiki/File:Thierry_Henry_2008.jpg",
+      "author": "Shay",
+      "license": "CC BY-SA 3.0",
+      "licenseURL": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        4,
+        1.1
+      ],
+      "sha256": "a5d08bdcba354f1e74337617ec27b4655234dd63610ffd9164798c62564efd6e",
+      "width": 500,
+      "height": 719
     },
     {
       "id": "legend-10535",
       "name": "Xavi",
       "path": "./assets/legends/10535.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:Xavi_13981129001173637176666027076571.jpg",
-      "author": "Mehdi Zare",
-      "license": "CC BY 4.0",
-      "licenseURL": "https://creativecommons.org/licenses/by/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "eab80aee49649a1a9d2645974d668acc4917aca08e7fec39e458ff9b03558170",
-      "width": 320,
-      "height": 382
+      "source": "https://commons.wikimedia.org/wiki/File:2012_2013_-_06_Xavi_Hern%C3%A1ndez.jpg",
+      "author": "Castroquini",
+      "license": "CC BY-SA 3.0",
+      "licenseURL": "https://creativecommons.org/licenses/by-sa/3.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        45,
+        9,
+        2.8
+      ],
+      "sha256": "9eaaa0a0426b848a701869c3dead113278aae7203eaae2da8140d423bb1ab020",
+      "width": 500,
+      "height": 667
     },
     {
       "id": "legend-488",
       "name": "Oliver Kahn",
       "path": "./assets/legends/488.jpg",
-      "source": "https://commons.wikimedia.org/wiki/File:2022-07-30_Fu%C3%9Fball,_M%C3%A4nner,_DFL-Supercup,_RB_Leipzig_-_FC_Bayern_M%C3%BCnchen_1DX_3179_by_Stepro.jpg",
-      "author": "Steffen Prößdorf",
-      "license": "CC BY-SA 4.0",
-      "licenseURL": "https://creativecommons.org/licenses/by-sa/4.0",
-      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop",
-      "sha256": "a76d629e550877e59d8100e4a738b4a0fbaf09fb2cd659521fb72093e5a131de",
-      "width": 320,
-      "height": 320
+      "source": "https://commons.wikimedia.org/wiki/File:Persepolis_VS_Bayern_Munich_in_13_January_2006_3_(cropped).jpg",
+      "author": "مهدي زارع",
+      "license": "CC BY 4.0",
+      "licenseURL": "https://creativecommons.org/licenses/by/4.0",
+      "changes": "Wikimedia thumbnail; contact-bearing metadata removed if present; CSS object-fit crop and zoom",
+      "focus": [
+        50,
+        35,
+        1.2
+      ],
+      "sha256": "984c5f0867db5ea599f7d3d05e3eee30d072b89dc9192ce005a1693e93142165",
+      "width": 500,
+      "height": 449
     }
   ]
 }

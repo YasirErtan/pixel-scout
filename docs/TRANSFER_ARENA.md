@@ -16,7 +16,7 @@ Tek devre ligde galibiyet 3, beraberlik 1 puandır; iç saha/deplasman dengeleni
 
 ## Sunucu sözleşmesi
 
-`POST /api/transfer-arena`, aynı kaynaklı JSON istekleri kabul eder. Tarayıcı rastgele, HttpOnly ve Secure oturum çerezi alır; sunucu bundan üye kimliği üretir. İstek türleri create/join/poll/ready/start/bid/pass/plan/speed. Her komutta benzersiz requestId gerekir. bid/pass için lotId; plan için phaseVersion gerekir. Taktik sürümü ağ yoklamalarından bağımsızdır. Oda 24 saat sonra kullanıma kapanır. IP başına istek ve oda oluşturma sınırı uygulanır. Kapanan kayıtların fiziksel temizliği ayrıca bakım görevi gerektirir.
+`POST /api/transfer-arena`, aynı kaynaklı JSON istekleri kabul eder. Tarayıcı rastgele, HttpOnly ve Secure oturum çerezi alır; sunucu bundan üye kimliği üretir. İstek türleri create/join/poll/ready/start/bid/pass/plan/formation/bonusCard/leave/close/speed/logo. Her komutta benzersiz requestId gerekir. bid/pass için lotId; plan için phaseVersion gerekir. Taktik sürümü ağ yoklamalarından bağımsızdır. Oda 24 saat sonra kullanıma kapanır. IP başına istek ve oda oluşturma sınırı uygulanır. Kapanan kayıtların fiziksel temizliği ayrıca bakım görevi gerektirir.
 
 Üretim ortamı değişkenleri yalnız sunucuda: `ARENA_SERVICE_ACCOUNT`, `ARENA_FIREBASE_API_KEY`, `ARENA_DATABASE_URL`. Kimlik, proje IAM rolü olmayan özel bir servis hesabının imzaladığı Firebase Auth custom token ile `transfer-arena-server` kullanıcısına giriş yapar. Bu kimlik yalnız `transfer_arena_v1` altında yetkilendirilmelidir. Mevcut oyunların kuralları korunur. Kimlik dosyasını veya özel anahtarı depoya koyma. Ayrıntılar: [custom tokens](https://firebase.google.com/docs/auth/admin/create-custom-tokens), [REST auth](https://firebase.google.com/docs/reference/rest/auth), [ETag kayıtları](https://firebase.google.com/docs/database/rest/save-data#section-conditional-requests).
 
@@ -24,7 +24,9 @@ Depolama bütün odayı ETag koşullu yazmayla atomik günceller. Çakışma taz
 
 ## Teknik direktör kartları
 
-Havuz 24 gerçek teknik direktörden oluşur. Fatih Terim 5, Okan Buruk 4 ve Emre Belözoğlu 2 yıldızdır. Ek 1 yıldızlı hocalar Frank de Boer ve Steven Gerrard; ek 2 yıldızlı hocalar Sergen Yalçın ve İsmail Kartal'dır. Tüm yıldızlar ve uzmanlıklar oyun tasarımıdır.
+Havuz 44 gerçek teknik direktörden oluşur. İlk 24 hoca: Fatih Terim 5, Okan Buruk 4 ve Emre Belözoğlu 2 yıldızdır; ek 1 yıldızlı hocalar Frank de Boer ve Steven Gerrard, ek 2 yıldızlı hocalar Sergen Yalçın ve İsmail Kartal'dır. Eklenen 20 hoca (uzmanlık, yıldız): Alex Ferguson (hücum, 5), Jupp Heynckes (kondisyon, 5), Fabio Capello (disiplin, 4), Hansi Flick (hücum, 4), Xabi Alonso (pas, 4), Simone Inzaghi (geçiş, 4), Didier Deschamps (savunma, 4), Mircea Lucescu (gelişim, 4), Mikel Arteta (pres, 3), Arne Slot (pas, 3), Julian Nagelsmann (geçiş, 3), Roberto Mancini (disiplin, 3), Abdullah Avcı (kondisyon, 3), Vincenzo Montella (hücum, 3), Maurizio Sarri (pas, 2), Rúben Amorim (kondisyon, 2), Erik ten Hag (gelişim, 2), Ange Postecoglou (hücum, 2), Ersun Yanal (hücum, 1) ve Mustafa Denizli (disiplin, 1). İki yeni uzmanlık vardır: hücum ("Hücum futbolu"), Hücum riski seçildiğinde penaltı dışındaki şutların gol ihtimaline yıldız×0,5 yüzde puan ekler; kondisyon ("Kondisyon"), takımın harcadığı enerjiyi yıldız×%1,5 azaltır ve her planda etkindir. Massimiliano Allegri'nin görsel lisansı belirsiz ("Attribution") çıktığı için havuza alınmadı, yerine Didier Deschamps eklendi. Tüm yıldızlar ve uzmanlıklar oyun tasarımıdır.
+
+Fotoğraf betiği scripts/fetch-arena-coach-portraits.mjs artık yalnızca fotoğrafı olmayan hocaları indirir; hepsini yenilemek için `--all` kullanılır. Arteta, Heynckes ve Ferguson'un tam boy fotoğraflarında kart, yüz odaklı yakınlaştırma kullanır (coach-card.js COACH_FOCUS).
 
 3–5 kişilik odalarda her yıldız seviyesinden en fazla bir hoca seçilir. 6 kişilik odalarda beş seviyeden birer hoca ve rastgele bir seviyeden ikinci bir hoca seçilir. Aynı hoca tekrarlanmaz; hiçbir seviyeden üç hoca gelmez. Hoca sırası karıştırılır ve açılmamış isimler gizli kalır.
 
@@ -73,3 +75,19 @@ Taktik ekranındaki hoca adı/yıldızı, sayısal etki ve taktik koşulu sürek
 
 
 Sürüm2 odalar ilk sunucu işleminde tek teklife yükseltilir: açık karttaki mevcut kararlar korunup kilitlenir ve60saniyelik pencere bir kez başlatılır; sonraki yoklamalar süreyi uzatmaz. Mevcut taktik aşaması bir kez3dakikaya uzatılır. Oynatılmakta olan maç değiştirilmez; devreye ulaşıldığında yeni taktik süresine geçilir.
+
+## Logo, ihale sayacı, saha görünümü ve tören
+
+Her takım lobide 6 özgün logodan birini seçer: Yıldız, Şimşek, Taç, Alev, Dalga ve Kale (dist/games/transfer-arenasi/logos.js, MIT). Katılan takıma otomatik olarak boş ilk logo atanır; hazır olmadan değiştirilebilir. Bir logo odada yalnız bir takımda olur, sunucu `logo` komutunu doğrular. Logolar lobi, puan tablosu, maç kartları, kadrolar, ihale sonucu, krallık listeleri ve törende görünür. Logosu olmayan eski odalarda yalnız takım adı gösterilir.
+
+publicView artık lotNumber, lotTotal ve lotKind döndürür. İhale ekranında "Futbolcu 7/21" ve ilerleme çubuğu, sonuç ekranında az önce kapanan kartın sırası görünür. İhale sırasında kendi dizilişin saha üzerinde gösterilir: alınan futbolcular yerinde, boş yerler kesikli çizilir. Kadrolar bölümündeki tüm takımlar FIFA taktik ekranı gibi saha dizilişinde gösterilir (formation-board.js); tam kartlar "Kartları göster" altındadır.
+
+Eşit tekliflerde ilk kilitleyenin kazandığı kural (rulesVersion 4) değişmedi; sonuç ekranı artık bunu açıkça yazar ve ardından kilitleyeni işaretler. Oda çubuğundaki "Nasıl işler?" düğmesi ve giriş sayfasındaki yardım bölümü, özelliklerin ve taktiklerin simülasyona etkisini özetleyen listeyi açar (mechanics.js); buradaki sayılar simulation.js ile uyumlu tutulmalıdır.
+
+Turnuva bitince her cihazda bir kez otomatik tören oynar (ceremony.js): gol kralı, asist kralı, 3. (lig aşamasını finalistlerden sonra bitiren en iyi takım), 2. (final kaybedeni) ve havai fişeklerle şampiyon. Eşit krallarda hepsi listelenir. "Töreni izle" ile tekrar açılır; hareket azaltma tercihinde havai fişek çizilmez. Görüldü bilgisi localStorage'da `pixel-scout:transfer-arenasi:v1:toren:<oda>` anahtarında tutulur.
+
+Efsane kart portreleri oyunculuk döneminden, yüzü net Commons fotoğraflarıyla değiştirildi (8 güncel veya takım elbiseli fotoğraf yenilendi). Kartta fotoğraf kenardan kenara ve kişiye özel odak/yakınlaştırmayla gösterilir (legend-portraits.js `focus`). Zidane için yüzü görünen serbest lisanslı oyunculuk dönemi fotoğrafı bulunamadığından net bir 2013 portresi kullanıldı. İndirilen ham görseller Git dışındaki research/legend-portraits-cache/ klasöründe tutulur; Wikimedia hız sınırına takılmamak için yeniden çalıştırmada tekrar indirilmez. Seçimler scripts/fetch-arena-legend-portraits.mjs içindeki PHOTO_FILES ve FOCUS listelerindedir.
+
+## Hoca yıldızının takım gücüne etkisi (rulesVersion 5, maç modeli 5)
+
+Yeni odalar rulesVersion 5 ile açılır ve maç modeli 5 kullanır. Bu modelde hocanın yıldızı, uzmanlık boost'una ek olarak takımdaki bütün futbolcuların maç özelliklerine (pas, mücadele, şut, kalecilik, penaltı, sprint) çarpan olarak eklenir: 5★ +%8, 4★ +%4,5, 3★ +%2, 2★ +%0,8, 1★ +%0,2. Kart overall değerleri değişmez; çarpan kaptan bonusuyla birlikte uygulanır. Değerler `COACH_RATING_BOOST` (coach-card.js) içinde tek yerde tutulur; hoca kartı ve taktik ekranı yüzdeyi gösterir. Eşit kadrolarla 1.500 maçlık deneyde 5★ hoca, 5★ rakibe karşı yaklaşık %35, 3★ rakibe karşı %51, 1★ rakibe karşı %55 galibiyet aldı. Model 4 ve öncesiyle başlamış maçlar bu çarpanı almaz.
