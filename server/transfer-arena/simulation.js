@@ -2,6 +2,7 @@
 import {assignFormation,FORMATIONS} from '../../dist/games/transfer-arenasi/formation.js';
 import {CAPTAIN_BOOST} from '../../dist/games/transfer-arenasi/bonus-player.js';
 import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
+import {coachRatingBoost} from '../../dist/games/transfer-arenasi/coach-card.js';
 export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
  const p={...DEFAULT_PLAN,...input};
@@ -27,7 +28,7 @@ export function shape(t,formation){for(const assigned of assignFormation(field(t
 
 function selectPlayer(m,players,weights){const total=players.reduce((s,p)=>s+(weights[p.matchRole||p.position]||1),0);let draw=next(m)*total;return players.find(p=>(draw-=weights[p.matchRole||p.position]||1)<0)||players.at(-1);}
 function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*.02:0;}
-function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1);}
+function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1)*(1+(p.coachBoost||0));}
 function effective(p,k){return performance(p,k)*(0.8+0.2*p.energy/100)*(p.roleFit||1);}
 // Exclude the goalkeeper; live energy, captain and role fit affect usable pace.
 export function teamSprint(team){const players=field(team);return players.length?players.reduce((sum,p)=>sum+effective(p,'sprintSpeed'),0)/players.length:0;}
@@ -45,6 +46,8 @@ function simulatePeriod(m,pp,start,duration,finished){
   if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw Error('Geçersiz kaptan seçimi');
   const captain=alive(t).find(p=>String(p.id)===String(requested))||alive(t).find(p=>p.captain)||alive(t).toSorted((a,b)=>(b.overall||0)-(a.overall||0))[0];
   t.captainId=captain.id;for(const p of t.players)p.captain=p.id===captain.id;
+  // Model 5: hoca yıldızı tüm özelliklere çarpan; eski maçlar etkilenmez.
+  if(m.version>=5)for(const p of t.players)p.coachBoost=coachRatingBoost(t.coach);
   shape(t,pp[i].formation);
  }
  let possession=next(m)<.5?0:1,zone=1;
@@ -56,7 +59,7 @@ function simulatePeriod(m,pp,start,duration,finished){
   const team=m.teams[possession],opp=m.teams[1-possession],plan=pp[possession],def=pp[1-possession];
   const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw Error('Saha oyuncusu kalmadı');
   for(let side=0;side<2;side++)for(const p of alive(m.teams[side])){
-   const cost=(.07+pp[side].tempo*.045+pp[side].press*.035)*(1-coach(m.teams[side],'press')*(pp[side].press===2));
+   const cost=(.07+pp[side].tempo*.045+pp[side].press*.035)*(1-coach(m.teams[side],'press')*(pp[side].press===2))*(1-coach(m.teams[side],'fitness')*.75);
    p.energy=Math.max(15,p.energy-cost*(1-(bonusCardById(m.teams[side].bonusCard)?.fatigueReduction||0))*(1.5-required(p,'stamina')/100));
   }
   const recipient=receiver&&attackers.find(p=>p.id===receiver.id);
@@ -150,8 +153,9 @@ function shoot(m,side,actor,plans,penalty=false,passer=null){
  // No factual outfield GK attributes are invented: 25 is the explicit emergency-keeper model.
  const keeping=goalkeeper?.position==='GK'?(performance(goalkeeper,'gkReflexes')+performance(goalkeeper,'gkPositioning'))/2:25;
  const defense=plans[1-side].risk===0?coach(opp,'defense')*.25:0;
+ const attack=plans[side].risk===2?coach(t,'attack')*.25:0;
  const attackRoles=field(t).filter(p=>p.matchRole==='ATT').length,defenseRoles=field(opp).filter(p=>p.matchRole==='DEF').length;
- const shotQuality=penalty?.72:cap(.13+plans[side].risk*.025+(field(t).length-field(opp).length)*.035+(attackRoles-defenseRoles)*.009-defense,.03,.45);
+ const shotQuality=penalty?.72:cap(.13+plans[side].risk*.025+(field(t).length-field(opp).length)*.035+(attackRoles-defenseRoles)*.009-defense+attack,.03,.45);
  const shooting=penalty?performance(actor,'penalties'):m.version>=2?performance(actor,'finishing')*.75+performance(actor,'shotPower')*.25:performance(actor,'finishing');
  const probability=cap(shotQuality+(shooting*(1+(t.homeBonus||0))-keeping*(1+(opp.homeBonus||0)))*.003,.01,.94);
  t.shots++;t.xg+=probability;

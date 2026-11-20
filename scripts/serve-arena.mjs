@@ -7,7 +7,7 @@ import {arenaData} from '../server/transfer-arena/data.js';
 const root=path.resolve('dist'),records=new Map();
 const store={transaction:async(key,update)=>{const value=update(structuredClone(records.get(key)||null));records.set(key,value);return structuredClone(value);}};
 const service=arenaService({store,data:await arenaData()});
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.jpg':'image/jpeg','.png':'image/png'};
 http.createServer(async(req,res)=>{
  try{
   if(req.url==='/api/transfer-arena'){

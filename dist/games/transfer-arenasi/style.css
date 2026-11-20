@@ -20,3 +20,64 @@
 .auction-winner{font-size:17px;font-weight:800;color:var(--gold);margin:12px 0}.offer-results{margin-top:16px}.winning-offer{background:#395a26;color:#e5ffba}.offer-results td{text-align:right}.tactic-coach{padding:13px;border:1px solid #7e7050;border-radius:12px;background:#302d1a;margin:14px 0}.tactic-coach>div{display:flex;justify-content:space-between;align-items:center;gap:10px}.tactic-coach strong{font-size:14px}.tactic-coach span{font-size:10px;color:#f4d57c;text-align:right}.tactic-coach p{font-size:12px;color:#e8e7ce;margin-top:7px}.tactic-coach.boost-active{border-color:#91be66;background:#243f26}.boost-active span{color:#d0fa76}
 
 .result-card{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 12px;margin:14px 0;border:1px solid var(--gold);border-radius:12px;background:#2c3524}.result-card strong{font-size:16px}.result-card span{font-size:12px;color:var(--gold);white-space:nowrap}
+
+/* Takım logoları */
+.team-logo{display:inline-block;vertical-align:-.22em;flex:none}
+.logo-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px;margin:14px 0 0}.logo-picker legend{font-size:13px;color:var(--muted);font-weight:650;padding:0 6px}
+.logo-option{position:relative;display:grid;justify-items:center;gap:4px;margin:0;padding:9px 4px;border:2px solid transparent;border-radius:12px;background:#0d1c14;cursor:pointer;color:var(--ink);font-size:12px;text-align:center}.logo-option input{position:absolute;opacity:0;width:1px;height:1px;min-height:0}.logo-option span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logo-option:has(input:checked){border-color:var(--accent);background:#1e3d27}.logo-option:has(input:focus-visible){outline:3px solid var(--gold);outline-offset:2px}.logo-option.taken{opacity:.45;cursor:not-allowed}.logo-option.taken span{color:var(--muted)}.logo-picker:disabled .logo-option{cursor:default}
+@media(min-width:720px){.logo-picker{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.champion-title{font-size:28px;margin:6px 0 16px}
+
+/* İhale ilerlemesi */
+.lot-progress{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px;margin:10px 0 2px;font-size:13px;color:var(--muted)}.lot-progress strong{color:var(--accent);font-size:16px;font-variant-numeric:tabular-nums}.lot-bar{height:8px;border-radius:99px;background:#0b1b13;border:1px solid var(--line);overflow:hidden}.lot-bar i{display:block;height:100%;background:linear-gradient(90deg,#88b84c,var(--accent));border-radius:99px;transition:width .4s}
+.lot-progress-text{font-size:12px;color:var(--muted);margin-bottom:6px!important}
+.tie-note{font-size:13px;color:var(--gold);margin:-4px 0 6px}
+
+/* Saha dizilişi (ihale ve kadrolar) */
+.auction-board{margin-top:18px}.auction-board h3{font-size:13px;color:var(--gold);margin-bottom:8px}
+.squad-board{display:grid;gap:10px}
+.board-pitch{position:relative;isolation:isolate;display:grid;grid-template-rows:repeat(4,auto);gap:10px;padding:16px 6px;border:2px solid #8fba91;border-radius:15px;background:repeating-linear-gradient(0deg,#225d3d 0 46px,#286946 46px 92px);overflow:hidden}
+.board-row{display:flex;justify-content:space-evenly;gap:6px}
+.board-chip{position:relative;width:min(30%,96px);min-width:0;display:grid;justify-items:center;align-content:start;gap:2px;padding:6px 4px 7px;border-radius:10px 10px 16px 16px;background:linear-gradient(160deg,#e6eee8,#9ab0a2);color:#193222;box-shadow:0 3px 10px #0006;text-align:center}
+.board-chip b{position:absolute;left:6px;top:4px;font-size:15px;line-height:1}.board-chip i{position:absolute;right:6px;top:5px;font-style:normal;font-size:9px;font-weight:800}
+.board-chip img{width:42px;height:42px;margin-top:12px;border-radius:50%;object-fit:cover;object-position:50% 15%;border:2px solid #fff8}
+.board-chip strong{display:block;width:100%;margin-top:18px;font-size:11px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.board-chip img+strong{margin-top:3px}
+.board-chip em{position:absolute;right:-5px;bottom:-5px;font-style:normal;font-size:14px;background:#f4d57c;color:#14220b;border-radius:50%;width:20px;height:20px;line-height:20px}
+.board-chip.tier-gold{background:linear-gradient(160deg,#f4e9b0,#b69342);color:#312910}.board-chip.tier-elite{background:linear-gradient(160deg,#35254e,#544079);color:#f8e9b3}.board-chip.tier-legend{background:linear-gradient(160deg,#fff8df,#d8bd79);color:#382d17;box-shadow:0 0 0 2px #f4d57c,0 3px 10px #0006}
+.board-chip.empty{background:#0b1b1366;border:2px dashed #c9e4bd88;color:#e7f6e1;box-shadow:none;min-height:58px;align-content:center}.board-chip.empty span{font-weight:800;font-size:12px}.board-chip.empty small{font-size:10px;opacity:.8}
+.board-coach{display:grid;gap:2px;padding:10px 12px;border:1px solid #7e7050;border-radius:12px;background:#302d1a;font-size:12px}.board-coach span{font-size:10px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}.board-coach strong{font-size:14px}.board-coach small{color:#e8e7ce}
+.squad-detail{margin-top:10px}.squad-detail>summary{font-size:12px;color:var(--muted)}
+@media(min-width:720px) and (min-height:600px){.board-pitch{gap:14px;padding:20px 12px}.board-chip{width:104px}.board-chip strong{font-size:12px}#squads .squad-board,.auction-board .squad-board{grid-template-columns:minmax(0,1fr) 200px;align-items:start}.auction-board{max-width:640px;margin-left:auto;margin-right:auto}}
+
+/* Mekanik rehberi */
+.room-bar #open-guide{min-height:38px;padding:6px 9px;font-size:12px}
+.guide{width:min(640px,calc(100vw - 24px));max-height:min(86vh,760px);overflow:auto;padding:18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--ink)}.guide::backdrop{background:#000a}
+.guide-head{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:-18px;margin:-18px -18px 10px;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line)}.guide-head button{min-height:40px;padding:6px 12px}
+.guide h3{font-size:14px;color:var(--gold);margin:16px 0 6px}.mechanics-list{margin:0;display:grid;gap:0}.mechanics-list div{padding:8px 0;border-top:1px solid var(--line)}.mechanics-list dt{font-weight:750;font-size:13px}.mechanics-list dd{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.help-panel .mechanics-list dd{font-size:12px}
+
+/* Tören */
+.ceremony{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 35%,#1d3a26 0,#050b08 70%);color:var(--ink);text-align:center}
+.fireworks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ceremony-stage{position:relative;max-width:560px;width:100%}
+.ceremony-step{animation:ceremony-in .7s cubic-bezier(.2,.9,.3,1.2) both}.ceremony-step .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--gold);margin-top:10px}.ceremony-step h2{font-size:clamp(28px,7vw,48px);line-height:1.15;margin:10px 0;overflow-wrap:anywhere}.ceremony-step h2 .team-logo{width:1em;height:1em}.ceremony-step>p:last-child{color:var(--muted);font-size:15px}.ceremony-step strong{color:var(--accent)}
+.ceremony-icon{display:inline-block;font-size:72px;line-height:1;animation:ceremony-pop 1.2s ease-out both}
+.ceremony-step.place-2 h2{color:#e3e8ef}.ceremony-step.place-3 h2{color:#e2a36b}.ceremony-step.champion h2{color:var(--gold);text-shadow:0 0 24px #f4d57c66}.ceremony-step.champion .ceremony-icon{font-size:110px;animation:ceremony-pop 1.2s ease-out both,trophy-glow 2.4s ease-in-out 1.2s infinite}
+.ceremony-progress{position:absolute;top:calc(18px + env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;gap:8px}.ceremony-progress i{width:26px;height:4px;border-radius:9px;background:#ffffff30}.ceremony-progress i.on{background:var(--accent)}
+.ceremony-actions{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:center;gap:10px}.ceremony-actions button{min-width:120px}
+@keyframes ceremony-in{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes ceremony-pop{0%{transform:scale(.2) rotate(-12deg);opacity:0}60%{transform:scale(1.15) rotate(4deg);opacity:1}100%{transform:none}}
+@keyframes trophy-glow{50%{filter:drop-shadow(0 0 18px #f4d57c)}}
+
+/* Çerçeveli fotoğraflar: yakınlaştırma çerçeve dışına taşmaz */
+.coach-photo{display:block;overflow:hidden;border-radius:12px}.coach-photo img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* Kart portreleri: çerçeve dolu, yüz odaklı; efsane kartlarda kenardan kenara */
+.portrait-photo{display:block;width:100%;height:100%;overflow:hidden}.portrait-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.legend-card .portrait-slot:has(img){height:230px;margin:6px -18px 0;border-radius:0;border-bottom:0;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+.legend-card h2{margin-top:2px}
+.squad-cards .legend-card .portrait-slot:has(img){height:130px;margin:4px -9px 0}
+@media(min-width:720px) and (min-height:600px){.legend-card .portrait-slot:has(img){height:250px}}
+
+.coach-boost{font-size:12px!important;margin-top:8px!important;color:var(--gold)}.coach-boost strong{color:var(--accent)}
