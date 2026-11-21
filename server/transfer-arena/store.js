@@ -27,6 +27,8 @@ export function firebaseStore({databaseURL,serviceAccount,apiKey,fetcher=fetch,c
    const etag=read.headers.get('etag');if(!etag)throw Error('Atomik kayıt desteği gerekli');
    const record=await read.json(),current=record?JSON.parse(record.payload):null;
    const updated=update(current);
+   // undefined: yalnız okuma; boş kayıt oluşturulmaz.
+   if(updated===undefined)return current;
    if(record&&JSON.stringify(current)===JSON.stringify(updated))return updated;
    // Strings preserve empty arrays/objects and nulls across Firebase round trips.
    const write=await fetcher(url,{method:'PUT',headers:{...headers,'Content-Type':'application/json','if-match':etag},body:JSON.stringify({payload:JSON.stringify(updated)}),signal:AbortSignal.timeout(8000)});

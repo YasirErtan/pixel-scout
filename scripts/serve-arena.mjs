@@ -5,7 +5,7 @@ import path from 'node:path';
 import {arenaService,newSession} from '../server/transfer-arena/service.js';
 import {arenaData} from '../server/transfer-arena/data.js';
 const root=path.resolve('dist'),records=new Map();
-const store={transaction:async(key,update)=>{const value=update(structuredClone(records.get(key)||null));records.set(key,value);return structuredClone(value);}};
+const store={transaction:async(key,update)=>{const current=structuredClone(records.get(key)||null),value=update(current);if(value===undefined)return current;records.set(key,value);return structuredClone(value);}};
 const service=arenaService({store,data:await arenaData()});
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.jpg':'image/jpeg','.png':'image/png'};
 http.createServer(async(req,res)=>{

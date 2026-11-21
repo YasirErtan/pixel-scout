@@ -57,3 +57,4 @@ Vercel için `vercel.json` derlemesiz statik `dist/` yayını kullanır. Kendi f
 - Tarih: 2026-11-20. feat/arena-gelistirmeler dalında Transfer Arenası geliştirmeleri yapıldı: logo seçimi, ihale sayacı, saha dizilişi görünümü, simülasyon rehberi, turnuva sonu töreni, 44 hocalık havuz ve yeni efsane portreleri (ayrıntı: docs/TRANSFER_ARENA.md).
 - Yerel test: `node scripts/serve-arena.mjs`. Kontrol: `npm run check`. Yeni testler: tests/transfer-arena-features.test.mjs, tests/transfer-arena-avatars.test.mjs.
 - Kaldığı yer: Değişiklikler commit edilip origin/feat/arena-gelistirmeler dalına push edildi; PR açılmadı, main ile birleştirme ve üretim yayını kullanıcı kararına bağlı. Hoca yıldızı çarpanı (rulesVersion 5) yalnız yeni odalarda geçerlidir.
+- 2026-11-21: Transfer Arenası'na bütün odaların ortak "Geçmiş şampiyonlar" tablosu eklendi (son 50 turnuva). Yerelde 3 botla tam oyunla denendi; canlı Firebase yazımı henüz denenmedi.
