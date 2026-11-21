@@ -1,5 +1,6 @@
 import {createHash,randomBytes,randomInt} from 'node:crypto';
 import {createRoom,command,publicView} from './room.js';
+import {addChampion,championEntry,publicChampions} from './champions.js';
 
 export const sessionIdentity=token=>createHash('sha256').update(token).digest('hex');
 export function arenaService({store,data,clock=Date.now}){
@@ -8,6 +9,15 @@ export function arenaService({store,data,clock=Date.now}){
    const bucket=current&&now<current.until?current:{count:0,until:now+window};
    if(bucket.count>=limit)throw Error('Çok sık istek gönderildi; biraz bekle');return {...bucket,count:bucket.count+1};
   });
+ }
+ // Liste yazılamasa bile biten oyun bozulmaz; sonraki yoklamada yeniden denenir.
+ async function recordChampion(room,now){
+  if(room.phase!=='finished'||room.championRecorded)return;
+  const entry=championEntry(room,now);if(!entry)return;
+  try{
+   await store.transaction('champions',list=>addChampion(list,entry));
+   await store.transaction('rooms/'+room.id,current=>current?{...current,championRecorded:true}:undefined);
+  }catch{}
  }
  async function handle({token,ip,action}){
   if(!token||!/^[a-zA-Z0-9_-]{43}$/.test(token))throw Error('Oturum gerekli');
@@ -29,11 +39,13 @@ export function arenaService({store,data,clock=Date.now}){
    }
    throw Error('Oda açılamadı; tekrar dene');
   }
+  if(action.type==='champions')return {champions:publicChampions(await store.transaction('champions',list=>list??undefined))};
   if(!/^\d{6}$/.test(action.code||''))throw Error('Altı haneli oda kodu gerekli');
   const room=await store.transaction('rooms/'+action.code,current=>{
    if(!current||now>=current.createdAt+86400000)throw Error('Oda bulunamadı veya süresi doldu');
    return command(current,uid,action,now,data);
   });
+  await recordChampion(room,now);
   return {...publicView(room,uid,now),uid,serverNow:now};
  }
  return {handle};

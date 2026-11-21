@@ -11,6 +11,7 @@ import {LOGOS,logoSVG} from './logos.js';
 import {squadBoard} from './formation-board.js';
 import {mechanicsHTML} from './mechanics.js';
 import {playCeremony} from './ceremony.js';
+import {championsTable} from './champions-table.js';
 const $=s=>document.querySelector(s),status=$('#status'),game=$('#game');
 const storage='pixel-scout:transfer-arenasi:v1';
 let room=null,busy=false,key='',offset=0,code='',previewPlayer=null;
@@ -79,7 +80,16 @@ function stage(){
  if(room.phase==='finished')return `<p class="eyebrow">KUPANIN SAHİBİ</p><h2 class="champion-title">🏆 ${names(room.champion)}</h2><div class="actions"><button id="replay-ceremony" class="secondary">Töreni izle</button><button id="leave">Yeni oyun</button></div>`;
  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>`;
 }
+let championsRoom='';
+async function loadChampions(){
+ try{
+  const response=await fetch('/api/transfer-arena',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'champions',requestId:crypto.randomUUID()}),signal:AbortSignal.timeout(12000)});
+  const data=await response.json();if(!response.ok)throw Error();
+  $('#champions').innerHTML=championsTable(data.champions);
+ }catch{$('#champions').innerHTML='<p class="small muted">Şampiyon listesi şu an yüklenemedi.</p>';}
+}
 function render(){
+ if(room.phase==='finished'&&championsRoom!==room.id){championsRoom=room.id;loadChampions();}
  $('#connection').hidden=true;document.querySelector('.preview-wrap').hidden=true;
  if(!$('#stage')){game.innerHTML='<div class="room-bar"><strong id="room-label"></strong><button id="open-guide" class="secondary" aria-haspopup="dialog">Nasıl işler?</button>'+(room.owner===room.uid?'<button id="close-room" class="secondary">Odayı kapat</button>':'')+'<span id="timer"></span></div><dialog id="guide" class="guide" aria-labelledby="guide-title"><div class="guide-head"><h2 id="guide-title">Simülasyon nasıl işler?</h2><button class="secondary" data-close-guide aria-label="Kapat">✕</button></div>'+mechanicsHTML()+'</dialog><section id="stage" class="panel"></section><section id="speed-controls" class="panel" hidden></section><section id="allocations" class="panel" hidden></section><section id="matches" class="match-grid"></section><section class="panel"><h2>Puan durumu</h2><div id="table" class="table-scroll"></div></section><section id="squads"></section><details class="panel"><summary>Transfer geçmişi</summary><div id="history"></div></details>';$('#close-room')?.addEventListener('click',()=>confirm('Oda kapatılacak ve oyun sona erecek. Devam edilsin mi?')&&send('close'));$('#open-guide').addEventListener('click',()=>$('#guide').showModal());$('#guide').addEventListener('click',e=>{if(e.target===e.currentTarget||e.target.closest('[data-close-guide]'))$('#guide').close();});}
  $('#room-label').textContent='ODA '+room.id+' · '+(room.final?'Final':room.phase==='lobby'?room.teams.length+'/6 takım':(room.round+1)+'. hafta');
@@ -120,4 +130,5 @@ setInterval(()=>{if(room&&!['finished','closed'].includes(room.phase))send('poll
 try{const response=await fetch('./players.json');const data=await response.json(),p=data.players[0],values=PLAYER_ATTRIBUTES[p.id]||[];previewPlayer={...p,attributes:Object.fromEntries(ATTRIBUTE_KEYS.map((k,i)=>[k,values[i]]))};renderPreview();}catch{}
 $('#mechanics-help').innerHTML=mechanicsHTML();
 status.textContent='';
+loadChampions();
 if(code)send('poll');
