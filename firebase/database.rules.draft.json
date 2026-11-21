@@ -1,0 +1,98 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "mp_rooms": {
+      "$roomCode": {
+        ".read": "$roomCode.matches(/^[0-9]{4}$/)",
+        ".write": "$roomCode.matches(/^[0-9]{4}$/) && newData.exists() && ((!data.exists() || data.child('createdAt').val() < now - 43200000) ? (newData.child('createdAt').val() > now - 3600000 && newData.child('createdAt').val() < now + 3600000) : (newData.child('createdAt').val() === data.child('createdAt').val() && newData.child('hostId').val() === data.child('hostId').val()))",
+        ".validate": "newData.hasChildren(['code', 'hostId', 'status', 'createdAt', 'updatedAt', 'settings', 'players'])",
+        "code": { ".validate": "newData.val() === $roomCode" },
+        "hostId": { ".validate": "newData.isString() && newData.val().matches(/^p_[a-z0-9_]{1,40}$/)" },
+        "status": { ".validate": "newData.isString() && newData.val().matches(/^(lobby|playing|reveal|finished)$/)" },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "updatedAt": { ".validate": "newData.isNumber()" },
+        "currentRound": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20" },
+        "roundStartedAt": { ".validate": "newData.isNumber()" },
+        "settings": {
+          ".validate": "newData.hasChildren(['questionCount', 'roundDurationSec', 'bonusEnabled', 'maxPlayers'])",
+          "questionCount": { ".validate": "newData.val() === 10 || newData.val() === 20" },
+          "roundDurationSec": { ".validate": "newData.val() === 10 || newData.val() === 15 || newData.val() === 20 || newData.val() === 25 || newData.val() === 30" },
+          "bonusEnabled": { ".validate": "newData.isBoolean()" },
+          "maxPlayers": { ".validate": "newData.val() === 6" },
+          "$other": { ".validate": false }
+        },
+        "deckIds": {
+          "$index": { ".validate": "$index.matches(/^([0-9]|1[0-9]|20)$/) && newData.isString() && newData.val().length <= 40" }
+        },
+        "players": {
+          "$playerId": {
+            ".validate": "$playerId.matches(/^(p_[a-z0-9_]{1,40}|bot-[a-z]{1,12})$/) && newData.hasChildren(['id', 'name', 'avatar', 'color', 'isHost', 'isBot', 'totalScore', 'lastRoundDelta', 'joinedAt'])",
+            "id": { ".validate": "newData.val() === $playerId" },
+            "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 18" },
+            "avatar": { ".validate": "newData.isString() && newData.val().length <= 4" },
+            "color": { ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)" },
+            "isHost": { ".validate": "newData.isBoolean()" },
+            "isBot": { ".validate": "newData.isBoolean()" },
+            "skill": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "totalScore": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+            "lastRoundDelta": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+            "joinedAt": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
+        "guesses": {
+          "$round": {
+            ".validate": "$round.matches(/^([0-9]|1[0-9]|20)$/)",
+            "$playerId": {
+              ".validate": "$playerId.matches(/^(p_[a-z0-9_]{1,40}|bot-[a-z]{1,12})$/) && newData.hasChildren(['playerId', 'guess', 'locked', 'lockedAt'])",
+              "playerId": { ".validate": "newData.val() === $playerId" },
+              "guess": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000000" },
+              "locked": { ".validate": "newData.isBoolean()" },
+              "lockedAt": { ".validate": "newData.isNumber()" },
+              "$other": { ".validate": false }
+            }
+          }
+        },
+        "roundHistory": {
+          "$round": {
+            ".validate": "$round.matches(/^([0-9]|1[0-9]|20)$/)",
+            "$index": {
+              ".validate": "$index.matches(/^[0-9]$/) && newData.hasChildren(['playerId', 'name', 'totalRoundPoints'])",
+              "playerId": { ".validate": "newData.isString() && newData.val().matches(/^(p_[a-z0-9_]{1,40}|bot-[a-z]{1,12})$/)" },
+              "name": { ".validate": "newData.isString() && newData.val().length <= 18" },
+              "guess": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000000" },
+              "lockedAt": { ".validate": "newData.isNumber()" },
+              "diff": { ".validate": "newData.isNumber()" },
+              "relativeError": { ".validate": "newData.isNumber()" },
+              "accuracyPoints": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+              "bullseyeBonus": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+              "rank": { ".validate": "newData.isNumber()" },
+              "rankBonus": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+              "totalRoundPoints": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+              "isBonus": { ".validate": "newData.isBoolean()" },
+              "$other": { ".validate": false }
+            }
+          }
+        },
+        "$other": { ".validate": false }
+      }
+    },
+    "leaderboard": {
+      ".read": true,
+      "$entry": {
+        ".write": "!data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['name', 'score', 'date', 'timestamp'])",
+        "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 24" },
+        "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999" },
+        "date": { ".validate": "newData.isString() && newData.val().length <= 24" },
+        "timestamp": { ".validate": "newData.isNumber() && newData.val() > now - 3600000 && newData.val() < now + 3600000" },
+        "$other": { ".validate": false }
+      }
+    },
+    "transfer_arena_v1": {
+      ".read": "auth != null && auth.uid === 'transfer-arena-server'",
+      ".write": "auth != null && auth.uid === 'transfer-arena-server'"
+    }
+  }
+}

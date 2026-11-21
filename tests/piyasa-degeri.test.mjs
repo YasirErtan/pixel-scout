@@ -147,7 +147,7 @@ test('scoreboard management correctly tracks top 5 and outcome states', async ()
   assert.equal(saved[0].score, 15);
 });
 
-test('global scoreboard falls back gracefully to local storage when network is offline', async () => {
+test('global scoreboard falls back gracefully to local storage when network is offline', async (t) => {
   const {
     fetchGlobalScoreboard,
     recordScoreGlobal,
@@ -161,6 +161,10 @@ test('global scoreboard falls back gracefully to local storage when network is o
   }
 
   const storage = new MockStorage();
+  // Test canlı veritabanına asla bağlanmaz: ağ hatası taklit edilir.
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('offline'); };
+  t.after(() => { globalThis.fetch = realFetch; });
   // Network fail durumunda bile yerel skor dönmeli
   const list = await fetchGlobalScoreboard(storage);
   assert.ok(Array.isArray(list));
