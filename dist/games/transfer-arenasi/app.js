@@ -136,14 +136,13 @@ function allInState(){
 function renderAllIn(){
  const box=$('#allin');if(!box)return;
  const state=allInState(),a=room?.allIn;
- const left=a?.locksAt?Math.max(1,Math.ceil((a.locksAt-Date.now()-offset)/1000*1.5*(room.playbackSpeed||1))):0;
- // Düğme durum değişmedikçe yeniden çizilmez (basış sırasında DOM'dan kopmasın); yalnız geri sayım güncellenir.
+ // Düğme durum değişmedikçe yeniden çizilmez (basış sırasında DOM'dan kopmasın).
  const nextKey=state+'|'+allInKey();
  box.hidden=!state;
- if(box.dataset.key===nextKey){const sub=$('#allin-left');if(sub)sub.textContent=left+' dk kaldı';return;}
+ if(box.dataset.key===nextKey)return;
  box.dataset.key=nextKey;
  if(state==='open'){
-  box.innerHTML=`<button id="allin-button" class="allin-button"><span class="allin-title">🔥 Tüm riskleri al!</span><span class="allin-sub">${a.lock}′ kilit · <span id="allin-left">${left} dk kaldı</span></span></button><p class="allin-note">Bütün hatlarla hücum: daha çok şut, ama gol yeme riski de artar.</p>`;
+  box.innerHTML=`<button id="allin-button" class="allin-button"><span class="allin-title">🔥 Tüm riskleri al!</span><span class="allin-sub">${a.lock}′ kilit</span></button><p class="allin-note">Bütün hatlarla hücum: daha çok şut, ama gol yeme riski de artar.</p>`;
   $('#allin-button').addEventListener('click',()=>{allInSent=allInKey();renderAllIn();send('allIn',{phaseVersion:room.phaseVersion,lock:a.lock}).then(()=>{if(!room?.allIn?.chosen&&$('#status').classList.contains('error'))allInSent='';});});
  }else if(state==='locked')box.innerHTML=`<div class="allin-locked" role="status">🔥 Tüm riskler alındı <small>${a?.lock||''}′ kilidinde uygulanır</small></div>`;
  else box.innerHTML='';
