@@ -181,7 +181,8 @@ test('final uzatması 90–105 ve 105–120 dilimleriyle oynanır, 105 kilidi ç
  assert.deepEqual(entry.score,[done.teams[winSide].goals,done.teams[1-winSide].goals]);
  assert.deepEqual(entry.shootout,done.shootout?[done.shootout.score[winSide],done.shootout.score[1-winSide]]:null);
  const final=publicView(r,ids[0],r.deadline+1).matches[0];
- assert.deepEqual(final.shootout,done.shootout||null);
+ // Penaltı yoksa alan gönderilmeyebilir (JSON'da düşer); varsa birebir aynı olmalı.
+ assert.deepEqual(final.shootout??null,done.shootout??null);
 });
 
 test('90da kazananı belli olan final doğrudan biter ve match.winner yazılır',()=>{
