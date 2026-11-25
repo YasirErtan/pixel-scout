@@ -234,17 +234,17 @@ export const MODEL6=Object.freeze({
  gapTackle:.0015,    // güç farkı puanı başına top kapma şansı değişimi
  gapPass:.001,       // pas isabeti
  gapProgress:.0015,   // başarılı pastan sonra ileri gitme
- gapShot:.008,       // ceza sahasında şut sıklığı (çarpan)
- gapBig:.004,        // büyük fırsat olasılığı
+ gapShot:.006,       // ceza sahasında şut sıklığı (çarpan)
+ gapBig:.003,        // büyük fırsat olasılığı
  shot:.27,shotRisk:.05,longShot:.018,
  carry:.14,          // pas yerine top sürme (asistsiz pozisyonlar)
  big:.13,bigXg:.35,normalXg:.053,
- tiredShot:1.0,tiredBig:.5,late:.32, // savunmanın yorgunluğu geç dakikalarda pozisyon ve kaliteyi artırır
+ tiredShot:1.0,tiredBig:.5,late:.48, // savunmanın yorgunluğu geç dakikalarda pozisyon ve kaliteyi artırır
  save:.42,post:.085,cornerAfterSave:.30,cornerAfterMiss:.18,cornerShot:.30,
- penalty:.29,freeKick:.22,freeKickFar:.06,
+ penalty:.31,freeKick:.22,freeKickFar:.06,
  severe:.25,yellow:.14,yellowRef:.09,
  drain:1.5,allInDrain:1.2,
- allIn:1.35,allInCounter:.15,allInOpenBig:.02,counterBig:.08, // "Tüm riskleri al!": şut sıklığı, kontra riski
+ allIn:1.45,allInCounter:.18,allInOpenBig:.03,counterBig:.08, // "Tüm riskleri al!": şut sıklığı, kontra riski
  settle:.70          // toplam gol arttıkça iki takım da oyunu yavaşlatır (ezici skorları sınırlar)
 });
 const K=MODEL6;
@@ -262,9 +262,10 @@ function mood6(m,side,plan){
  else if(lead>=3){risk-=1.2;tempo-=1;rate=.6;}
  else if(lead===2){risk-=1;tempo-=.8;rate=.72;}
  else if(lead===1&&m.minute>=75){risk-=.5;tempo-=.4;rate=.88;}
- else if(lead<0&&m.minute>=60){risk+=.5;tempo+=.4;rate=1.12;}
+ else if(lead<0&&m.minute>=70){risk+=.5;tempo+=.4;rate=1.3;}
+ else if(lead===0&&m.minute>=80){risk-=.4;rate=.8;} // son dakikalarda berabere takımlar puanı korur
  // Dakikaya göre beklenenden çok gol olan maçta oyun oturur: şut sıklığı ve kalitesi azalır.
- const excess=t.goals+m.teams[1-side].goals-1-m.minute/45;if(excess>0)rate/=1+K.settle*excess;
+ const excess=t.goals+m.teams[1-side].goals-.6-m.minute/50;if(excess>0)rate/=1+K.settle*excess;
  return {risk:Math.max(0,risk),tempo:Math.max(0,tempo),press:Math.max(0,press),rate,allIn:!!t.allIn};
 }
 // Bölgeye, ayrıntılı mevkiye ve pozisyon almaya göre topu alacak oyuncu.
