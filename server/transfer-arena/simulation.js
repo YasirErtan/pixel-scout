@@ -180,3 +180,44 @@ function homePair(ids,a,b){
  }
  return (j-i+size)%size<=Math.floor(size/2)?[a,b]:[b,a];
 }
+
+// ---- Model 6 iskeleti (sözleşme: docs/ARENA_MODEL6_CONTRACT.md) ----
+// Maç parçalar halinde hesaplanır: 0–45, 45–70, 70–90 ve finalde 90–105, 105–120.
+// Bu iskelet çalışan en küçük sürümdür; Akış A model ayrıntılarını bu imzaları koruyarak geliştirir.
+export const ALL_IN_LOCKS=Object.freeze([70,105]);
+export const ALL_IN_WINDOW=10;
+// "Tüm riskleri al!" kilit dakikasındaki gerçek skorla: geride ya da berabere olan taraf kullanabilir.
+export function allInEligible(match,side){
+ if(match.finished||match.forfeit)return false;
+ return match.teams[side].goals<=match.teams[1-side].goals;
+}
+function snapshot(m,minute){
+ m.snapshots??=[];
+ m.snapshots.push({minute,teams:m.teams.map(t=>({id:t.id,goals:t.goals,shots:t.shots,onTarget:t.onTarget,saves:t.saves,xg:t.xg,passes:t.passes,completed:t.completed,losses:t.losses,possessionTicks:t.possessionTicks||0,allIn:!!t.allIn,players:Object.fromEntries(t.players.map(p=>[p.id,{...(p.stats||{})}]))}))});
+}
+export function simulateSegment(previous,plans,{start,end,allIn=[false,false]}={}){
+ const m=structuredClone(previous);
+ if(m.version<6)throw Error('Parçalı simülasyon yalnız model 6');
+ if(m.finished&&!(start>=90&&m.teams[0].goals===m.teams[1].goals&&!m.forfeit))throw Error('Maç tamamlandı');
+ if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)throw Error('Geçersiz maç dilimi');
+ const pp=plans.map(validatePlan);
+ if(start===0)m.half=1;
+ if(start===45){m.half=2;for(const t of m.teams)for(const p of alive(t))p.energy=Math.min(100,p.energy+8);}
+ if(start===90){m.finished=false;m.events.push({minute:90,type:'extraTime'});}
+ for(let side=0;side<2;side++){
+  const chosen=Boolean(allIn[side])&&ALL_IN_LOCKS.includes(start)&&allInEligible(m,side);
+  m.teams[side].allIn=chosen;
+  if(chosen)m.events.push({minute:start,type:'allIn',team:m.teams[side].id});
+ }
+ const done=end===90||end===120;
+ const out=simulatePeriod(m,pp,start,end-start,done);
+ snapshot(out,out.minute);
+ return out;
+}
+// Uzatma sonunda eşitlik sürüyorsa penaltılar; kazanan her durumda yazılır.
+export function finishFinal(previous){
+ let m=structuredClone(previous);
+ if(m.teams[0].goals===m.teams[1].goals&&!m.forfeit)m=shootout(m);
+ m.winner=m.shootout?.winner||m.teams.reduce((a,b)=>a.goals>b.goals?a:b).id;
+ return m;
+}
