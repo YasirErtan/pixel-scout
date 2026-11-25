@@ -1,11 +1,11 @@
 import {random,makeMarket,openLot,bid,settle,completePool,eligible,shuffle} from './market.js';
-import {fixtures,validatePlan,DEFAULT_PLAN,beginMatch,simulateHalf,resolveFinal} from './simulation.js';
+import {fixtures,validatePlan,DEFAULT_PLAN,beginMatch,simulateHalf,resolveFinal,simulateSegment,finishFinal,ALL_IN_WINDOW} from './simulation.js';
 import {formationLimits} from '../../dist/games/transfer-arenasi/formation.js';
 import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {standings} from './standings.js';
 import {LOGO_IDS} from '../../dist/games/transfer-arenasi/logos.js';
 
-export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:5,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
+export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:6,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
 function freeLogo(teams){return LOGO_IDS.find(id=>!teams.some(team=>team.logo===id))||null;}
 function member(id,name,logo=null){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,logo,ready:false,points:0,gf:0,ga:0,wins:0};}
 function deadline(room,phase,now,ms){if(room.rulesVersion===2&&['squadReview','prepare','halftime'].includes(phase)){room.rulesVersion=3;ms=180000;}room.phase=phase;room.phaseVersion++;room.deadline=now+ms;room.plans={};}
@@ -40,6 +40,7 @@ function currentMinute(room,now){
 function finishReview(room,now){room.lastPlans={...room.lastPlans,...room.plans};if(room.rulesVersion>=3)startHalf(room,now,1);else deadline(room,'prepare',now,30000);}
 function startHalf(room,now,half){
  const pairs=activePairs(room);
+ if(room.rulesVersion>=6)return startSegmentedHalf(room,now,half,pairs);
  room.matches=pairs.map(([a,b],i)=>{
   const teams=[a,b].map(id=>room.teams.find(t=>t.id===id));
   const plans=[a,b].map(id=>room.plans[id]||room.lastPlans?.[id]||initialPlan(room,id));
@@ -49,7 +50,52 @@ function startHalf(room,now,half){
  });
  room.lastPlans={...room.lastPlans,...room.plans};const length=room.matches[0].version>=3?45:10;startPlayback(room,half===1?'firstHalf':'secondHalf',now,(half-1)*length,half*length);
 }
+// Model 6: maç dilimlerle hesaplanır. İlk yarı 0–45, ikinci yarı önce 45–70; 70–90 dilimi
+// oynatma 70'e ulaşınca "Tüm riskleri al!" seçimleriyle hesaplanır (bkz. runPendingSegment).
+function startSegmentedHalf(room,now,half,pairs){
+ if(half===1)room.allInPicks={};
+ room.matches=pairs.map(([a,b],i)=>{
+  const plans=[a,b].map(id=>room.plans[id]||room.lastPlans?.[id]||initialPlan(room,id));
+  if(half===1){
+   const teams=[a,b].map(id=>room.teams.find(t=>t.id===id));
+   return simulateSegment(beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3,{version:6,neutral:!!room.final}),plans,{start:0,end:45});
+  }
+  const previous=room.matches[i];
+  return previous.finished?previous:simulateSegment(previous,plans,{start:45,end:70});
+ });
+ room.lastPlans={...room.lastPlans,...room.plans};
+ room.nextSegment=half===2?{start:70,end:90}:null;
+ startPlayback(room,half===1?'firstHalf':'secondHalf',now,(half-1)*45,half*45);
+}
+const segmentPlans=(room,match)=>match.teams.map(t=>room.lastPlans?.[t.id]||initialPlan(room,t.id));
+// Oynatma imleci bekleyen dilimin başına (kilit dakikasına) ulaştıysa dilimi hesaplar. Oynatma durmaz:
+// imleç, başlangıç zamanı ve faz sürümü değişmez; yalnız uzatma sonunda bitiş dakikası düzeltilir.
+function runPendingSegment(room,now){
+ const segment=room.nextSegment;
+ if(!(room.rulesVersion>=6)||!segment||!['secondHalf','finalResolution'].includes(room.phase))return;
+ if(currentMinute(room,now)<segment.start)return;
+ room.nextSegment=null;
+ const picks=room.allInPicks?.[segment.start]||[];
+ room.matches=room.matches.map(m=>m.finished?m:simulateSegment(m,segmentPlans(room,m),{start:segment.start,end:segment.end,allIn:m.teams.map(t=>picks.includes(t.id))}));
+ if(room.phase==='finalResolution'){
+  room.matches[0]=finishFinal(room.matches[0]);
+  // Hükmen biten uzatmada oynatma erken biter. Penaltılar 120'ye gelince ayrıca açılır (advance);
+  // böylece bitiş saati penaltı olup olmayacağını önceden ele vermez.
+  const end=Math.max(currentMinute(room,now),Math.min(120,room.matches[0].minute));
+  room.playbackCursor=currentMinute(room,now);room.playbackStart=now;room.playbackEnd=end;
+  room.deadline=now+(end-room.playbackCursor)*1000/clockRate(room);
+ }
+}
 function finishRound(room,now){
+ if(room.final&&room.rulesVersion>=6){
+  const match=room.matches[0];
+  if(match.teams[0].goals===match.teams[1].goals&&!match.forfeit){
+   room.matches[0]=simulateSegment(match,segmentPlans(room,match),{start:90,end:105});
+   startPlayback(room,'finalResolution',now,90,120);
+   room.allInPicks={...room.allInPicks,105:[]};room.nextSegment={start:105,end:120};return;
+  }
+  room.matches[0]=finishFinal(match);room.champion=room.matches[0].winner;room.phase='finished';return;
+ }
  if(room.final){
   const match=room.matches[0],a=match.teams[0],b=match.teams[1];
   if(a.goals===b.goals){
@@ -64,6 +110,7 @@ function finishRound(room,now){
  deadline(room,'prepare',now,room.rulesVersion>=3?180000:20000);
 }
 export function advance(room,now){
+ runPendingSegment(room,now);
  if(['players','coaches'].includes(room.phase)&&now>=room.lot.deadline)finishLot(room,now);
  else if(room.phase==='auctionResult'&&now>=room.deadline){room.phase=room.auctionKind;room.auctionResult=null;nextLot(room,now);}
  else if(room.phase==='squadReview'&&now>=room.deadline)finishReview(room,now);
@@ -71,7 +118,14 @@ export function advance(room,now){
  else if(room.phase==='firstHalf'&&now>=room.deadline)deadline(room,'halftime',now,room.rulesVersion>=3?180000:25000);
  else if(room.phase==='halftime'&&now>=room.deadline)startHalf(room,now,2);
  else if(room.phase==='secondHalf'&&now>=room.deadline)finishRound(room,now);
- else if(room.phase==='finalResolution'&&now>=room.deadline){room.champion=room.matches[0].winner;room.phase='finished';}
+ else if(room.phase==='finalResolution'&&now>=room.deadline){
+  // Model 6: 120'ye gelindiğinde penaltı serisi varsa oynatma kesintisiz penaltılara uzar.
+  if(room.rulesVersion>=6&&room.matches[0].minute>room.playbackEnd){
+   const reached=room.deadline;room.playbackCursor=room.playbackEnd;room.playbackStart=reached;room.playbackEnd=room.matches[0].minute;
+   room.deadline=reached+(room.playbackEnd-room.playbackCursor)*1000/clockRate(room);
+  }
+  if(now>=room.deadline){room.champion=room.matches[0].winner;room.phase='finished';}
+ }
  return room;
 }
 export function command(input,uid,action,now,data){
@@ -166,6 +220,22 @@ export function command(input,uid,action,now,data){
     if(r.phase==='squadReview'){if(r.teams.every(t=>r.plans[t.id]))finishReview(r,now);break;}
     if(activePairs(r).flat().every(id=>r.plans[id]))startHalf(r,now,r.phase==='prepare'?1:2);break;
    }
+   case 'allIn':{
+    if(!(r.rulesVersion>=6))throw Error('Bu odada "Tüm riskleri al!" yok');
+    const lock=allInLock(r);
+    if(!lock||action.lock!==lock||action.phaseVersion!==r.phaseVersion||r.nextSegment?.start!==lock)throw Error('"Tüm riskleri al!" süresi doldu');
+    const match=r.matches.find(m=>m.teams.some(team=>team.id===uid));
+    if(!match)throw Error('Bu maçta oynamıyorsun');
+    const minute=currentMinute(r,now);
+    if(minute<lock-ALL_IN_WINDOW||minute>=lock)throw Error('"Tüm riskleri al!" penceresi kapalı');
+    const visible=visibleScore(match,minute,uid);
+    if(visible.forfeit)throw Error('Maç hükmen sonuçlandı');
+    if(visible.own>visible.opponent)throw Error('Önde olan takım tüm riskleri alamaz');
+    // Seçim geri alınamaz; tekrar basmak bir şey değiştirmez. Kesin uygunluk kilitte allInEligible ile belirlenir.
+    r.allInPicks??={};r.allInPicks[lock]??=[];
+    if(!r.allInPicks[lock].includes(uid))r.allInPicks[lock].push(uid);
+    break;
+   }
    default:throw Error('Bilinmeyen komut');
   }
  }
@@ -174,6 +244,25 @@ export function command(input,uid,action,now,data){
   return r;
  }
  r.requests.push(`${uid}:${action.requestId}`);r.requests=r.requests.slice(-256);r.version++;return r;
+}
+// Canlı fazın "Tüm riskleri al!" kilit dakikası (model 6): ikinci yarıda 70, uzatmada 105.
+function allInLock(room){return room.phase==='secondHalf'?70:room.phase==='finalResolution'?105:null;}
+// Görünen dakikaya kadarki skor; gelecek goller sayılmaz.
+function visibleScore(match,minute,uid){
+ const side=match.teams.findIndex(team=>team.id===uid);
+ const goals=match.teams.map(team=>match.events.filter(e=>e.type==='goal'&&e.team===team.id&&e.minute<=minute).length);
+ return {own:goals[side],opponent:goals[1-side],forfeit:match.events.some(e=>e.type==='forfeit'&&e.minute<=minute)};
+}
+// Yalnız oyuncunun kendi maçı; rakibin seçimi kilitten önce hiçbir alanda görünmez.
+function allInView(r,uid,minute){
+ const lock=r.rulesVersion>=6&&['secondHalf','finalResolution'].includes(r.phase)?allInLock(r):null;
+ const match=lock&&r.matches.find(m=>m.teams.some(team=>team.id===uid));
+ if(!match)return null;
+ const pending=r.nextSegment?.start===lock,from=lock-ALL_IN_WINDOW,visible=visibleScore(match,minute,uid);
+ const chosen=(r.allInPicks?.[lock]||[]).includes(uid);
+ // Sunucu saatine göre pencerenin açılış/kilit anı; istemci geri sayımı ve sık yoklamayı buna göre yapar.
+ const at=target=>pending?Math.round(r.playbackStart+(target-r.playbackCursor)*1000/clockRate(r)):null;
+ return {lock,from,available:pending&&!chosen&&!visible.forfeit&&minute>=from&&minute<lock&&visible.own<=visible.opponent,chosen,opensAt:at(from),locksAt:at(lock)};
 }
 function initialPlan(room,uid){
  const formation=room.teams.find(team=>team.id===uid)?.formation;
@@ -232,6 +321,7 @@ export function publicView(r,uid,now){
   teams:r.teams.map(({bonusCard,...team})=>team),myBonusCard:member.bonusCard||null,bonusCardSelected:r.teams.filter(team=>team.bonusCard).map(team=>team.id),nextMatch:upcomingMatch(r,uid),leaderboard:scoringLeaders(r,minute),pairs:r.schedule?activePairs(r):[],table:standings(r.teams,r.results||[],r.seed+900001).teams.map(t=>t.id),draws:r.draws||[],lot,...lotProgress(r),history:r.history,pool:r.pool,round:r.round,final:r.final||false,finalists:r.finalists||[],champion:r.champion,
   referees:r.schedule?activePairs(r).map((pair,i)=>({teams:pair,strictness:matchSeed(r,i)%3})):[],
   discipline:r.matches.map(m=>({teams:m.teams.map(t=>({id:t.id,players:t.players.map(p=>({id:p.id,name:p.name,red:m.events.some(e=>e.type==='red'&&e.playerId===p.id&&e.minute<=minute),yellow:m.events.filter(e=>e.type==='yellow'&&e.playerId===p.id&&e.minute<=minute).length}))}))})),
+  allIn:allInView(r,uid,minute),
   myPlan:r.plans[uid]||r.lastPlans?.[uid]||initialPlan(r,uid),locked:Object.keys(r.plans),
-  matches:r.matches.map(m=>({neutral:!(m.version>=4)||m.neutral===true,regulationMinutes:m.version>=3?90:20,minute:Math.min(minute,m.minute),teams:m.teams.map(t=>({id:t.id,captainId:t.captainId,captainName:t.players.find(p=>p.id===t.captainId)?.name})),events:m.events.filter(e=>e.minute<=minute),score:m.forfeit&&m.events.some(e=>e.type==='forfeit'&&e.minute<=minute)?m.teams.map(t=>t.goals):m.teams.map(t=>m.events.filter(e=>e.minute<=minute&&e.team===t.id&&e.type==='goal').length),shootout:minute>=m.minute?m.shootout:null}))};
+  matches:r.matches.map(m=>({neutral:!(m.version>=4)||m.neutral===true,regulationMinutes:m.version>=3?90:20,minute:Math.min(minute,m.minute),teams:m.teams.map(t=>({id:t.id,captainId:t.captainId,captainName:t.players.find(p=>p.id===t.captainId)?.name})),events:m.events.filter(e=>e.minute<=minute),score:m.forfeit&&m.events.some(e=>e.type==='forfeit'&&e.minute<=minute)?m.teams.map(t=>t.goals):m.teams.map(t=>m.events.filter(e=>e.minute<=minute&&e.team===t.id&&e.type==='goal').length),shootout:minute>=m.minute?m.shootout:null,...(m.snapshots?{snapshots:m.snapshots.filter(s=>s.minute<=minute)}:{})}))};
 }

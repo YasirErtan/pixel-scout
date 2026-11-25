@@ -5,6 +5,8 @@ import path from 'node:path';
 import {arenaService,newSession} from '../server/transfer-arena/service.js';
 import {arenaData} from '../server/transfer-arena/data.js';
 const root=path.resolve('dist'),records=new Map();
+// Paralel çalışmalar için port PORT ortam değişkeniyle değiştirilebilir; varsayılan 4174.
+const port=Number(process.env.PORT)||4174;
 const store={transaction:async(key,update)=>{const current=structuredClone(records.get(key)||null),value=update(current);if(value===undefined)return current;records.set(key,value);return structuredClone(value);}};
 const service=arenaService({store,data:await arenaData()});
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.jpg':'image/jpeg','.png':'image/png'};
@@ -23,4 +25,4 @@ http.createServer(async(req,res)=>{
   if((await stat(file)).isDirectory())file=path.join(file,'index.html');
   res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'});res.end(await readFile(file));
  }catch{res.writeHead(404);res.end('Not found');}
-}).listen(4174,'127.0.0.1',()=>console.log('Development arena: http://127.0.0.1:4174/games/transfer-arenasi/ (disposable rooms)'));
+}).listen(port,'127.0.0.1',()=>console.log(`Development arena: http://127.0.0.1:${port}/games/transfer-arenasi/ (disposable rooms)`));
