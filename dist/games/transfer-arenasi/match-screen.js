@@ -51,7 +51,7 @@ function board(room,m,names){
  const [a,b]=m.teams,allIn=new Set(m.events.filter(e=>e.type==='allIn').map(e=>e.team)),st=liveStats(m);
  const [sa,sb]=st.sides,label=stateLabel(room,m);
  const side=(t,cls)=>`<div class="ms-side ${cls}"><strong class="ms-name">${names(t.id)}</strong>${allIn.has(t.id)?'<span class="ms-allin">🔥 Tüm riskler</span>':''}<ul class="ms-scorers">${scorers(m,t.id,room)}</ul></div>`;
- const pct=v=>v+'%',xg=v=>v.toFixed(1);
+ const pct=v=>'%'+v,xg=v=>v.toFixed(1);
  const feed=m.events.map((e,i)=>({e,i})).filter(({e})=>e.type!=='foul').slice(-6).reverse();
  const report=['halftime','finished'].includes(room.phase)||m.minute>=90?matchReport(m,room.teams,{minute:m.minute}):'';
  return `<article class="ms-main" aria-label="Senin maçın">

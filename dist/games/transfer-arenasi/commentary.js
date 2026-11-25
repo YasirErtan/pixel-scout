@@ -6,10 +6,17 @@ const VOWELS='aeıioöuü';
 const FOLD={á:'a',à:'a',â:'a',ã:'a',ä:'a',å:'a',é:'e',è:'e',ê:'e',ë:'e',í:'i',ì:'i',î:'i',ï:'i',ó:'o',ò:'o',ô:'o',õ:'o',ú:'u',ù:'u',û:'u'};
 const lower=s=>String(s).toLocaleLowerCase('tr').replace(/[áàâãäåéèêëíìîïóòôõúùû]/g,c=>FOLD[c]);
 
-// Adın son sözcüğü; anlatıcılar soyadıyla seslenir ("Erling Haaland" → "Haaland").
+// Anlatıcılar soyadıyla seslenir ("Erling Haaland" → "Haaland"). Soyadın parçası olan önekler korunur:
+// "Kevin De Bruyne" → "De Bruyne", "David de Gea" → "De Gea", "Virgil van Dijk" → "Van Dijk".
+const PARTICLES=new Set(['de','da','di','do','dos','das','del','della','der','den','van','von','le','la','du','ten','ter','el','al','mac','mc']);
 export function shortName(name){
  const words=String(name??'').trim().split(/\s+/).filter(Boolean);
- return words.at(-1)||'';
+ if(!words.length)return '';
+ let i=words.length-1;
+ while(i>0&&PARTICLES.has(words[i-1].toLocaleLowerCase('tr')))i--;
+ const out=words.slice(i);
+ if(out.length>1)out[0]=out[0][0].toLocaleUpperCase('tr')+out[0].slice(1);
+ return out.join(' ');
 }
 
 // Kesme işaretinden sonra gelen ek için ünlü uyumu. kind: 'gen' (-ın), 'dat' (-a).

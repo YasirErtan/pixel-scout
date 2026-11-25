@@ -230,3 +230,11 @@ test('isKeyMoment: gol, kırmızı, direk, allIn, büyük kurtarış ve kıl pay
  for(const e of [{type:'goal'},{type:'red'},{type:'post'},{type:'allIn'},{type:'shot',big:true},{type:'save',big:true},{type:'save',xg:.3},{type:'shot',xg:.26}])assert.ok(isKeyMoment(e),JSON.stringify(e));
  for(const e of [{type:'yellow'},{type:'foul'},{type:'shot',xg:.1},{type:'save',xg:.1},{type:'extraTime'},null,{}])assert.ok(!isKeyMoment(e),JSON.stringify(e));
 });
+
+test('soyad önekleri korunur: De Bruyne, De Gea, Van Dijk',async()=>{
+ const {shortName,genitive}=await import('../dist/games/transfer-arenasi/commentary.js');
+ assert.equal(shortName('Kevin De Bruyne'),'De Bruyne');assert.equal(shortName('David de Gea'),'De Gea');
+ assert.equal(shortName('Virgil van Dijk'),'Van Dijk');assert.equal(shortName('Erling Haaland'),'Haaland');
+ assert.equal(shortName('Rodri'),'Rodri');assert.equal(shortName('De Gea'),'De Gea');
+ assert.match(genitive('Kevin De Bruyne'),/^De Bruyne'nin$/);
+});
