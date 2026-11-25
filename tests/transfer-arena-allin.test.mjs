@@ -91,6 +91,11 @@ test('rakibin seçimi ve gelecek olay/istatistikler publicView içinde görünme
  const text=JSON.stringify(after);
  assert.ok(!text.includes('allInPicks')&&!text.includes('nextSegment'));
  for(const match of after.matches){
+  // Kadro alanı yalnız dört statik alan taşır; canlı kart/enerji/istatistik sızmaz.
+  for(const team of match.teams){
+   assert.equal(team.players.length,7);
+   for(const p of team.players)assert.deepEqual(Object.keys(p).sort(),['detailPosition','id','name','position']);
+  }
   assert.ok(match.events.every(e=>e.minute<=63));assert.ok(match.events.every(e=>e.type!=='allIn'));
   assert.deepEqual(match.snapshots.map(x=>x.minute),[45]);
  }
