@@ -114,3 +114,6 @@
 .board-chip:has(.chip-photo) em{right:14px;top:40px;bottom:auto}
 
 .champions-panel>summary{font-size:16px}.champions-table{min-width:640px}.champions-table small{color:var(--muted)}.champions-table tbody th{color:var(--gold)}
+/* "Tüm riskleri al!" (model 6): pencere açıkken büyük, parmakla rahat basılan düğme; seçimden sonra kilitli durum. */
+.allin-panel{margin:12px 0}.allin-button{display:grid;gap:4px;width:100%;min-height:88px;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#ff7a2f,#e0323a);color:#fff;text-align:center;box-shadow:0 0 0 3px #ffb46a55,0 10px 28px #e0323a55;animation:allin-pulse 1.1s ease-in-out infinite}.allin-title{font-size:clamp(22px,6vw,30px);font-weight:900;letter-spacing:-.01em;line-height:1.1}.allin-sub{font-size:14px;font-weight:750;opacity:.95}.allin-note{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}.allin-locked{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:4px 10px;padding:14px 16px;border:2px solid #ff7a2f;border-radius:18px;background:#3a1a12;color:#ffd2b8;font-weight:850;font-size:17px;text-align:center}.allin-locked small{font-size:12px;font-weight:650;color:#f3b99a}
+@keyframes allin-pulse{50%{filter:brightness(1.12);box-shadow:0 0 0 6px #ffb46a33,0 12px 32px #e0323a77}}@media(prefers-reduced-motion:reduce){.allin-button{animation:none}}
