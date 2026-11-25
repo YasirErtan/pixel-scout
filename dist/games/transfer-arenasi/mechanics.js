@@ -32,7 +32,7 @@ const MODEL6=[
  ['Skor durumu','2 farkla önde olan takım tempoyu ve riski düşürür; 70. dakikadan sonra geride olan baskıyı artırır. Son dakikalarda berabere takımlar temkinli oynar. Çok gollü maçlarda oyun oturur.'],
  ['Yorgunluk','Maç ilerledikçe savunmalar yorulur ve açılır; en çok gol 75–90 arasında gelir.'],
  ['Duran toplar','Ceza sahasındaki fauller penaltı ya da serbest vuruş, kurtarışlar ve auttan sonra kornerler olabilir. Korneri en iyi pasör kullanır, stoper ve santrforlar kafa vuruşunda öne çıkar.'],
- ['Tüm riskleri al!','70. dakikada (finalde 105) geride ya da berabere olan takım seçebilir. Savunmacılar hücuma katılır; pres, tempo, risk ve şut sıklığı en üste çıkar. Top kaybında rakip sık sık tehlikeli bölgeden başlar, enerji daha hızlı düşer; gol atma da gol yeme de belirgin artar.'],
+ ['Tüm riskleri al!','70. dakikada (finalde 105) geride ya da berabere olan takım seçebilir. Savunmacılar hücuma katılır; pres, tempo, risk ve şut sıklığı en üste çıkar. Top kaybında rakip sık sık tehlikeli bölgeden başlar, enerji daha hızlı düşer; gol atma da gol yeme de belirgin artar. Düğme 60–70 (finalde 95–105) arasında görünür ve maç durmaz; 8× hızda bu pencere bir saniyeden kısadır, bu yüzden oda kurucusu o sırada hızı düşürebilir.'],
  ['Kartlar','7 kişilik maçta kırmızı kart daha seyrektir.']
 ];
 const list=rows=>`<dl class="mechanics-list">${rows.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl>`;
