@@ -103,3 +103,27 @@ Transfer Arenası'ndaki tüm standart futbolcu kartları ve saha dizilişi çipl
 ## Geçmiş şampiyonlar
 
 Biten her turnuva, bütün odaların ortak listesine bir kez yazılır (`transfer_arena_v1/champions`, en yeni 50 kayıt). Satırda şampiyon, final skoru ve varsa penaltılar, ikinci takım, şampiyonun hocası, gol kralı ve tarih bulunur. Takım adları herkese görünür; oturum kimliği ve oda kodu istemciye verilmez. İstemci listeyi `champions` isteğiyle okur. Liste yazılamazsa biten oyun bozulmaz, sonraki yoklamada yeniden denenir. Firebase kurallarının `transfer_arena_v1` altındaki bu yeni yola sunucu kimliğiyle yazmaya izin vermesi gerekir.
+
+
+## Model 6 (rulesVersion 6): yeni maç motoru, "Tüm riskleri al!", maç ekranı
+
+Yeni odalar rulesVersion 6 ve maç modeli 6 kullanır. Başlamış eski odalar kendi modelleriyle biter. Model 3–5 sonuçları `tests/transfer-arena-model5-golden.test.mjs` altın kayıtlarıyla kilitlidir. Ortak tasarım ve dosya sahipliği `docs/ARENA_MODEL6_CONTRACT.md` içindedir.
+
+**Maç motoru (`server/transfer-arena/simulation.js`, katsayılar `MODEL6`):**
+- Maç parçalar halinde hesaplanır: 0–45, 45–70, 70–90; finalde 90–105 ve 105–120, sonra penaltılar.
+- Takım gücü fırsat üretimini etkiler. Skor durumuna göre oyun: farkla önde olan takım yavaşlar, geride olan riske girer.
+- Erken çok gol olan maçlarda oyun "oturur". Geç dakikada yorgunlukla daha çok fırsat oluşur.
+- İki kademeli şut kalitesi vardır (büyük fırsat). Mevki ayrıntısı etkilidir: ST/CAM bitirir, kanatlar orta yapar.
+- Top sürmeden asistsiz goller çıkar. Duran toplar: penaltı, korner, serbest vuruş. Direkten dönen şutlar vardır.
+- Kırmızı kartlar daha seyrektir.
+- Oyuncu ve takım istatistikleri dilim sonlarında `snapshots` olarak kaydedilir.
+
+**Kalibrasyon:** `node scripts/calibrate-arena.mjs --model 6 --matches 3000 --seed 1` ile ölçülür. Değerler 3.000 maçta, "Tüm riskleri al!" %50 kullanılırken: maç başı gol 2,96; 6+ gollü maç %1,1; belirgin favori (güç farkı ≥ 6) %66 kazanır ve %16 kaybeder; eşit güçte beraberlik %24; son 15 dakika en çok gol atılan dilimdir (%25); asistli gol %75; penaltı golü payı %9; maç başı kırmızı 0,07. Hedef aralıkları `tests/transfer-arena-model6-calibration.test.mjs` ile korunur. Gol ortalaması düğmenin kullanım oranına bağlıdır: hiç kullanılmazsa yaklaşık 2,7, çok kullanılırsa 3,0'ı aşabilir.
+
+**"Tüm riskleri al!":**
+- Düğme 60–70 arasında, finalde uzatmada 95–105 arasında görünür. Kilit 70'te (finalde 105'te) olur; maç durmaz.
+- Uygunluk kilit anındaki skora göre belirlenir: geride olan ya da berabere olan takımlar seçebilir. Rakibin seçimi kilitten önce gizlidir.
+- Seçen takım daha çok atar ve daha çok yer; 1 farkla geride olanın geri dönüş şansı artar, kesin kazanç yoktur.
+- Pencere oyunun seçili hızında akar: 1× hızda yaklaşık 6,7 saniye, 8× hızda bir saniyeden kısa (kullanıcı kararı; yavaşlatma yok).
+
+**Maç ekranı (mobil öncelikli, `match-screen.js`):** Kendi maçın için büyük skor tabelası (logo, skor, dakika, gol atanlar), canlı istatistik şeridi ve son 6 olayın Türkçe anlatımı gösterilir. Şut, isabetli şut ve xG görünen olaylardan hesaplanır; topa sahip olma ve pas yüzdesi son dilim kaydından gelir. Diğer maçlar sade satırlardır. Devre arasında ve maç sonunda maç raporu (`match-report.js`) açılır: oyuncu notları 6,0–10,0 ve maçın adamı. Anlatım (`commentary.js`) deterministiktir; direk, büyük fırsat kurtarışı ve kıl payı kaçan şut gibi gerilim anlarını vurgular.

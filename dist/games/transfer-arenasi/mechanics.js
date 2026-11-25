@@ -23,7 +23,19 @@ const TACTICS=[
  ['Teknik direktör','Yıldızı bütün futbolcularının maç özelliklerini artırır: 5★ +%8, 4★ +%4,5, 3★ +%2, 2★ +%0,8, 1★ +%0,2. Ayrıca uzmanlığının koşulu taktiğinle sağlanınca ek bonus verir (“Boost etkin”).'],
  ['İç saha','Taraftar Desteği kartı yalnız lig iç saha maçlarında çalışır; final tarafsız sahadadır.']
 ];
+// Model 6 (yeni odalar) eklemeleri; katsayılar server/transfer-arena/simulation.js içindeki MODEL6 ile uyumludur.
+const MODEL6=[
+ ['Pozisyon alma','Ceza sahasında topu kimin alacağını ve büyük fırsat (gol ihtimali %30 ve üstü) bulma şansını artırır; rakip savunmanın savunma bilinciyle yarışır.'],
+ ['Soğukkanlılık','Şut ve penaltıda bitiriciliğe eklenir, baskı altında pas isabetine küçük katkı verir.'],
+ ['Ayrıntılı mevki','ST ve CAM merkezde daha kaliteli şut bulur. Kanat oyununda ya da geniş oynarken RW/LW çoğunlukla ortalar ve büyük fırsat yaratır; rakip dar savunuyorsa etkisi artar.'],
+ ['Takım gücü','Ortalama overall ve hoca yıldızı farkı daha çok top kapma, isabetli pas, ileri gitme ve pozisyon olarak yansır; etkisi 12 puan farkla sınırlıdır. Belirgin favori çoğu maçı kazanır ama kaybedebilir.'],
+ ['Skor durumu','2 farkla önde olan takım tempoyu ve riski düşürür; 70. dakikadan sonra geride olan baskıyı artırır. Son dakikalarda berabere takımlar temkinli oynar. Çok gollü maçlarda oyun oturur.'],
+ ['Yorgunluk','Maç ilerledikçe savunmalar yorulur ve açılır; en çok gol 75–90 arasında gelir.'],
+ ['Duran toplar','Ceza sahasındaki fauller penaltı ya da serbest vuruş, kurtarışlar ve auttan sonra kornerler olabilir. Korneri en iyi pasör kullanır, stoper ve santrforlar kafa vuruşunda öne çıkar.'],
+ ['Tüm riskleri al!','70. dakikada (finalde 105) geride ya da berabere olan takım seçebilir. Savunmacılar hücuma katılır; pres, tempo, risk ve şut sıklığı en üste çıkar. Top kaybında rakip sık sık tehlikeli bölgeden başlar, enerji daha hızlı düşer; gol atma da gol yeme de belirgin artar. Düğme 60–70 (finalde 95–105) arasında görünür ve maç durmaz; 8× hızda bu pencere bir saniyeden kısadır, bu yüzden oda kurucusu o sırada hızı düşürebilir.'],
+ ['Kartlar','7 kişilik maçta kırmızı kart daha seyrektir.']
+];
 const list=rows=>`<dl class="mechanics-list">${rows.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl>`;
 export function mechanicsHTML(){
- return `<p class="small muted">Maç her yarıda yaklaşık 120 aksiyonla oynanır: pas, top kapma, faul ve şut. Her aksiyon bir olasılıktır; güçlü takım da kaybedebilir.</p><h3>Futbolcu özellikleri</h3>${list(ATTRIBUTES)}<h3>Taktikler</h3>${list(TACTICS)}`;
+ return `<p class="small muted">Maç her yarıda yaklaşık 120 aksiyonla oynanır: pas, top kapma, faul ve şut. Her aksiyon bir olasılıktır; güçlü takım da kaybedebilir.</p><h3>Futbolcu özellikleri</h3>${list(ATTRIBUTES)}<h3>Taktikler</h3>${list(TACTICS)}<h3>Yeni maç modeli</h3>${list(MODEL6)}`;
 }

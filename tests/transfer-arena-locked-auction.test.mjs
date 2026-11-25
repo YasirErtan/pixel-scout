@@ -40,7 +40,7 @@ test('initial and halftime tactics allow three minutes, lock early and retain id
  assert.equal(publicView(r,'a',start+10000).matches[0].minute,15);
  r=act(r,'a','speed',start+10000,data,{speed:2});assert.equal(publicView(r,'a',start+15000).matches[0].minute,30);assert.deepEqual(r.matches,original);
  now=r.deadline;r=act(r,'a','poll',now,data);assert.equal(r.phase,'halftime');assert.equal(r.deadline-now,180000);
- for(const uid of r.schedule[r.round].flat())r=act(r,uid,'plan',now+1,data,{phaseVersion:r.phaseVersion,plan:DEFAULT_PLAN});assert.equal(r.phase,'secondHalf');assert.equal(r.matches[0].minute,90);
+ for(const uid of r.schedule[r.round].flat())r=act(r,uid,'plan',now+1,data,{phaseVersion:r.phaseVersion,plan:DEFAULT_PLAN});assert.equal(r.phase,'secondHalf');assert.equal(r.matches[0].minute,70);
 });
 test('coach effect and its actual tactical condition are visible, and old match clocks display 90 without modifying results',()=>{
  const coach={name:'Klopp',stars:5,specialty:'press'};

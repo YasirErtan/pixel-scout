@@ -1,0 +1,41 @@
+/* Mobil öncelikli, sade maç ekranı */
+.match-grid:has(.ms-main){display:block}
+.ms-main{margin:12px 0;padding:14px 12px;border:1px solid var(--line);border-radius:18px;background:var(--panel);min-width:0}
+.ms-board{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;gap:8px}
+.ms-side{display:grid;justify-items:center;gap:4px;text-align:center;min-width:0}
+.ms-name{font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+.ms-name .team-logo{display:block;width:34px;height:34px;margin:0 auto 4px}
+.ms-allin{font-size:10px;font-weight:800;color:#ffb36b;background:#3a2412;border-radius:999px;padding:2px 7px}
+.ms-scorers{list-style:none;margin:2px 0 0;padding:0;font-size:11px;color:var(--muted);line-height:1.45}
+.ms-score{display:grid;justify-items:center;gap:3px;padding-top:6px;min-width:96px}
+.ms-goals{font-size:40px;line-height:1;font-weight:850;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ms-goals i{font-style:normal;color:var(--muted);margin:0 6px}
+.ms-clock{font-size:13px;font-weight:800;color:#081410;background:var(--accent);border-radius:7px;padding:2px 9px;font-variant-numeric:tabular-nums}
+.ms-state{font-size:11px;color:var(--muted)}
+.ms-pens{font-size:12px;color:var(--gold);font-weight:700}
+.ms-stats{display:grid;gap:7px;margin:14px 0 4px;padding:12px 2px 2px;border-top:1px solid var(--line)}
+.ms-stat{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:8px;font-size:12px}
+.ms-stat b{font-variant-numeric:tabular-nums;text-align:center}
+.ms-stat span{display:grid;gap:3px;text-align:center;color:var(--muted)}
+.ms-stat span i{display:block;height:5px;border-radius:9px;background:#2a3c32;overflow:hidden}
+.ms-stat span em{display:block;height:100%;background:var(--accent);border-radius:9px}
+.ms-note{font-size:10px;color:var(--muted);text-align:center;margin:0}
+.ms-feed{list-style:none;margin:12px 0 0;padding:0}
+.ms-feed li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:8px;padding:8px 0;border-top:1px solid #2d4637;font-size:13px;line-height:1.4}
+.ms-feed time{color:var(--muted);font-variant-numeric:tabular-nums}
+.ms-feed li.key span{font-weight:750;color:var(--ink)}
+.ms-feed li.key{border-left:3px solid var(--gold);padding-left:8px;margin-left:-11px}
+.ms-feed span{overflow-wrap:anywhere}
+.ms-empty,.ms-bye{font-size:13px;color:var(--muted);text-align:center}
+.ms-report{margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+.ms-report>summary{font-size:13px;color:var(--gold)}
+.ms-others h3{font-size:13px;color:var(--muted);margin:0 0 6px}
+.ms-others ol{list-style:none;margin:0;padding:0}
+.ms-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) 44px;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.ms-row:first-child{border-top:0}
+.ms-row strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ms-row-team{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms-row-team.away{text-align:right}
+.ms-row small{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+@media(min-width:720px){.ms-main{padding:20px}.ms-goals{font-size:52px}.ms-name{font-size:16px}.ms-name .team-logo{width:44px;height:44px}.ms-stats{max-width:520px;margin-left:auto;margin-right:auto;width:100%}}
+@media(prefers-reduced-motion:reduce){.ms-stat span em{transition:none}}

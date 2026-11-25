@@ -12,6 +12,7 @@ import {squadBoard} from './formation-board.js';
 import {mechanicsHTML} from './mechanics.js';
 import {playCeremony} from './ceremony.js';
 import {championsTable} from './champions-table.js';
+import {matchScreen} from './match-screen.js';
 const $=s=>document.querySelector(s),status=$('#status'),game=$('#game');
 const storage='pixel-scout:transfer-arenasi:v1';
 let room=null,busy=false,key='',offset=0,code='',previewPlayer=null;
@@ -91,21 +92,21 @@ async function loadChampions(){
 function render(){
  if(room.phase==='finished'&&championsRoom!==room.id){championsRoom=room.id;loadChampions();}
  $('#connection').hidden=true;document.querySelector('.preview-wrap').hidden=true;
- if(!$('#stage')){game.innerHTML='<div class="room-bar"><strong id="room-label"></strong><button id="open-guide" class="secondary" aria-haspopup="dialog">Nasıl işler?</button>'+(room.owner===room.uid?'<button id="close-room" class="secondary">Odayı kapat</button>':'')+'<span id="timer"></span></div><dialog id="guide" class="guide" aria-labelledby="guide-title"><div class="guide-head"><h2 id="guide-title">Simülasyon nasıl işler?</h2><button class="secondary" data-close-guide aria-label="Kapat">✕</button></div>'+mechanicsHTML()+'</dialog><section id="stage" class="panel"></section><section id="speed-controls" class="panel" hidden></section><section id="allocations" class="panel" hidden></section><section id="matches" class="match-grid"></section><section class="panel"><h2>Puan durumu</h2><div id="table" class="table-scroll"></div></section><section id="squads"></section><details class="panel"><summary>Transfer geçmişi</summary><div id="history"></div></details>';$('#close-room')?.addEventListener('click',()=>confirm('Oda kapatılacak ve oyun sona erecek. Devam edilsin mi?')&&send('close'));$('#open-guide').addEventListener('click',()=>$('#guide').showModal());$('#guide').addEventListener('click',e=>{if(e.target===e.currentTarget||e.target.closest('[data-close-guide]'))$('#guide').close();});}
+ if(!$('#stage')){game.innerHTML='<div class="room-bar"><strong id="room-label"></strong><button id="open-guide" class="secondary" aria-haspopup="dialog">Nasıl işler?</button>'+(room.owner===room.uid?'<button id="close-room" class="secondary">Odayı kapat</button>':'')+'<span id="timer"></span></div><dialog id="guide" class="guide" aria-labelledby="guide-title"><div class="guide-head"><h2 id="guide-title">Simülasyon nasıl işler?</h2><button class="secondary" data-close-guide aria-label="Kapat">✕</button></div>'+mechanicsHTML()+'</dialog><section id="stage" class="panel"></section><section id="allin" class="allin-panel" aria-live="polite" hidden></section><section id="speed-controls" class="panel" hidden></section><section id="allocations" class="panel" hidden></section><section id="matches" class="match-grid"></section><section class="panel"><h2>Puan durumu</h2><div id="table" class="table-scroll"></div></section><section id="squads"></section><details class="panel"><summary>Transfer geçmişi</summary><div id="history"></div></details>';$('#close-room')?.addEventListener('click',()=>confirm('Oda kapatılacak ve oyun sona erecek. Devam edilsin mi?')&&send('close'));$('#open-guide').addEventListener('click',()=>$('#guide').showModal());$('#guide').addEventListener('click',e=>{if(e.target===e.currentTarget||e.target.closest('[data-close-guide]'))$('#guide').close();});}
  $('#room-label').textContent='ODA '+room.id+' · '+(room.final?'Final':room.phase==='lobby'?room.teams.length+'/6 takım':(room.round+1)+'. hafta');
  const nextKey=[room.phase,room.phaseVersion,room.lot?.id,room.lot?.amount,room.lot?.bidder,room.lot?.myBid,room.lot?.myLocked,room.lot?.passed.includes(room.uid),room.locked.includes(room.uid),room.teams.map(t=>t.id+t.ready+':'+t.formation+':'+t.logo).join(),room.lotNumber,room.bonusCardSelected?.join(','),room.myBonusCard,room.champion].join('|');
  if(nextKey!==key){key=nextKey;$('#stage').innerHTML=stage();bindStage();}
  $('#table').innerHTML='<table><thead><tr><th>Takım</th><th>P</th><th>G</th><th>Av.</th><th>Gol</th></tr></thead><tbody>'+room.table.map(id=>{const t=room.teams.find(t=>t.id===id);return `<tr ${id===room.uid?'class="my-team"':''}><th>${teamName(t)}</th><td>${t.points}</td><td>${t.wins}</td><td>${t.gf-t.ga}</td><td>${t.gf}:${t.ga}</td></tr>`;}).join('')+'</tbody></table>'+(room.draws.length?'<p class="small">Kura sırası: '+room.draws.map(group=>group.map(names).join(' → ')).join(' / ')+'</p>':'');
  const board=room.leaderboard||[];$('#table').insertAdjacentHTML('beforeend',board.length?'<section class="leaderboards"><div><h3>Gol krallığı</h3><ol>'+board.slice().sort((a,b)=>b.goals-a.goals||a.name.localeCompare(b.name,'tr')).slice(0,5).map(x=>`<li>${logoSVG(room.teams.find(t=>t.id===x.team)?.logo,14)} ${esc(x.name)} <span>${x.goals}</span></li>`).join('')+'</ol></div><div><h3>Asist krallığı</h3><ol>'+board.slice().sort((a,b)=>b.assists-a.assists||a.name.localeCompare(b.name,'tr')).slice(0,5).map(x=>`<li>${logoSVG(room.teams.find(t=>t.id===x.team)?.logo,14)} ${esc(x.name)} <span>${x.assists}</span></li>`).join('')+'</ol></div></section>':'');
- const events={goal:'⚽ Gol',shot:'Şut dışarı',save:'Kaleci kurtardı',yellow:'🟨 Sarı kart',red:'🟥 Kırmızı kart',foul:'Faul',forfeit:'Hükmen sonuç',extraTime:'Uzatmalar başladı',shootout:'Penaltı'};
- const matches=[...room.matches].sort((a,b)=>Number(b.teams.some(t=>t.id===room.uid))-Number(a.teams.some(t=>t.id===room.uid)));
- $('#matches').innerHTML=matches.map(m=>`<article class="panel match"><h3><span>${names(m.teams[0].id)}</span><strong>${m.score.join(' : ')}</strong><span>${names(m.teams[1].id)}</span></h3><p>${minuteLabel(Math.min(displayMinute(m.minute,m.regulationMinutes||(room.rulesVersion>=2?90:20)),120))} ${m.shootout?'· Penaltılar '+m.shootout.score.join(':'):''}</p>${m.teams.some(t=>t.captainName)?'<p class="match-captains">ⓒ '+m.teams.map(t=>esc(t.captainName||'—')).join(' · ')+'</p>':''}<ol class="event-log">${m.events.slice(-8).reverse().map(e=>`<li>${minuteLabel(displayMinute(e.minute,m.regulationMinutes||(room.rulesVersion>=2?90:20)),e.type==='shootout')} ${events[e.type]||esc(e.type)} ${e.playerName?esc(e.playerName):''}${e.type==='shootout'?(e.scored?' ✓':' ✕'):''}</li>`).join('')}</ol></article>`).join('');
+ // Mobil öncelikli maç ekranı: yalnız içerik değişince çizilir, açık rapor bölümü korunur.
+ const disciplineHTML=(['prepare','lobby'].includes(room.phase)?[]:room.discipline||[]).map(m=>'<div class="panel small">'+m.teams.map(t=>{const cards=t.players.filter(p=>p.red||p.yellow);return cards.length?'<p>'+names(t.id)+': '+cards.map(p=>esc(p.name)+' '+(p.red?'🟥 Oyun dışında':'🟨 '+p.yellow)).join(' · ')+'</p>':'';}).filter(Boolean).join('')+'</div>').filter(s=>s!=='<div class="panel small"></div>').join('');
+ const matchHTML=(room.matches.length?matchScreen(room,names):'')+disciplineHTML;
+ if($('#matches').dataset.html!==matchHTML){const open=$('#matches .ms-report')?.open;$('#matches').dataset.html=matchHTML;$('#matches').innerHTML=matchHTML;const report=$('#matches .ms-report');if(report&&open!==undefined)report.open=open;}
  const captains=new Set(room.matches.flatMap(m=>m.teams.map(t=>t.captainId)).filter(id=>id!==undefined));
  const squadsKey=room.phase+'|'+room.teams.map(t=>t.id+':'+t.players.length+':'+t.coach?.id+':'+t.logo).join('|')+'|'+[...captains].join(',');
  if($('#squads').dataset.key!==squadsKey){$('#squads').dataset.key=squadsKey;$('#squads').innerHTML=[...room.teams].sort((a,b)=>Number(b.id===room.uid)-Number(a.id===room.uid)).map(t=>`<details class="panel" ${room.phase==='squadReview'&&t.id===room.uid?'open':''}><summary>${teamName(t)} · ${t.players.length}/7 · ${t.balance} kredi</summary><p class="small muted">${esc(t.formation||'2-2-2')} · Sprint ortalaması: ${sprintAverage(t)}</p>${squadBoard(t,{captains})}<details class="squad-detail"><summary>Kartları göster</summary><div class="squad-cards">${t.players.map(p=>playerCard({...p,isCaptain:captains.has(p.id)})).join('')}${t.coach?coachCard(t.coach):''}</div></details></details>`).join('');}
  $('#history').innerHTML=room.history.map(h=>`<p>${esc(h.card.name)} · ${h.bidder?names(h.bidder)+' · '+h.amount+' kredi':'Pas havuzu'}${h.tied?' · '+(h.tieBreak==='firstLocked'?'İlk kilitleyen kazandı':'Eşit teklif kurası'):''}${h.offers?.length?' · Teklifler: '+h.offers.map(o=>names(o.team)+' '+o.amount).join(' / '):''}</p>`).join('');
- $('#matches').insertAdjacentHTML('beforeend',(['prepare','lobby'].includes(room.phase)?[]:room.discipline||[]).map(m=>'<div class="panel small">'+m.teams.map(t=>{const cards=t.players.filter(p=>p.red||p.yellow);return cards.length?'<p>'+names(t.id)+': '+cards.map(p=>esc(p.name)+' '+(p.red?'🟥 Oyun dışında':'🟨 '+p.yellow)).join(' · ')+'</p>':'';}).filter(Boolean).join('')+'</div>').filter(s=>s!=='<div class="panel small"></div>').join(''));
- const allocations=room.assignments||[];$('#allocations').hidden=!allocations.length;const allocationKey=allocations.length+'|'+room.phase;if($('#allocations').dataset.key!==allocationKey){$('#allocations').dataset.key=allocationKey;$('#allocations').innerHTML='<details><summary>Pas havuzu dağıtımı · '+allocations.length+' kart</summary>'+allocations.map(a=>'<p>'+esc(a.card.name)+' → <strong>'+names(a.team)+'</strong> · 1 kredi</p>').join('')+'</details>';}
+ const allocations=room.assignments||[];$('#allocations').hidden=!allocations.length||!['players','coaches','auctionResult','squadReview'].includes(room.phase);const allocationKey=allocations.length+'|'+room.phase;if($('#allocations').dataset.key!==allocationKey){$('#allocations').dataset.key=allocationKey;$('#allocations').innerHTML='<details><summary>Pas havuzu dağıtımı · '+allocations.length+' kart</summary>'+allocations.map(a=>'<p>'+esc(a.card.name)+' → <strong>'+names(a.team)+'</strong> · 1 kredi</p>').join('')+'</details>';}
  const live=room.rulesVersion>=2&&['firstHalf','secondHalf','finalResolution'].includes(room.phase);$('#speed-controls').hidden=!live;
  if(live){const speedKey=room.phase+'|'+room.playbackSpeed;if($('#speed-controls').dataset.key!==speedKey){$('#speed-controls').dataset.key=speedKey;$('#speed-controls').innerHTML='<div class="speed-row"><strong>Maç hızı</strong><div>'+[1,2,4,8].map(n=>'<button data-speed="'+n+'" aria-pressed="'+(n===room.playbackSpeed)+'" '+(room.owner!==room.uid?'disabled':'')+'>'+n+'×</button>').join('')+'</div></div>';$('#speed-controls').querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>send('speed',{speed:Number(b.dataset.speed)}));}}
  if(room.phase==='finished'&&room.champion){let seen=false;try{seen=localStorage.getItem(ceremonyKey(room.id))==='1';}catch{}if(!seen&&!document.querySelector('.ceremony')){try{localStorage.setItem(ceremonyKey(room.id),'1');}catch{}playCeremony(room,names);}}
@@ -121,7 +122,34 @@ function bindStage(){
  $('#stage').querySelector('.logo-picker')?.addEventListener('change',e=>{if(e.target.name==='logo')send('logo',{logo:e.target.value});});
  $('#leave')?.addEventListener('click',()=>{try{localStorage.removeItem(storage);}catch{}location.reload();});
 }
-function tick(){if($('#timer')&&room)$('#timer').textContent=room.phase==='finished'?'Tamamlandı':room.phase==='lobby'?'Lobi':Math.max(0,Math.ceil((room.deadline-Date.now()-offset)/1000))+' sn';}
+// "Tüm riskleri al!" (model 6): pencere sunucu saatine göre açılır/kilitlenir; sunucu her komutu yeniden doğrular.
+let allInSent='';
+const allInKey=()=>room?.allIn?room.id+':'+room.phaseVersion+':'+room.allIn.lock:'';
+function allInState(){
+ const a=room?.allIn;if(!a||!a.locksAt)return a?.chosen?'locked':'';
+ const now=Date.now()+offset,match=room.matches.find(m=>m.teams.some(t=>t.id===room.uid));
+ const side=match?match.teams.findIndex(t=>t.id===room.uid):-1;
+ const behind=match&&match.score[side]<=match.score[1-side]&&!match.events.some(e=>e.type==='forfeit');
+ if(a.chosen||allInSent===allInKey())return now<a.locksAt+1000?'locked':'';
+ return now>=a.opensAt&&now<a.locksAt&&behind?'open':'';
+}
+function renderAllIn(){
+ const box=$('#allin');if(!box)return;
+ const state=allInState(),a=room?.allIn;
+ // Düğme durum değişmedikçe yeniden çizilmez (basış sırasında DOM'dan kopmasın).
+ const nextKey=state+'|'+allInKey();
+ box.hidden=!state;
+ if(box.dataset.key===nextKey)return;
+ box.dataset.key=nextKey;
+ if(state==='open'){
+  box.innerHTML=`<button id="allin-button" class="allin-button"><span class="allin-title">🔥 Tüm riskleri al!</span><span class="allin-sub">${a.lock}′ kilit</span></button><p class="allin-note">Bütün hatlarla hücum: daha çok şut, ama gol yeme riski de artar.</p>`;
+  $('#allin-button').addEventListener('click',()=>{allInSent=allInKey();renderAllIn();send('allIn',{phaseVersion:room.phaseVersion,lock:a.lock}).then(()=>{if(!room?.allIn?.chosen&&$('#status').classList.contains('error'))allInSent='';});});
+ }else if(state==='locked')box.innerHTML=`<div class="allin-locked" role="status">🔥 Tüm riskler alındı <small>${a?.lock||''}′ kilidinde uygulanır</small></div>`;
+ else box.innerHTML='';
+}
+// Pencere yaklaşırken ve açıkken sık yoklanır; 8× hızda pencere bir saniyeden kısa sürebilir.
+setInterval(()=>{const a=room?.allIn;if(!a?.locksAt)return;const now=Date.now()+offset;if(now>=a.opensAt-3000&&now<=a.locksAt+1500)send('poll');},300);
+function tick(){renderAllIn();if($('#timer')&&room)$('#timer').textContent=room.phase==='finished'?'Tamamlandı':room.phase==='lobby'?'Lobi':Math.max(0,Math.ceil((room.deadline-Date.now()-offset)/1000))+' sn';}
 function renderPreview(){const p=previewPlayer;if(p)$('#preview').innerHTML=playerCard(p);}
 $('#create').disabled=false;$('#join').disabled=false;
 $('#create').addEventListener('click',()=>send('create',{name:$('#name').value,bonusEnabled:$('#bonus-enabled').checked,bonusCardsEnabled:$('#bonus-cards-enabled').checked}));$('#join').addEventListener('click',()=>send('join',{name:$('#name').value}));
