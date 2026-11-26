@@ -2,6 +2,7 @@ import {BONUS_PLAYER,ratedBonusPlayer} from '../../dist/games/transfer-arenasi/b
 import {formationLimits} from '../../dist/games/transfer-arenasi/formation.js';
 import {LEGENDS} from './legends.js';
 import {LEGEND_PORTRAITS} from '../../dist/games/transfer-arenasi/legend-portraits.js';
+import {arenaError} from './errors.js';
 export const LIMITS = Object.freeze({GK:1,DEF:2,MID:2,ATT:2});
 export function random(seed) { let n=seed>>>0; return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;}; }
 export function shuffle(items,next) {const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(next()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -9,17 +10,17 @@ export function slots(team) {return 8-team.players.length-(team.coach?1:0);}
 export function maximum(team) {return team.balance-(slots(team)-1);}
 export function eligible(team,card) {return card.kind==='coach'?!team.coach:team.players.filter(p=>p.position===card.position).length<(team.formation ? formationLimits(team.formation) : LIMITS)[card.position];}
 export function award(team,card,amount,automatic=false) {
-  if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,card))throw Error('Geçersiz transfer');
+  if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,card))throw arenaError('Geçersiz transfer');
   team.balance-=amount;
   if(card.kind==='coach')team.coach={...card,price:amount,automatic};
   else team.players.push({...card,price:amount,automatic});
 }
 export function openLot(card,now,id,sealed=false,tieOrder=[],single=false,firstLocked=false) {return {id,card,deadline:now+(single?60000:sealed?15000:12000),hardDeadline:now+(single?60000:sealed?15000:24000),amount:0,bidder:null,passed:[],...(sealed?{sealed:true,single,bids:{},tieOrder,...(firstLocked?{bidOrder:[]}:{})}:{})};}
 export function bid(lot,team,amount,now,lotId) {
-  if(lotId!==lot.id||now>=lot.deadline)throw Error('Bu ihale kapandı');
-  if(lot.sealed){if(lot.single&&(Object.hasOwn(lot.bids,team.id)||lot.passed.includes(team.id)))throw Error('Bu teklif zaten kilitli');if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw Error('Bütçe veya mevki uygun değil');lot.bids[team.id]=amount;lot.bidOrder?.push(team.id);lot.passed=lot.passed.filter(id=>id!==team.id);return;}
-  if(lot.passed.includes(team.id)||lot.bidder===team.id)throw Error('Bu teklif verilemez');
-  if(!Number.isSafeInteger(amount)||amount<=lot.amount||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw Error('Bütçe veya mevki uygun değil');
+  if(lotId!==lot.id||now>=lot.deadline)throw arenaError('Bu ihale kapandı');
+  if(lot.sealed){if(lot.single&&(Object.hasOwn(lot.bids,team.id)||lot.passed.includes(team.id)))throw arenaError('Bu teklif zaten kilitli');if(!Number.isSafeInteger(amount)||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw arenaError('Bütçe veya mevki uygun değil');lot.bids[team.id]=amount;lot.bidOrder?.push(team.id);lot.passed=lot.passed.filter(id=>id!==team.id);return;}
+  if(lot.passed.includes(team.id)||lot.bidder===team.id)throw arenaError('Bu teklif verilemez');
+  if(!Number.isSafeInteger(amount)||amount<=lot.amount||amount<1||amount>maximum(team)||!eligible(team,lot.card))throw arenaError('Bütçe veya mevki uygun değil');
   lot.amount=amount;lot.bidder=team.id;
   lot.deadline=Math.min(lot.hardDeadline,Math.max(lot.deadline,now+3000));
 }
@@ -33,7 +34,7 @@ export function completePool(teams,pool,next) {
   while(remaining.length){
     const card=weak?remaining.shift():remaining.pop();
     let candidates=shuffle(teams.filter(t=>eligible(t,card)),next);
-    if(!candidates.length)throw Error('Pazar ve kadro slotları uyuşmuyor');
+    if(!candidates.length)throw arenaError('Pazar ve kadro slotları uyuşmuyor');
     const avg=t=>{const a=quality.get(t.id);return a.length?a.reduce((s,x)=>s+x,0)/a.length:77;};
     candidates.sort((a,b)=>weak?avg(b)-avg(a):avg(a)-avg(b));
     const winner=candidates[0];award(winner,card,1,true);quality.get(winner.id).push(card.overall??card.stars);assignments.push({card,team:winner.id,amount:1});weak=!weak;
@@ -41,23 +42,23 @@ export function completePool(teams,pool,next) {
  return assignments;
 }
 export function selectCoaches(coaches,count,next){
-  if(!Number.isInteger(count)||count<3||count>6)throw Error('3–6 takım gerekli');
+  if(!Number.isInteger(count)||count<3||count>6)throw arenaError('3–6 takım gerekli');
   const groups=new Map([1,2,3,4,5].map(stars=>[stars,shuffle(coaches.filter(c=>c.stars===stars),next)]));
   const levels=shuffle([...groups.keys()].filter(stars=>groups.get(stars).length),next);
-  if(levels.length<Math.min(count,5))throw Error('Hoca yıldız seviyeleri yetersiz');
+  if(levels.length<Math.min(count,5))throw arenaError('Hoca yıldız seviyeleri yetersiz');
   const selected=levels.slice(0,Math.min(count,5)).map(stars=>groups.get(stars).pop());
   if(count===6){
     const extraLevels=levels.filter(stars=>groups.get(stars).length);
-    if(!extraLevels.length)throw Error('Altıncı hoca için havuz yetersiz');
+    if(!extraLevels.length)throw arenaError('Altıncı hoca için havuz yetersiz');
     selected.push(groups.get(extraLevels[Math.floor(next()*extraLevels.length)]).pop());
   }
   return shuffle(selected,next).map(c=>({...c,kind:'coach'}));
 }
 export function makeMarket(players,coaches,count,next,{bonusEnabled=false,formations,randomBonus=false}={}) {
-  if(!Number.isInteger(count)||count<3||count>6)throw Error('3–6 takım gerekli');
+  if(!Number.isInteger(count)||count<3||count>6)throw arenaError('3–6 takım gerekli');
   const market=[],remaining=Object.fromEntries(Object.entries(LIMITS).map(([role,n])=>[role,n*count]));
   if(formations){
-    if(formations.length!==count)throw Error('Her takım için diziliş gerekli');
+    if(formations.length!==count)throw arenaError('Her takım için diziliş gerekli');
     for(const role of Object.keys(LIMITS))remaining[role]=0;
     for(const formation of formations){
       const limits=formationLimits(formation);
@@ -74,10 +75,10 @@ export function makeMarket(players,coaches,count,next,{bonusEnabled=false,format
   // Reserve the scarce elite cards first. The shipped snapshot has ample lower bands.
   for(const index of [3,2,1,0])for(let i=0;i<count*([1,1,3,2][index])-Number(index===3)-Number(bonusBand===index);i++){
     const candidates=Object.keys(LIMITS).flatMap(role=>bands[index][role].length?Array(remaining[role]).fill(role):[]);
-    if(!candidates.length)throw Error('Mevki ve kalite havuzu yetersiz');
+    if(!candidates.length)throw arenaError('Mevki ve kalite havuzu yetersiz');
     const role=candidates[Math.floor(next()*candidates.length)],p=bands[index][role].pop();
     remaining[role]--;market.push({...p,kind:'player'});
   }
-  if(coaches.length<count)throw Error('Hoca havuzu yetersiz');
+  if(coaches.length<count)throw arenaError('Hoca havuzu yetersiz');
   return {players:shuffle(market,next),coaches:selectCoaches(coaches,count,next)};
 }

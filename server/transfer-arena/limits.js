@@ -1,3 +1,5 @@
+import {arenaError} from './errors.js';
+
 // Sunucu örneği içinde tutulan sabit pencereli istek sınırlayıcı.
 // Aynı Wi-Fi'daki oyuncular tek IP paylaşır; önceki tasarımda hepsi veritabanında tek bir sayaç kaydına
 // yazdığı için ETag çakışması ve "Oda meşgul" hatası doğabiliyordu. Bellek içi sayaç çakışmaz ve
@@ -14,7 +16,7 @@ export function memoryLimiter({maxKeys=10000}={}){
    if(buckets.size>=maxKeys)buckets.delete(buckets.keys().next().value);
    bucket={count:0,until:now+windowMs};buckets.set(key,bucket);
   }
-  if(bucket.count>=limit)throw Error('Çok sık istek gönderildi; biraz bekle');
+  if(bucket.count>=limit)throw arenaError('Çok sık istek gönderildi; biraz bekle');
   bucket.count++;
  };
 }

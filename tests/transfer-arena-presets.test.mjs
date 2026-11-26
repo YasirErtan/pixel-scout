@@ -76,3 +76,33 @@ test('her taktikte etkin uzmanlıklar kart rozeti yerine tek not gösterir',()=>
  const passing=presetPanel(plan,{name:'H',stars:5,specialty:'passing'},[]);
  assert.equal((passing.match(/Hoca uyumu/g)||[]).length,1);assert.doesNotMatch(passing,/her taktikte etkin/);
 });
+
+test('direct tarzlı profil Direkt futbol adını taşır; transition hocası yalnız Katenaçyo kartında uyum rozeti alır',()=>{
+ const directPreset=TACTIC_PRESETS.find(p=>p.plan.style==='direct');
+ assert.ok(directPreset);
+ assert.equal(directPreset.id,'kontra');
+ assert.equal(directPreset.name,'Direkt futbol');
+ assert.notEqual(directPreset.name,'Kontra');
+ const html=presetPanel(TACTIC_PRESETS[0].plan,{id:'c-tr',name:'Geçiş Hocası',stars:4,specialty:'transition'},[]);
+ const cards=Object.fromEntries([...html.matchAll(/<button\b[^>]*data-preset="([^"]+)"[^>]*>[\s\S]*?<\/button>/g)].map(m=>[m[1],m[0]]));
+ assert.equal(Object.keys(cards).length,4);
+ assert.ok(cards.katenacyo.includes('<strong>Katenaçyo</strong>'));
+ assert.ok(cards.katenacyo.includes('Hoca uyumu'));
+ assert.ok(cards.kontra.includes('<strong>Direkt futbol</strong>'));
+ assert.ok(!cards.kontra.includes('<strong>Kontra</strong>'));
+ assert.ok(!cards.kontra.includes('Hoca uyumu'));
+ assert.equal((html.match(/Hoca uyumu/g)||[]).length,1);
+});
+
+test('mechanicsHTML güncel Model 7 formüllerini ve okunaklı plan etiketlerini gösterir',()=>{
+ const html=mechanicsHTML();
+ for(const text of ['%55 kısa pas','%60 bitiricilik','6,5 puan','%30 ihtimalle']){
+  assert.ok(html.includes(text),`Beklenen metin bulunamadı: ${text}`);
+ }
+ for(const raw of ['pres 2','risk 0','genişlik 0']){
+  assert.ok(!html.includes(raw),`Ham indeks metni bulunmamalı: ${raw}`);
+ }
+ assert.ok(html.includes('yoğun pres'));
+ assert.ok(html.includes('temkinli'));
+ assert.ok(html.includes('yüksek tempo'));
+});

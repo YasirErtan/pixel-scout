@@ -2,7 +2,7 @@
 
 Çevrimiçi oyun kuralları, yerel geliştirme ve sunucu kurulum rehberi.
 
-3–6 kişi ayrı cihazlardan aynı altı haneli odaya katılır. Yeni rulesVersion4 odalarında her takım 200 krediyle seçtiği dizilişe göre 1 kaleci, toplam 6 saha oyuncusu ve 1 teknik direktör alır. Pazar toplam 7N benzersiz futbolcu ve N benzersiz hocadan oluşur. Yalnızca açık kart ve geçmiş kartlar gösterilir. Futbolcuların ardından hocaların ihalesi başlar.
+3–6 kişi ayrı cihazlardan aynı altı haneli odaya katılır. Yeni odalarda (rulesVersion 7) her takım 200 krediyle seçtiği dizilişe göre 1 kaleci, toplam 6 saha oyuncusu ve 1 teknik direktör alır. Pazar toplam 7N benzersiz futbolcu ve N benzersiz hocadan oluşur. Yalnızca açık kart ve geçmiş kartlar gösterilir. Futbolcuların ardından hocaların ihalesi başlar.
 
 Pazarda bütün takımların toplam kadro kontenjanlarına göre 2N adet 88+, 3N adet 82–87, N adet 76–81 ve N adet 70–75 kart vardır; Eren bonusu açıksa kendi reyting bandındaki bir kontenjanı kullanır. 82+ oranı 5/7, yaklaşık %71'dir. Takım başına reyting kotası yoktur. Yeni odalarda eşit en yüksek teklifler içinde sunucuya ilk kilitlenen teklif kazanır; başlamış eski odalar kendi sürümünün tie-break kuralını korur. Her kartta 60 saniyelik gizli teklif penceresi vardır; teklifler en az 1 kredi, tam sayıdır. Her takım yalnız bir teklif veya pas kararı kilitler; kilitli karar değiştirilemez. Teklif verebilen herkes kilitleyince süre beklenmeden sonuç açılır. Süre sonundaki en yüksek teklif, kendi teklif ettiği bedelle kazanır. Süre bitmeden başka teklifler, teklif verenler ve kilit sırası açıklanmaz. Sonuç 8 saniyelik ayrı ekranda bütün takımların teklif/pas/süre aşımı bilgisi ve kazananla gösterilir; transfer geçmişinde de saklanır. Her boş yer için 1 kredi korunur. Teklifsiz kartlar aynı dönüşümlü pas havuzu kurallarıyla 1 krediye uygun boş mevkilere dağıtılır; hangi kartın hangi takıma gittiği ayrı listelenir. Hocada destek kredisi yoktur.
 
@@ -153,14 +153,14 @@ Zayıf taraf aynı miktarda kaybeder. Rakibin tarzı gizli kalır. Ekranda yaln�
 
 **Hazır taktikler:** Taktik ekranında dört kart vardır. Seçilen kart tarzı ve beş ayarı tek seferde kurar. Diziliş ve kaptan korunur. Ayrıntılar varsayılan olarak kapalı "Gelişmiş" bölümündedir. Elle yapılan değişiklik "Özel" olarak görünür.
 
-| Profil | Tarz | Ayarlar |
-|---|---|---|
-| Gegenpress | Kanat oyunu | Pres yoğun, risk hücum, tempo yüksek, geniş, sert |
-| Katenaçyo | Kontra atak | Geri çekil, temkinli, sakin, dar, sert |
-| Tiki-taka | Kısa pas | Dengeli pres, dengeli risk, sakin, dar, normal |
-| Kontra | Direkt oyun | Dengeli pres, dengeli risk, yüksek tempo, dengeli genişlik, normal |
+| Profil | Tarz | Ayarlar | Açıklama |
+|---|---|---|---|
+| Gegenpress | Kanat oyunu | Yoğun pres, hücum, yüksek tempo, geniş, sert | Yoğun pres, yüksek tempo, geniş hücum. Çok enerji harcar. |
+| Katenaçyo | Kontra atak | Geri çekil, temkinli, sakin tempo, dar, sert | Derin ve dar savunma bloğu; top kazanınca kontra atak. |
+| Tiki-taka | Kısa pas | Dengeli pres, dengeli risk, sakin tempo, dar, normal müdahale | Kısa paslarla topa sahip olma, sakin tempo, dar oyun. |
+| Direkt futbol (`kontra`) | Direkt oyun | Dengeli pres, dengeli risk, yüksek tempo, dengeli genişlik, normal müdahale | Hızlı ve dikine; uzun toplarla savunma arkasına. |
 
-Her profil birini yener, birine yenilir: Katenaçyo > Tiki-taka > Gegenpress > Kontra > Katenaçyo.
+Her profil birini yener, birine yenilir: Katenaçyo > Tiki-taka > Gegenpress > Direkt futbol > Katenaçyo.
 
 **Hoca etkisi:**
 - Uzmanlık katsayısı yıldız başına %2'den %3'e çıktı.

@@ -1,9 +1,9 @@
 import {COACH_FIT_PER_STAR,COACH_SPECIALTY_PER_STAR,STYLE_BEATS,STYLE_EDGE,STYLE_NAMES,TACTIC_PRESETS} from './tactic-presets.js';
 // Simülasyonun sade özeti. Sayılar server/transfer-arena/simulation.js ile uyumlu tutulmalıdır.
 const ATTRIBUTES=[
- ['Kısa pas + Görüş','Pas isabetini belirler (%65 kısa pas, %35 görüş). Rakibin araya girme ve savunma değeri karşı baskıdır.'],
+ ['Kısa pas + Görüş','Pas isabetini belirler (%55 kısa pas, %30 görüş, %15 soğukkanlılık). Rakibin araya girme ve savunma değeri karşı baskıdır.'],
  ['Top kontrolü ↔ Müdahale','Rakip topu kapmaya çalıştığında ikili mücadeleyi bu iki değer belirler. Düşük müdahale faul riskini artırır.'],
- ['Bitiricilik + Şut gücü','Şutun gol olma ihtimali (%75 bitiricilik, %25 şut gücü). Rakip kalecinin refleks ve konum ortalamasıyla yarışır.'],
+ ['Bitiricilik + Şut gücü','Şutun gol olma ihtimali (%60 bitiricilik, %25 soğukkanlılık, %15 şut gücü). Rakip kalecinin refleks, konum ve uzanma ortalamasıyla yarışır.'],
  ['Sprint','Kaleci hariç takım ortalaması. Rakipten hızlıysan başarılı pastan sonra topu ileri taşıma şansın artar (en fazla ±6 puan).'],
  ['Kondisyon','Enerji daha yavaş düşer. Enerji azaldıkça bütün özellikler %20’ye kadar zayıflar; devre arasında +8 enerji toplanır.'],
  ['Penaltı','Faul sonrası penaltılarda ve finaldeki seri penaltılarda kullanılır.'],
@@ -14,11 +14,11 @@ const TACTICS=[
  ['Diziliş','Hücumcu sayın rakibin defans sayısından fazlaysa şut kalitesi artar. Orta saha sayısı üstünlüğü pas isabetini artırır.'],
  ['Kısa pas','Güvenli oyun. Dar genişlikle birlikte küçük pas bonusu alır; pas uzmanı hocanın bonusu bu tarzda çalışır.'],
  ['Kanat oyunu','Rakip dar oynuyorsa daha etkilidir; geniş genişlikle uyumludur.'],
- ['Direkt oyun','Pas isabeti 12 puan düşer ama top çok daha hızlı ileri gider. Rakip yoğun pres yapıyorsa avantaj kazanır.'],
+ ['Direkt oyun','Pas isabeti 6,5 puan düşer ama top çok daha hızlı ileri gider. Rakip yoğun pres yapıyorsa avantaj kazanır.'],
  ['Kontra atak','Rakip ne kadar riskli ve presli oynarsa hücuma çıkarken pasların o kadar isabetli olur.'],
  ['Pres','Top kapma denemelerini artırır ve rakibin pas isabetini düşürür; enerji harcatır.'],
- ['Risk','Daha sık ve daha kaliteli şut. Ama hücum riskinde top kaybedince rakip orta sahadan başlar. Temkinli oyun savunma hocasını çalıştırır.'],
- ['Tempo','Topu daha hızlı ileri taşır; pas isabeti ve enerji düşer.'],
+ ['Risk','Daha sık ve daha kaliteli şut. Hücum riskinde top kaybedince rakip %30 ihtimalle orta sahadan başlar. Temkinli oyun savunma hocasını çalıştırır.'],
+ ['Tempo','Topu daha hızlı ileri taşır ve daha fazla enerji harcatır.'],
  ['Genişlik','Dar savunma merkezi kapatır ama kanatları açar; geniş savunma tersini yapar.'],
  ['Müdahale','Sert oyun top kazanmayı artırır, faul ve kart riskini de artırır. Katı hakemde sarı kart daha kolay çıkar; iki sarı veya kırmızı oyuncuyu oyundan atar.'],
  ['Teknik direktör','Yıldızı bütün futbolcularının maç özelliklerini artırır: 5★ +%8, 4★ +%4,5, 3★ +%2, 2★ +%0,8, 1★ +%0,2. Ayrıca uzmanlığının koşulu taktiğinle sağlanınca ek bonus verir (“Boost etkin”).'],
@@ -40,7 +40,8 @@ const MODEL6=[
 const fmt=n=>new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(n);
 export function model7Rows(){
  const cycle=[];for(let s='counter';!cycle.includes(s);s=STYLE_BEATS[s])cycle.push(s);cycle.push(cycle[0]);
- const plan=p=>`${STYLE_NAMES[p.style]} · pres ${p.press}, risk ${p.risk}, tempo ${p.tempo}, genişlik ${p.width}, müdahale ${p.tackle}`;
+ const PRESS=['geri çekil','dengeli pres','yoğun pres'],RISK=['temkinli','dengeli risk','hücum'],TEMPO=['sakin tempo','normal tempo','yüksek tempo'],WIDTH=['dar','dengeli genişlik','geniş'],TACKLE=['temiz','normal müdahale','sert','çok sert'];
+ const plan=p=>`${STYLE_NAMES[p.style]} · ${PRESS[p.press]}, ${RISK[p.risk]}, ${TEMPO[p.tempo]}, ${WIDTH[p.width]}, ${TACKLE[p.tackle]}`;
  return [
   ['Tarz döngüsü',`${cycle.map(s=>STYLE_NAMES[s]).join(' > ')}. Soldaki tarz sağdakine üstündür; rakibin tarzı gizlidir, bu yüzden bir tahmin oyunudur.`],
   ['Üstünlüğün etkisi',`Üstün tarafta pas isabeti +${fmt(STYLE_EDGE.pass*100)} puan, başarılı pastan sonra ileri gitme +${fmt(STYLE_EDGE.progress*100)} puan, top kapma +${fmt(STYLE_EDGE.tackle*100)} puan, şut kalitesi +${fmt(STYLE_EDGE.xg*100)} xG puanı. Zayıf tarafta aynı değerler eksi yönde işler; nötr eşleşmede etki yoktur.`],

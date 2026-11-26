@@ -5,20 +5,21 @@ import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {coachRatingBoost} from '../../dist/games/transfer-arenasi/coach-card.js';
 import {coachBoostActive} from '../../dist/games/transfer-arenasi/coach-tactics.js';
 import {styleEdge,STYLE_EDGE,COACH_SPECIALTY_PER_STAR,COACH_FIT_PER_STAR} from '../../dist/games/transfer-arenasi/tactic-presets.js';
+import {arenaError} from './errors.js';
 export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
  const p={...DEFAULT_PLAN,...input};
- if(!FORMATIONS.includes(p.formation))throw Error('Geçersiz diziliş');
- if(!['short','wide','direct','counter'].includes(p.style))throw Error('Geçersiz oyun planı');
- if(p.captainId!==null&&!((typeof p.captainId==='string'&&p.captainId.length>0&&p.captainId.length<=80)||Number.isSafeInteger(p.captainId)))throw Error('Geçersiz kaptan seçimi');
- for(const key of ['press','risk','tempo','width','tackle'])if(!Number.isInteger(p[key])||p[key]<0||p[key]>(key==='tackle'?3:2))throw Error('Geçersiz taktik değeri');
+ if(!FORMATIONS.includes(p.formation))throw arenaError('Geçersiz diziliş');
+ if(!['short','wide','direct','counter'].includes(p.style))throw arenaError('Geçersiz oyun planı');
+ if(p.captainId!==null&&!((typeof p.captainId==='string'&&p.captainId.length>0&&p.captainId.length<=80)||Number.isSafeInteger(p.captainId)))throw arenaError('Geçersiz kaptan seçimi');
+ for(const key of ['press','risk','tempo','width','tackle'])if(!Number.isInteger(p[key])||p[key]<0||p[key]>(key==='tackle'?3:2))throw arenaError('Geçersiz taktik değeri');
  return Object.fromEntries(Object.keys(DEFAULT_PLAN).map(k=>[k,p[k]]));
 }
 const cap=(x,a,b)=>Math.min(b,Math.max(a,x));
 function next(state){state.rng=(Math.imul(state.rng,1664525)+1013904223)>>>0;return state.rng/4294967296;}
 function pick(state,a){return a[Math.floor(next(state)*a.length)];}
 const stat=(p,k)=>Number.isFinite(p.attributes?.[k])?p.attributes[k]:null;
-function required(p,k){const v=stat(p,k);if(v===null)throw Error(`Eksik simülasyon özelliği: ${k}`);return v;}
+function required(p,k){const v=stat(p,k);if(v===null)throw arenaError(`Eksik simülasyon özelliği: ${k}`);return v;}
 export function beginMatch(home,away,seed,referee=1,{version=3,neutral=false}={}){
  // Model 6: oyuncu istatistik sayaçları ve topa sahip olma sayacı; eski sürümlerde alan eklenmez.
  const make=(t,side)=>({id:t.id,coach:t.coach,...(version>=4?{bonusCard:t.bonusCard||null,homeBonus:!neutral&&side===0?(bonusCardById(t.bonusCard)?.homeBoost||0):0}:{}),players:t.players.map(p=>({...p,energy:100,yellow:0,red:false,...(version>=6?{stats:blankStats()}:{})})),goals:0,shots:0,onTarget:0,saves:0,xg:0,passes:0,completed:0,losses:0,...(version>=6?{possessionTicks:0}:{})});
@@ -39,7 +40,7 @@ export function teamSprint(team){const players=field(team);return players.length
 export function sprintAdvantage(team,opponent){return cap((teamSprint(team)-teamSprint(opponent))*.002,-.06,.06);}
 function forceResult(m,loser){const other=m.teams[1-loser],team=m.teams[loser];if(other.goals-team.goals<=3){other.goals=3;team.goals=0;}m.finished=true;m.forfeit=team.id;m.events.push({minute:m.minute,type:'forfeit',team:team.id});}
 export function simulateHalf(previous,plans){
- const m=structuredClone(previous);if(m.finished||m.half>=2)throw Error('Maç tamamlandı');
+ const m=structuredClone(previous);if(m.finished||m.half>=2)throw arenaError('Maç tamamlandı');
  const pp=plans.map(validatePlan);m.half++;
  if(m.half===2)for(const t of m.teams)for(const p of alive(t))p.energy=Math.min(100,p.energy+8);
  const length=m.version>=3?45:10;return simulatePeriod(m,pp,(m.half-1)*length,length,m.half===2);
@@ -49,7 +50,7 @@ function simulatePeriod(m,pp,start,duration,finished){
  if(m.version>=6)return simulatePeriod6(m,pp,start,duration,finished);
  for(let i=0;i<2;i++){
   const t=m.teams[i],requested=pp[i].captainId;
-  if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw Error('Geçersiz kaptan seçimi');
+  if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw arenaError('Geçersiz kaptan seçimi');
   const captain=alive(t).find(p=>String(p.id)===String(requested))||alive(t).find(p=>p.captain)||alive(t).toSorted((a,b)=>(b.overall||0)-(a.overall||0))[0];
   t.captainId=captain.id;for(const p of t.players)p.captain=p.id===captain.id;
   // Model 5: hoca yıldızı tüm özelliklere çarpan; eski maçlar etkilenmez.
@@ -63,7 +64,7 @@ function simulatePeriod(m,pp,start,duration,finished){
  for(let tick=0;tick<ticks&&!m.finished;tick++){
   m.minute=start+(tick+1)*duration/ticks;
   const team=m.teams[possession],opp=m.teams[1-possession],plan=pp[possession],def=pp[1-possession];
-  const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw Error('Saha oyuncusu kalmadı');
+  const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw arenaError('Saha oyuncusu kalmadı');
   for(let side=0;side<2;side++)for(const p of alive(m.teams[side])){
    const cost=(.07+pp[side].tempo*.045+pp[side].press*.035)*(1-coach(m.teams[side],'press')*(pp[side].press===2))*(1-coach(m.teams[side],'fitness')*.75);
    p.energy=Math.max(15,p.energy-cost*(1-(bonusCardById(m.teams[side].bonusCard)?.fatigueReduction||0))*(1.5-required(p,'stamina')/100));
@@ -121,7 +122,7 @@ function simulatePeriod(m,pp,start,duration,finished){
 }
 // Extra time reuses the same event model and current discipline/energy state.
 export function resolveFinal(previous,plans){
- if(!previous.finished||previous.half!==2||previous.teams[0].goals!==previous.teams[1].goals||previous.forfeit)throw Error('Uzatma için berabere tamamlanmış final gerekli');
+ if(!previous.finished||previous.half!==2||previous.teams[0].goals!==previous.teams[1].goals||previous.forfeit)throw arenaError('Uzatma için berabere tamamlanmış final gerekli');
  let m=structuredClone(previous);const pp=plans.map(validatePlan);m.finished=false;
  const start=m.version>=3?90:20,length=m.version>=3?15:2;
  m.events.push({minute:start,type:'extraTime'});
@@ -203,9 +204,9 @@ function snapshot(m,minute){
 }
 export function simulateSegment(previous,plans,{start,end,allIn=[false,false]}={}){
  const m=structuredClone(previous);
- if(m.version<6)throw Error('Parçalı simülasyon yalnız model 6');
- if(m.finished&&!(start>=90&&m.teams[0].goals===m.teams[1].goals&&!m.forfeit))throw Error('Maç tamamlandı');
- if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)throw Error('Geçersiz maç dilimi');
+ if(m.version<6)throw arenaError('Parçalı simülasyon yalnız model 6');
+ if(m.finished&&!(start>=90&&m.teams[0].goals===m.teams[1].goals&&!m.forfeit))throw arenaError('Maç tamamlandı');
+ if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)throw arenaError('Geçersiz maç dilimi');
  const pp=plans.map(validatePlan);
  if(start===0)m.half=1;
  if(start===45){m.half=2;for(const t of m.teams)for(const p of alive(t))p.energy=Math.min(100,p.energy+8);}
@@ -355,7 +356,7 @@ function specialist(t,score){return field(t).toSorted((a,b)=>score(b)-score(a))[
 function simulatePeriod6(m,pp,start,duration,finished){
  for(let i=0;i<2;i++){
   const t=m.teams[i],requested=pp[i].captainId;
-  if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw Error('Geçersiz kaptan seçimi');
+  if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw arenaError('Geçersiz kaptan seçimi');
   const captain=alive(t).find(p=>String(p.id)===String(requested))||alive(t).find(p=>p.captain)||alive(t).toSorted((a,b)=>(b.overall||0)-(a.overall||0))[0];
   t.captainId=captain.id;
   // Model 7: hoca uzmanlığı güçlenir; plan hocanın koşuluna uyuyorsa tüm özelliklere ek çarpan gelir (her dilimde yeniden hesaplanır).
@@ -374,7 +375,7 @@ function simulatePeriod6(m,pp,start,duration,finished){
   m.minute=start+(tick+1)*duration/ticks;
   const team=m.teams[possession],opp=m.teams[1-possession],plan=pp[possession],def=pp[1-possession];
   const moods=[mood6(m,0,pp[0]),mood6(m,1,pp[1])],at=moods[possession],dm=moods[1-possession];
-  const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw Error('Saha oyuncusu kalmadı');
+  const attackers=field(team),defenders=field(opp);if(!attackers.length||!defenders.length)throw arenaError('Saha oyuncusu kalmadı');
   team.possessionTicks++;
   for(let side=0;side<2;side++){
    const md=moods[side],t=m.teams[side];
@@ -459,5 +460,5 @@ function simulatePeriod6(m,pp,start,duration,finished){
   const until=p.red?Math.min(p.redMinute??start,stop):stop;
   if(until>start)p.stats.minutes+=Math.round(until)-Math.round(start);
  }
- m.minute=end;if(finished)m.finished=true;return m;
+ if(!m.forfeit)m.minute=end;if(finished)m.finished=true;return m;
 }

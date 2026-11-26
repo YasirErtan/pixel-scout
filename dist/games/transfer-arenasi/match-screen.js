@@ -27,8 +27,11 @@ export function liveStats(match){
  return {sides,snapMinute:snap?.minute??null};
 }
 
+const isForfeit=m=>(m.events||[]).some(e=>e.type==='forfeit');
+
 function stateLabel(room,m){
  if(m.shootout)return 'Penaltılar';
+ if(isForfeit(m))return 'Hükmen';
  if(room.phase==='finished'||(room.phase==='prepare'&&m.minute>=90))return 'Maç sonu';
  if(room.phase==='halftime')return 'Devre arası';
  if(m.minute>90)return 'Uzatma';
@@ -50,10 +53,10 @@ function statRow(label,a,b,fmt=v=>v){
 function board(room,m,names){
  const [a,b]=m.teams,allIn=new Set(m.events.filter(e=>e.type==='allIn').map(e=>e.team)),st=liveStats(m);
  const [sa,sb]=st.sides,label=stateLabel(room,m);
- const side=(t,cls)=>`<div class="ms-side ${cls}"><strong class="ms-name">${names(t.id)}</strong>${allIn.has(t.id)?'<span class="ms-allin">🔥 Tüm riskler</span>':''}<ul class="ms-scorers">${scorers(m,t.id,room)}</ul></div>`;
- const pct=v=>'%'+v,xg=v=>v.toFixed(1);
+ const side=(t,cls)=>`<div class="ms-side ${cls}"><strong class="ms-name">${names(t.id)}</strong>${t.captainName?`<span class="ms-captain" title="Kaptan">ⓒ ${esc(t.captainName)}</span>`:''}${allIn.has(t.id)?'<span class="ms-allin">🔥 Tüm riskler</span>':''}<ul class="ms-scorers">${scorers(m,t.id,room)}</ul></div>`;
+ const pct=v=>'%'+v,xg=v=>v.toFixed(1).replace('.',',');
  const feed=m.events.map((e,i)=>({e,i})).filter(({e})=>e.type!=='foul').slice(-6).reverse();
- const report=['halftime','finished'].includes(room.phase)||m.minute>=90?matchReport(m,room.teams,{minute:m.minute}):'';
+ const report=['halftime','finished'].includes(room.phase)||m.minute>=90||isForfeit(m)?matchReport(m,room.teams,{minute:m.minute}):'';
  return `<article class="ms-main" aria-label="Senin maçın">
   <div class="ms-board">${side(a,'home')}<div class="ms-score"><span class="ms-goals" aria-label="Skor ${m.score.join(' - ')}">${m.score.join('<i>–</i>')}</span><span class="ms-clock">${clock(m,room)}</span>${label?`<span class="ms-state">${label}</span>`:''}${m.shootout?`<span class="ms-pens">Pen. ${m.shootout.score.join('–')}</span>`:''}</div>${side(b,'away')}</div>
   <div class="ms-stats" aria-label="Canlı istatistik">${statRow('Şut',sa.shots,sb.shots)}${statRow('İsabetli',sa.onTarget,sb.onTarget)}${statRow('xG',sa.xg,sb.xg,xg)}${statRow('Topa sahip',sa.possession,sb.possession,pct)}${statRow('Pas',sa.passPct,sb.passPct,pct)}${st.snapMinute!=null&&sa.possession!=null?`<p class="ms-note">Topa sahip olma ve pas ${st.snapMinute}′ itibarıyla</p>`:''}</div>
