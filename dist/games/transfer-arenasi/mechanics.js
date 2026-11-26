@@ -1,3 +1,4 @@
+import {COACH_FIT_PER_STAR,COACH_SPECIALTY_PER_STAR,STYLE_BEATS,STYLE_EDGE,STYLE_NAMES,TACTIC_PRESETS} from './tactic-presets.js';
 // Simülasyonun sade özeti. Sayılar server/transfer-arena/simulation.js ile uyumlu tutulmalıdır.
 const ATTRIBUTES=[
  ['Kısa pas + Görüş','Pas isabetini belirler (%65 kısa pas, %35 görüş). Rakibin araya girme ve savunma değeri karşı baskıdır.'],
@@ -35,7 +36,19 @@ const MODEL6=[
  ['Tüm riskleri al!','70. dakikada (finalde 105) geride ya da berabere olan takım seçebilir. Savunmacılar hücuma katılır; pres, tempo, risk ve şut sıklığı en üste çıkar. Top kaybında rakip sık sık tehlikeli bölgeden başlar, enerji daha hızlı düşer; gol atma da gol yeme de belirgin artar. Düğme 60–70 (finalde 95–105) arasında görünür ve maç durmaz; 8× hızda bu pencere bir saniyeden kısadır, bu yüzden oda kurucusu o sırada hızı düşürebilir.'],
  ['Kartlar','7 kişilik maçta kırmızı kart daha seyrektir.']
 ];
+// Model 7 taktik bölümü: tüm sayılar tactic-presets.js'ten okunur.
+const fmt=n=>new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(n);
+export function model7Rows(){
+ const cycle=[];for(let s='counter';!cycle.includes(s);s=STYLE_BEATS[s])cycle.push(s);cycle.push(cycle[0]);
+ const plan=p=>`${STYLE_NAMES[p.style]} · pres ${p.press}, risk ${p.risk}, tempo ${p.tempo}, genişlik ${p.width}, müdahale ${p.tackle}`;
+ return [
+  ['Tarz döngüsü',`${cycle.map(s=>STYLE_NAMES[s]).join(' > ')}. Soldaki tarz sağdakine üstündür; rakibin tarzı gizlidir, bu yüzden bir tahmin oyunudur.`],
+  ['Üstünlüğün etkisi',`Üstün tarafta pas isabeti +${fmt(STYLE_EDGE.pass*100)} puan, başarılı pastan sonra ileri gitme +${fmt(STYLE_EDGE.progress*100)} puan, top kapma +${fmt(STYLE_EDGE.tackle*100)} puan, şut kalitesi +${fmt(STYLE_EDGE.xg*100)} xG puanı. Zayıf tarafta aynı değerler eksi yönde işler; nötr eşleşmede etki yoktur.`],
+  ['Hazır taktikler',`Tek dokunuşla tarz ve kaydırıcıları ayarlar; diziliş ve kaptan korunur. ${TACTIC_PRESETS.map(x=>`${x.name} (${plan(x.plan)})`).join('; ')}. Kaydırıcıları elle değiştirirsen profil “Özel” olur.`],
+  ['Hoca uyumu',`Hocanın uzmanlık koşulu taktiğinle sağlanırsa bütün futbolcuların maç özelliklerine yıldız başına +%${fmt(COACH_FIT_PER_STAR*100)} eklenir (5★: +%${fmt(5*COACH_FIT_PER_STAR*100)}). Uzmanlık etkisi de yıldız başına model 6’daki %2 yerine %${fmt(COACH_SPECIALTY_PER_STAR*100)} ölçeğinde çalışır. Hazır taktik kartlarındaki “Hoca uyumu” etiketi bunu gösterir.`]
+ ];
+}
 const list=rows=>`<dl class="mechanics-list">${rows.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl>`;
 export function mechanicsHTML(){
- return `<p class="small muted">Maç her yarıda yaklaşık 120 aksiyonla oynanır: pas, top kapma, faul ve şut. Her aksiyon bir olasılıktır; güçlü takım da kaybedebilir.</p><h3>Futbolcu özellikleri</h3>${list(ATTRIBUTES)}<h3>Taktikler</h3>${list(TACTICS)}<h3>Yeni maç modeli</h3>${list(MODEL6)}`;
+ return `<p class="small muted">Maç her yarıda yaklaşık 120 aksiyonla oynanır: pas, top kapma, faul ve şut. Her aksiyon bir olasılıktır; güçlü takım da kaybedebilir.</p><h3>Futbolcu özellikleri</h3>${list(ATTRIBUTES)}<h3>Taktikler</h3>${list(TACTICS)}<h3>Yeni maç modeli</h3>${list(MODEL6)}<h3>Model 7 taktikleri (yeni odalar)</h3>${list(model7Rows())}`;
 }

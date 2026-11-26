@@ -5,7 +5,7 @@ import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {standings} from './standings.js';
 import {LOGO_IDS} from '../../dist/games/transfer-arenasi/logos.js';
 
-export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:6,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
+export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:7,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
 function freeLogo(teams){return LOGO_IDS.find(id=>!teams.some(team=>team.logo===id))||null;}
 function member(id,name,logo=null){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,logo,ready:false,points:0,gf:0,ga:0,wins:0};}
 function deadline(room,phase,now,ms){if(room.rulesVersion===2&&['squadReview','prepare','halftime'].includes(phase)){room.rulesVersion=3;ms=180000;}room.phase=phase;room.phaseVersion++;room.deadline=now+ms;room.plans={};}
@@ -58,7 +58,7 @@ function startSegmentedHalf(room,now,half,pairs){
   const plans=[a,b].map(id=>room.plans[id]||room.lastPlans?.[id]||initialPlan(room,id));
   if(half===1){
    const teams=[a,b].map(id=>room.teams.find(t=>t.id===id));
-   return simulateSegment(beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3,{version:6,neutral:!!room.final}),plans,{start:0,end:45});
+   return simulateSegment(beginMatch(...teams,matchSeed(room,i),matchSeed(room,i)%3,{version:room.rulesVersion>=7?7:6,neutral:!!room.final}),plans,{start:0,end:45});
   }
   const previous=room.matches[i];
   return previous.finished?previous:simulateSegment(previous,plans,{start:45,end:70});
@@ -86,6 +86,13 @@ function runPendingSegment(room,now){
   room.deadline=now+(end-room.playbackCursor)*1000/clockRate(room);
  }
 }
+// Biten lig haftaları yalnız puan tablosu (takım golleri) ve krallıklar (gol olayları) için gereken
+// özetle saklanır. Tam olay listesi ve anlık istatistikler oda kaydını her yoklamada büyütüyordu.
+const RESULT_GOAL_FIELDS=['minute','type','team','playerId','playerName','assisterId','assisterName'];
+export function compactResult(match){
+ return {teams:match.teams.map(t=>({id:t.id,goals:t.goals})),
+  events:(match.events||[]).filter(e=>e.type==='goal').map(e=>Object.fromEntries(RESULT_GOAL_FIELDS.filter(k=>e[k]!==undefined).map(k=>[k,e[k]])))};
+}
 function finishRound(room,now){
  if(room.final&&room.rulesVersion>=6){
   const match=room.matches[0];
@@ -105,7 +112,7 @@ function finishRound(room,now){
   room.champion=a.goals>b.goals?a.id:b.id;room.phase='finished';return;
  }
  for(const m of room.matches){for(let i=0;i<2;i++){const a=m.teams[i],b=m.teams[1-i],t=room.teams.find(x=>x.id===a.id);t.gf+=a.goals;t.ga+=b.goals;t.points+=a.goals>b.goals?3:a.goals===b.goals?1:0;t.wins+=Number(a.goals>b.goals);}}
- room.results??=[];room.results.push(room.matches);room.round++;
+ room.results??=[];room.results.push(room.matches.map(compactResult));room.round++;
  if(room.round===room.schedule.length){const table=standings(room.teams,room.results,room.seed+900001);room.final=true;room.finalists=table.teams.slice(0,2).map(t=>t.id);room.draws=table.draws;}
  deadline(room,'prepare',now,room.rulesVersion>=3?180000:20000);
 }

@@ -4,5 +4,9 @@
   "buildCommand": "",
   "installCommand": "",
   "outputDirectory": "dist",
-  "functions": { "api/transfer-arena.js": { "includeFiles": "dist/games/transfer-arenasi/players.json", "maxDuration": 30 } }
+  "functions": {
+    "api/transfer-arena.js": { "includeFiles": "dist/games/transfer-arenasi/players.json", "maxDuration": 30 },
+    "api/transfer-arena-cleanup.js": { "maxDuration": 60 }
+  },
+  "crons": [{ "path": "/api/transfer-arena-cleanup", "schedule": "0 4 * * *" }]
 }
