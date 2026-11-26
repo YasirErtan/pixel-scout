@@ -41,9 +41,9 @@ function unevenAt(minute){
  throw Error('Uygun maç bulunamadı');
 }
 
-test('yeni odalar model 6 ile oynar; ikinci yarı 45–70 dilimiyle başlar ve düğme penceresi 60–70',()=>{
+test('yeni odalar model 7 ile oynar (model 6 dilim akışıyla); ikinci yarı 45–70 dilimiyle başlar ve düğme penceresi 60–70',()=>{
  let r=secondHalf(5);const m=r.matches[0],[home,away]=playing(r),bye=r.teams.map(t=>t.id).find(id=>!playing(r).includes(id));
- assert.equal(r.rulesVersion,6);assert.equal(m.version,6);assert.equal(m.minute,70);assert.equal(r.playbackEnd,90);
+ assert.equal(r.rulesVersion,7);assert.equal(m.version,7);assert.equal(m.minute,70);assert.equal(r.playbackEnd,90);
  assert.deepEqual(m.snapshots.map(s=>s.minute),[45,70]);assert.equal(ALL_IN_WINDOW,10);
  const early=publicView(r,home,timeAt(r,55));
  assert.deepEqual({...early.allIn,opensAt:0,locksAt:0},{lock:70,from:60,available:false,chosen:false,opensAt:0,locksAt:0});

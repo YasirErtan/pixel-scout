@@ -1,9 +1,16 @@
 import {createHash,randomBytes,randomInt} from 'node:crypto';
 import {createRoom,command,publicView} from './room.js';
 import {addChampion,championEntry,publicChampions} from './champions.js';
+import {memoryLimiter} from './limits.js';
+
+// Genel istek sınırları (dakikada). Aynı ağdaki 6 cihaz, "Tüm riskleri al!" penceresindeki sık yoklamada
+// bile IP sınırının altında kalır; tek cihaz normalde dakikada ~40, pencerede ~75 istek gönderir.
+export const IP_LIMIT=1200,SESSION_LIMIT=300,LIMIT_WINDOW=60000;
+// Görünüm özeti: istemci son özeti gönderirse ve görünüm değişmediyse tam oda yerine kısa yanıt döner.
+export const viewHash=view=>createHash('sha256').update(JSON.stringify(view)).digest('base64url').slice(0,22);
 
 export const sessionIdentity=token=>createHash('sha256').update(token).digest('hex');
-export function arenaService({store,data,clock=Date.now}){
+export function arenaService({store,data,clock=Date.now,limiter=memoryLimiter()}){
  async function quota(key,limit,window){
   const now=clock();await store.transaction('limits/'+key,current=>{
    const bucket=current&&now<current.until?current:{count:0,until:now+window};
@@ -23,7 +30,8 @@ export function arenaService({store,data,clock=Date.now}){
   if(!token||!/^[a-zA-Z0-9_-]{43}$/.test(token))throw Error('Oturum gerekli');
   const uid=sessionIdentity(token),now=clock();
   const ipKey=sessionIdentity(String(ip||'unknown'));
-  await quota(ipKey,600,60000);
+  limiter('ip:'+ipKey,IP_LIMIT,LIMIT_WINDOW,now);
+  limiter('session:'+uid,SESSION_LIMIT,LIMIT_WINDOW,now);
   if(!action||typeof action!=='object'||!/^[-a-zA-Z0-9]{1,80}$/.test(action.requestId||''))throw Error('Geçersiz istek');
   if(action.type==='create'){
    await quota('create_'+ipKey,5,3600000);
@@ -34,7 +42,7 @@ export function arenaService({store,data,clock=Date.now}){
       if(current&&now<current.createdAt+86400000)throw Error('CODE_COLLISION');
       if(['bonusEnabled','bonusCardsEnabled'].some(key=>action[key]!==undefined&&typeof action[key]!=='boolean'))throw Error('Geçersiz bonus seçimi');
       return createRoom(code,uid,action.name,randomInt(0,4294967296),now,{bonusEnabled:action.bonusEnabled===true,bonusCardsEnabled:action.bonusCardsEnabled===true});
-     });return {...publicView(room,uid,now),uid,serverNow:now};
+     });return respond(publicView(room,uid,now),uid,now);
     }catch(e){if(e.message!=='CODE_COLLISION')throw e;}
    }
    throw Error('Oda açılamadı; tekrar dene');
@@ -46,8 +54,11 @@ export function arenaService({store,data,clock=Date.now}){
    return command(current,uid,action,now,data);
   });
   await recordChampion(room,now);
-  return {...publicView(room,uid,now),uid,serverNow:now};
+  const view=publicView(room,uid,now);
+  if(action.type==='poll'&&typeof action.since==='string'&&action.since===viewHash(view))return {unchanged:true,viewHash:action.since,serverNow:now};
+  return respond(view,uid,now);
  }
+ function respond(view,uid,now){return {...view,uid,serverNow:now,viewHash:viewHash(view)};}
  return {handle};
 }
 export function newSession(){return randomBytes(32).toString('base64url');}

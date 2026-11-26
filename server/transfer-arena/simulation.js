@@ -3,6 +3,8 @@ import {assignFormation,FORMATIONS} from '../../dist/games/transfer-arenasi/form
 import {CAPTAIN_BOOST} from '../../dist/games/transfer-arenasi/bonus-player.js';
 import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {coachRatingBoost} from '../../dist/games/transfer-arenasi/coach-card.js';
+import {coachBoostActive} from '../../dist/games/transfer-arenasi/coach-tactics.js';
+import {styleEdge,STYLE_EDGE,COACH_SPECIALTY_PER_STAR,COACH_FIT_PER_STAR} from '../../dist/games/transfer-arenasi/tactic-presets.js';
 export const DEFAULT_PLAN=Object.freeze({formation:'2-2-2',style:'short',press:1,risk:1,tempo:1,width:1,tackle:1,captainId:null});
 export function validatePlan(input){
  const p={...DEFAULT_PLAN,...input};
@@ -28,7 +30,8 @@ function field(t){return alive(t).filter(p=>p.position!=='GK'&&p.id!==t.emergenc
 export function shape(t,formation){for(const assigned of assignFormation(field(t),formation)){const p=t.players.find(p=>p.id===assigned.id);p.matchRole=assigned.matchRole;p.roleFit=assigned.roleFit;}}
 
 function selectPlayer(m,players,weights){const total=players.reduce((s,p)=>s+(weights[p.matchRole||p.position]||1),0);let draw=next(m)*total;return players.find(p=>(draw-=weights[p.matchRole||p.position]||1)<0)||players.at(-1);}
-function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*.02:0;}
+// Model 7: takımda specialtyStar tanımlıdır (yıldız başına uzmanlık katsayısı); eski modeller .02 kullanır.
+function coach(team,type){return team.coach?.specialty===type?cap(team.coach.stars,1,5)*(team.specialtyStar??.02):0;}
 function performance(p,k){return required(p,k)*(p.captain?1+CAPTAIN_BOOST:1)*(1+(p.coachBoost||0));}
 function effective(p,k){return performance(p,k)*(0.8+0.2*p.energy/100)*(p.roleFit||1);}
 // Exclude the goalkeeper; live energy, captain and role fit affect usable pace.
@@ -196,7 +199,7 @@ export function allInEligible(match,side){
 }
 function snapshot(m,minute){
  m.snapshots??=[];
- m.snapshots.push({minute,teams:m.teams.map(t=>({id:t.id,goals:t.goals,shots:t.shots,onTarget:t.onTarget,saves:t.saves,xg:t.xg,passes:t.passes,completed:t.completed,losses:t.losses,possessionTicks:t.possessionTicks||0,allIn:!!t.allIn,players:Object.fromEntries(t.players.map(p=>[p.id,{...(p.stats||{})}]))}))});
+ m.snapshots.push({minute,teams:m.teams.map(t=>({id:t.id,goals:t.goals,shots:t.shots,onTarget:t.onTarget,saves:t.saves,xg:t.xg,passes:t.passes,completed:t.completed,losses:t.losses,possessionTicks:t.possessionTicks||0,allIn:!!t.allIn,...(t.coachFit!==undefined?{coachFit:t.coachFit}:{}),players:Object.fromEntries(t.players.map(p=>[p.id,{...(p.stats||{})}]))}))});
 }
 export function simulateSegment(previous,plans,{start,end,allIn=[false,false]}={}){
  const m=structuredClone(previous);
@@ -246,6 +249,13 @@ export const MODEL6=Object.freeze({
  drain:1.5,allInDrain:1.2,
  allIn:1.45,allInCounter:.18,allInOpenBig:.03,counterBig:.08, // "Tüm riskleri al!": şut sıklığı, kontra riski
  settle:.70          // toplam gol arttıkça iki takım da oyunu yavaşlatır (ezici skorları sınırlar)
+});
+// Model 7 ek sabitleri (yalnız m.version >= 7). Taktik katmanı tarz/hoca katsayılarını tactic-presets.js'den alır;
+// buradakiler yüksek tempo/risk taktiklerinin model 6'daki aşırı cezasını hafifleterek hazır profilleri dengeler.
+export const MODEL7=Object.freeze({
+ riskCounter:.3,   // risk 2 oynayan takım topu kaybedince rakibin orta sahadan (bölge 1) başlama olasılığı (model 6'da 1)
+ tempoRelief:1,    // tempo başına pas isabeti cezasının hafifleyen kısmı (0: model 6 ile aynı)
+ directPass:.065   // direkt oyunun pas isabeti cezası (model 6'da .12)
 });
 const K=MODEL6;
 const STAT_KEYS=['passes','completed','keyPasses','shots','onTarget','goals','assists','tackles','interceptions','fouls','saves','minutes'];
@@ -308,6 +318,7 @@ function shoot6(m,side,actor,pp,moods,{kind='open',passer=null,gap=0,tired=0,cou
   if(dm.risk<=.5)big-=.03;
   let xg=next(m)<cap(big,.04,.55)?K.bigXg:K.normalXg;
   if(kind==='corner'){setPiece='corner';xg=xg===K.bigXg?.32:.07;}
+  if(m.version>=7)xg+=styleEdge(plan.style,def.style)*STYLE_EDGE.xg;
   xg+=at.risk*.008+(CENTRAL.has(d)?.012:d==='CB'||d==='CDM'||d==='RB'||d==='LB'?-.012:0);
   xg+=(plan.risk>=2?coach(t,'attack')*.25:0)-(def.risk===0?coach(opp,'defense')*.25:0);
   const shooting=fin*.6+comp*.25+pow*.15;
@@ -346,14 +357,19 @@ function simulatePeriod6(m,pp,start,duration,finished){
   const t=m.teams[i],requested=pp[i].captainId;
   if(requested!==null&&!t.players.some(p=>String(p.id)===String(requested)))throw Error('Geçersiz kaptan seçimi');
   const captain=alive(t).find(p=>String(p.id)===String(requested))||alive(t).find(p=>p.captain)||alive(t).toSorted((a,b)=>(b.overall||0)-(a.overall||0))[0];
-  t.captainId=captain.id;for(const p of t.players){p.captain=p.id===captain.id;p.coachBoost=coachRatingBoost(t.coach);p.stats??=blankStats();}
+  t.captainId=captain.id;
+  // Model 7: hoca uzmanlığı güçlenir; plan hocanın koşuluna uyuyorsa tüm özelliklere ek çarpan gelir (her dilimde yeniden hesaplanır).
+  const v7=m.version>=7;if(v7)t.specialtyStar=COACH_SPECIALTY_PER_STAR;
+  const fit=v7&&t.coach?coachBoostActive(t.coach,pp[i],field(t)):false;if(v7)t.coachFit=fit;
+  const boost=coachRatingBoost(t.coach)+(fit?cap(t.coach.stars,1,5)*COACH_FIT_PER_STAR:0);
+  for(const p of t.players){p.captain=p.id===captain.id;p.coachBoost=v7?boost:coachRatingBoost(t.coach);p.stats??=blankStats();}
   t.possessionTicks??=0;
   shape(t,pp[i].formation);
  }
  let possession=next(m)<.5?0:1,zone=1,passer=null,receiver=null,counter=false;
  const end=start+duration,ticks=Math.round(duration*120/45);
  // Top kaybı: "Tüm riskleri al!" seçen takım topu kaybederse rakip çoğu kez tehlikeli bölgeden başlar.
- const turnover=(mood)=>{possession=1-possession;passer=receiver=null;counter=mood.allIn&&next(m)<K.allInCounter;zone=counter?2:mood.risk>=2?1:0;};
+ const turnover=(mood)=>{possession=1-possession;passer=receiver=null;counter=mood.allIn&&next(m)<K.allInCounter;zone=counter?2:mood.risk>=2&&(m.version<7||next(m)<MODEL7.riskCounter)?1:0;};
  for(let tick=0;tick<ticks&&!m.finished;tick++){
   m.minute=start+(tick+1)*duration/ticks;
   const team=m.teams[possession],opp=m.teams[1-possession],plan=pp[possession],def=pp[1-possession];
@@ -366,6 +382,8 @@ function simulatePeriod6(m,pp,start,duration,finished){
    for(const p of alive(t))p.energy=Math.max(15,p.energy-cost*(1-(bonusCardById(t.bonusCard)?.fatigueReduction||0))*(1.5-required(p,'stamina')/100));
   }
   const gap=cap(power6(team)-power6(opp),-K.gapCap,K.gapCap);
+  // Model 7: oyun tarzı üstünlüğü (+1 hücum eden üstün, -1 zayıf); hem hücumda hem savunmada simetrik işler.
+  const edge=m.version>=7?styleEdge(plan.style,def.style):0;
   // Geç dakikalarda yorgunluk ve konsantrasyon kaybı savunmayı açar (75–90 en gollü dilim).
   const tired=cap(1-defenders.reduce((s,p)=>s+p.energy,0)/defenders.length/100+K.late*cap((m.minute-55)/35,0,1),0,.8);
   const recipient=receiver&&attackers.find(p=>p.id===receiver.id);
@@ -396,7 +414,7 @@ function simulatePeriod6(m,pp,start,duration,finished){
     else if(zone===1&&next(m)<K.freeKickFar){afterShot(shoot6(m,possession,specialist(team,p=>performance(p,'finishing')+performance(p,'shotPower')),pp,moods,{kind:'freeKick'}));continue;}
     continue;
    }
-   const win=cap(.30+(effective(marker,'standingTackle')*(1+(opp.homeBonus||0))-effective(actor,'ballControl')*(1+(team.homeBonus||0)))*.006-gap*K.gapTackle,.1,.7);
+   const win=cap(.30+(effective(marker,'standingTackle')*(1+(opp.homeBonus||0))-effective(actor,'ballControl')*(1+(team.homeBonus||0)))*.006-gap*K.gapTackle-edge*STYLE_EDGE.tackle,.1,.7);
    if(next(m)<win){bump(marker,'tackles');team.losses++;turnover(at);continue;}
   }
   // Kanat oyuncusu ceza sahasında çoğunlukla ortalar; merkez oyuncusu daha sık vurur.
@@ -418,7 +436,7 @@ function simulatePeriod6(m,pp,start,duration,finished){
   const pressure=(effective(marker,'interceptions')*.6+effective(marker,'defensiveAwareness')*.4)*(1+(opp.homeBonus||0));
   const midfield=attackers.filter(p=>p.matchRole==='MID').length-defenders.filter(p=>p.matchRole==='MID').length;
   const space=(attackers.length-defenders.length)*.025+midfield*.008+(wide&&def.width===0?.04:0);
-  let chance=.77+(passSkill-pressure)*.004+space-at.tempo*.025-dm.press*.025-(direct?.12:0)+gap*K.gapPass;
+  let chance=.77+(passSkill-pressure)*.004+space-at.tempo*.025-dm.press*.025-(direct?(m.version>=7?MODEL7.directPass:.12):0)+gap*K.gapPass+edge*STYLE_EDGE.pass+(m.version>=7?at.tempo*.025*MODEL7.tempoRelief:0);
   chance+=(plan.width===0&&short?.02:0)+(plan.width===2&&wide?.02:0);
   chance+=def.width===0?(wide?.015:-.015):def.width===2?(wide?-.015:.015):0;
   chance+=short?coach(team,'passing')*.6:0;
@@ -428,7 +446,7 @@ function simulatePeriod6(m,pp,start,duration,finished){
   if(next(m)<cap(chance,.3,.95)){
    team.completed++;bump(actor,'completed');
    const pace=sprintAdvantage(team,opp);
-   const forward=cap((direct?.8:.48)+at.tempo*.035+pace+gap*K.gapProgress,.3,.95)*(zone===1?Math.min(1.2,at.rate):1);
+   const forward=cap((direct?.8:.48)+at.tempo*.035+pace+gap*K.gapProgress+edge*STYLE_EDGE.progress,.3,.95)*(zone===1?Math.min(1.2,at.rate):1);
    if(next(m)<forward)zone=Math.min(2,zone+1);
    passer=actor;
    receiver=pick6(m,attackers.filter(p=>p.id!==actor.id),zone,at,plan);

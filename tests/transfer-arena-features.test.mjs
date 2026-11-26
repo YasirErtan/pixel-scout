@@ -70,7 +70,7 @@ test('coach stars boost every player in model 5 rooms; older matches keep their 
  const {beginMatch,simulateHalf,DEFAULT_PLAN}=await import('../server/transfer-arena/simulation.js');
  const values=[1,2,3,4,5].map(s=>COACH_RATING_BOOST[s]);
  for(let i=1;i<values.length;i++)assert.ok(values[i]>values[i-1]*1.7,'yıldız azaldıkça etki hızla düşer');
- assert.equal(createRoom('123456','a','A',1,0).rulesVersion,6);
+ assert.equal(createRoom('123456','a','A',1,0).rulesVersion,7);
  assert.match(coachCard({id:'x',name:'X',stars:5,specialty:'press'}),/\+%8/);
  const data=await arenaData();
  const team=(id,stars)=>({id,players:['GK','DEF','DEF','MID','MID','ATT','ATT'].map((pos,i)=>data.players.filter(p=>p.position===pos)[i]),coach:{stars,specialty:'none'}});

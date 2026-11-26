@@ -1,5 +1,6 @@
-// Transfer Arenası maç modeli kalibrasyon ölçümü (model 5 ve model 6).
-// Kullanım: node scripts/calibrate-arena.mjs --model 5|6 --matches 3000 --seed 1 [--json] [--all-in-rate 0.5]
+// Transfer Arenası maç modeli kalibrasyon ölçümü (model 5, 6 ve 7).
+// Kullanım: node scripts/calibrate-arena.mjs --model 5|6|7 --matches 3000 --seed 1 [--json] [--all-in-rate 0.5]
+// Model 7 ayrıca taktik katmanını ölçer: tarz üstünlüğü, hoca uyumu ve hazır profiller (--tactics ile yalnız bu bölüm).
 // Kadrolar ihale pazarından kurulur; dizilişler ve taktikler sabit tohumla rastgele seçilir (deterministik).
 // Ağa çıkmaz; yalnız yerel oyuncu verisini okur.
 import {fileURLToPath} from 'node:url';
@@ -7,6 +8,7 @@ import {beginMatch, simulateHalf, simulateSegment, allInEligible, DEFAULT_PLAN} 
 import {arenaData} from '../server/transfer-arena/data.js';
 import {makeMarket, random, shuffle} from '../server/transfer-arena/market.js';
 import {COACHES} from '../server/transfer-arena/coaches.js';
+import {TACTIC_PRESETS} from '../dist/games/transfer-arenasi/tactic-presets.js';
 import {coachRatingBoost} from '../dist/games/transfer-arenasi/coach-card.js';
 
 const FORMS = ['2-2-2', '2-3-1', '3-2-1', '1-3-2'], STYLES = ['short', 'wide', 'direct', 'counter'];
@@ -55,7 +57,7 @@ function playMatch(model, teams, plans, seed, referee, next, allInRate) {
     if (!m.finished) m = simulateHalf(m, plans);
     return {m, choices, eligible};
   }
-  let m = beginMatch(teams[0], teams[1], seed, referee, {version: 6, neutral: true});
+  let m = beginMatch(teams[0], teams[1], seed, referee, {version: model, neutral: true});
   for (const [start, end] of SLICES) {
     if (m.finished) break;
     let allIn = [false, false];
@@ -75,7 +77,7 @@ const emptyAllIn = () => ({n: 0, goalsFor: 0, goalsAgainst: 0, shots: 0, shotsAg
 
 // Ölçümü yürütür ve ham sayımları + türetilmiş oranları döndürür.
 export async function calibrate({model = 6, matches = 3000, seed = 1, allInRate = .5} = {}) {
-  if (![3, 4, 5, 6].includes(model)) throw Error('Model 3, 4, 5 ya da 6 olmalı');
+  if (![3, 4, 5, 6, 7].includes(model)) throw Error('Model 3, 4, 5, 6 ya da 7 olmalı');
   const data = await arenaData(), next = random((Math.imul(seed >>> 0, 2654435761) + 20261125) >>> 0);
   const s = {
     goals: [], draws: 0, maxTeamGoals: 0, teamSixPlus: 0, forfeits: 0,
@@ -213,11 +215,93 @@ export function formatReport(r) {
   return out.join('\n');
 }
 
+// ---- Model 7 taktik ölçümleri ----
+// Taktik ölçümlerinde takımlar eşit güçtedir; hoca yoksa yalnız taktik farkı ölçülür.
+const plain = team => ({...team, coach: null});
+// Eşit güçte (takım gücü farkı < 2) iki gerçekçi takım; hoca yok.
+export function equalTeams(data, next) { for (;;) { const t = buildTeams(data, next).map(plain); if (Math.abs(teamStrength(t[0]) - teamStrength(t[1])) < 2) return t; } }
+export function playTactic(a, b, planA, planB, seed, referee) {
+  const plans = [planA, planB];
+  let m = beginMatch(a, b, seed, referee, {version: 7, neutral: true});
+  for (const [start, end] of SLICES) { if (m.finished) break; m = simulateSegment(m, plans, {start, end}); }
+  return m;
+}
+export const rec = () => ({n: 0, w: 0, d: 0, l: 0, goalsFor: 0, goalsAgainst: 0});
+export function add(r, ga, gb) { r.n++; r.goalsFor += ga; r.goalsAgainst += gb; if (ga > gb) r.w++; else if (ga === gb) r.d++; else r.l++; }
+export const rates = r => ({n: r.n, win: r.w / r.n, draw: r.d / r.n, loss: r.l / r.n, goals: (r.goalsFor + r.goalsAgainst) / r.n});
+const STYLE_ORDER = ['counter', 'short', 'wide', 'direct'], BEATS = {counter: 'short', short: 'wide', wide: 'direct', direct: 'counter'};
+const SPECIALTY_FOR = {short: 'passing', counter: 'transition'};
+
+export async function calibrateTactics({matches = 3000, seed = 1, presetMatches = matches, only = ['style', 'fit', 'presets']} = {}) {
+  const data = await arenaData(), next = random((Math.imul(seed >>> 0, 2654435761) + 20261126) >>> 0);
+  const sliders = () => ({press: Math.floor(next() * 3), risk: Math.floor(next() * 3), tempo: Math.floor(next() * 3), width: Math.floor(next() * 3), tackle: Math.floor(next() * 4)});
+  let n = 0;
+  const nextSeed = () => (Math.imul(seed >>> 0, 1000003) + 7919 * (n++)) >>> 0;
+  // 1) Tarz üstünlüğü: aynı kaydırıcılar; A'nın tarzı B'ninkini yener / A zayıf / nötr çift / aynı tarz.
+  const style = {beats: rec(), weak: rec(), neutral: rec(), same: rec()};
+  for (let i = 0; i < (only.includes('style') ? matches : 0); i++) {
+    const [a, b] = equalTeams(data, next), sl = sliders();
+    const sa = STYLE_ORDER[i % 4], kind = ['beats', 'weak', 'neutral', 'same'][Math.floor(i / 4) % 4];
+    const sb = kind === 'beats' ? BEATS[sa] : kind === 'weak' ? STYLE_ORDER.find(k => BEATS[k] === sa) : kind === 'neutral' ? BEATS[BEATS[sa]] : sa;
+    const m = playTactic(a, b, {...DEFAULT_PLAN, formation: a.formation, ...sl, style: sa}, {...DEFAULT_PLAN, formation: b.formation, ...sl, style: sb}, nextSeed(), i % 3);
+    add(style[kind], m.teams[0].goals, m.teams[1].goals);
+  }
+  // 2) Hoca uyumu: iki takım da 5★ hoca; A'nın planı hocasının koşulunu sağlar, B'ninki sağlamaz (aynı plan).
+  const fit = rec();
+  for (let i = 0; i < (only.includes('fit') ? matches : 0); i++) {
+    const [t0, t1] = equalTeams(data, next), sl = {...sliders(), press: Math.floor(next() * 2)}, st = i % 2 ? 'short' : 'counter';
+    const a = {...t0, coach: {id: 'fa', name: 'A', stars: 5, specialty: SPECIALTY_FOR[st]}};
+    const b = {...t1, coach: {id: 'fb', name: 'B', stars: 5, specialty: 'press'}}; // press<=1: koşul sağlanmaz
+    const plan = {...DEFAULT_PLAN, ...sl, style: st};
+    const m = playTactic(a, b, {...plan, formation: a.formation}, {...plan, formation: b.formation}, nextSeed(), i % 3);
+    add(fit, m.teams[0].goals, m.teams[1].goals);
+  }
+  // 3) Hazır profiller: 16 eşleşme (hazır plan + varsayılanlar, diziliş 2-2-2).
+  const presets = {};
+  for (const x of TACTIC_PRESETS) for (const y of TACTIC_PRESETS) presets[x.id + '>' + y.id] = rec();
+  for (const x of TACTIC_PRESETS) for (const y of TACTIC_PRESETS) for (let i = 0; i < (only.includes('presets') ? presetMatches : 0); i++) {
+    const [a, b] = equalTeams(data, next);
+    const m = playTactic(a, b, {...DEFAULT_PLAN, ...x.plan, formation: '2-2-2'}, {...DEFAULT_PLAN, ...y.plan, formation: '2-2-2'}, nextSeed(), i % 3);
+    add(presets[x.id + '>' + y.id], m.teams[0].goals, m.teams[1].goals);
+  }
+  const presetRates = Object.fromEntries(Object.entries(presets).map(([k, v]) => [k, rates(v)]));
+  const presetAverage = Object.fromEntries(TACTIC_PRESETS.map(x => {
+    const rows = TACTIC_PRESETS.map(y => presetRates[x.id + '>' + y.id]);
+    return [x.id, {win: rows.reduce((s, r) => s + r.win, 0) / rows.length, loss: rows.reduce((s, r) => s + r.loss, 0) / rows.length}];
+  }));
+  return {matches, seed, style: Object.fromEntries(Object.entries(style).map(([k, v]) => [k, rates(v)])), fit: rates(fit), presets: presetRates, presetAverage};
+}
+// Hangi hazır profilin hangisini yenmesi gerektiği (tarz döngüsüne göre).
+export const PRESET_BEATS = {katenacyo: 'tikitaka', tikitaka: 'gegenpress', gegenpress: 'kontra', kontra: 'katenacyo'};
+export function tacticTargets(t) {
+  const inRange = (v, lo, hi) => v >= lo && v <= hi, list = [];
+  list.push(['Tarz üstünlüğü: kazanma', t.style.beats.win, '%44–52', inRange(t.style.beats.win, .44, .52)]);
+  list.push(['Tarz üstünlüğü: kaybetme', t.style.beats.loss, '%24–31', inRange(t.style.beats.loss, .24, .31)]);
+  list.push(['Tarz zayıf: kazanma (simetri)', t.style.weak.win, '%24–31', inRange(t.style.weak.win, .24, .31)]);
+  list.push(['Nötr çift: kazanma-kaybetme', t.style.neutral.win - t.style.neutral.loss, '±%4', Math.abs(t.style.neutral.win - t.style.neutral.loss) <= .04]);
+  list.push(['Aynı tarz: kazanma-kaybetme', t.style.same.win - t.style.same.loss, '±%4', Math.abs(t.style.same.win - t.style.same.loss) <= .04]);
+  list.push(['Hoca uyumu: kazanma', t.fit.win, '≥ %42', t.fit.win >= .42]);
+  list.push(['Hoca uyumu: kaybetme', t.fit.loss, '≤ %33', t.fit.loss <= .33]);
+  for (const [id, avg] of Object.entries(t.presetAverage)) list.push([`Profil ${id} ortalama kazanma`, avg.win, '≤ %45', avg.win <= .45]);
+  for (const [x, y] of Object.entries(PRESET_BEATS)) { const r = t.presets[x + '>' + y]; list.push([`Profil ${x} > ${y}`, r.win - r.loss, 'pozitif fark', r.win > r.loss]); }
+  return list.map(([name, value, target, ok]) => ({name, value, target, ok}));
+}
+export function formatTactics(t) {
+  const out = [`Model 7 taktik ölçümleri (${t.matches} maç / ölçüm, tohum ${t.seed})`, ''];
+  for (const x of tacticTargets(t)) out.push(`  ${x.ok ? '✓' : '✗'}  ${x.name.padEnd(46)} ${pct(x.value).padStart(8)}   hedef: ${x.target}`);
+  out.push('', 'Tarz eşleşmeleri (A G/B/M):');
+  for (const [k, v] of Object.entries(t.style)) out.push(`  ${k.padEnd(8)} ${pct(v.win, 0)} / ${pct(v.draw, 0)} / ${pct(v.loss, 0)}  gol ${num(v.goals)}`);
+  out.push(`  hoca uyumu ${pct(t.fit.win, 0)} / ${pct(t.fit.draw, 0)} / ${pct(t.fit.loss, 0)}`, '', 'Profil eşleşmeleri (satır G/B/M):');
+  for (const [k, v] of Object.entries(t.presets)) out.push(`  ${k.padEnd(22)} ${pct(v.win, 0)} / ${pct(v.draw, 0)} / ${pct(v.loss, 0)}`);
+  return out.join('\n');
+}
+
 function parseArgs(argv) {
-  const o = {model: 6, matches: 3000, seed: 1, json: false, allInRate: .5};
+  const o = {model: 6, matches: 3000, seed: 1, json: false, allInRate: .5, tactics: false};
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--json') o.json = true;
+    else if (a === '--tactics') { o.tactics = true; o.model = 7; }
     else if (a === '--model') o.model = Number(argv[++i]);
     else if (a === '--matches') o.matches = Number(argv[++i]);
     else if (a === '--seed') o.seed = Number(argv[++i]);
@@ -230,6 +314,12 @@ function parseArgs(argv) {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const o = parseArgs(process.argv.slice(2));
-  const result = await calibrate(o);
-  console.log(o.json ? JSON.stringify({...result, targets: targets(result)}, null, 2) : formatReport(result));
+  if (o.tactics) {
+    const t = await calibrateTactics({matches: o.matches, seed: o.seed});
+    console.log(o.json ? JSON.stringify({...t, targets: tacticTargets(t)}, null, 2) : formatTactics(t));
+  } else {
+    const result = await calibrate(o);
+    console.log(o.json ? JSON.stringify({...result, targets: targets(result)}, null, 2) : formatReport(result));
+    if (o.model >= 7 && !o.json) console.log('\n' + formatTactics(await calibrateTactics({matches: o.matches, seed: o.seed})));
+  }
 }

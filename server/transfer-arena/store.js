@@ -16,12 +16,20 @@ export function firebaseStore({databaseURL,serviceAccount,apiKey,fetcher=fetch,c
   if(!res.ok)throw Error('Veritabanı kimlik doğrulaması başarısız');
   const value=await res.json();cached={token:apiKey?value.idToken:value.access_token,until:now+Number(apiKey?value.expiresIn:value.expires_in)};return cached.token;
  }
- async function transaction(key,update){
+ function recordURL(key){
   if(!/^[a-zA-Z0-9_/-]+$/.test(key))throw Error('Geçersiz kayıt yolu');
-  const url=new URL('/transfer_arena_v1/'+key+'.json',origin);
+  return new URL('/transfer_arena_v1/'+key+'.json',origin);
+ }
+ // Kimlik: custom token ile auth sorgu parametresi, yoksa OAuth Bearer başlığı.
+ async function authorize(url){
+  const token=await accessToken();
+  if(apiKey){url.searchParams.set('auth',token);return {};}
+  return {Authorization:'Bearer '+token};
+ }
+ async function transaction(key,update){
+  const url=recordURL(key);
   for(let attempt=0;attempt<8;attempt++){
-   const token=await accessToken();const headers=apiKey?{}:{Authorization:'Bearer '+token};
-   if(apiKey)url.searchParams.set('auth',token);
+   const headers=await authorize(url);
    const read=await fetcher(url,{headers:{...headers,'X-Firebase-ETag':'true'},signal:AbortSignal.timeout(8000)});
    if(!read.ok)throw Error('Veritabanına erişilemiyor');
    const etag=read.headers.get('etag');if(!etag)throw Error('Atomik kayıt desteği gerekli');
@@ -37,5 +45,26 @@ export function firebaseStore({databaseURL,serviceAccount,apiKey,fetcher=fetch,c
   }
   throw Error('Oda meşgul; tekrar dene');
  }
- return {transaction};
+ // Bir yolun alt anahtarları (shallow okuma; kayıt içerikleri indirilmez).
+ async function keys(key){
+  const url=recordURL(key);const headers=await authorize(url);url.searchParams.set('shallow','true');
+  const res=await fetcher(url,{headers,signal:AbortSignal.timeout(8000)});
+  if(!res.ok)throw Error('Veritabanına erişilemiyor');
+  const value=await res.json();return value&&typeof value==='object'?Object.keys(value):[];
+ }
+ // Kayıt, okunduğu andaki ETag ile koşullu silinir: arada değiştiyse (ör. aynı kodla yeni oda) silinmez.
+ async function remove(key,shouldRemove){
+  const url=recordURL(key);const headers=await authorize(url);
+  const read=await fetcher(url,{headers:{...headers,'X-Firebase-ETag':'true'},signal:AbortSignal.timeout(8000)});
+  if(!read.ok)throw Error('Veritabanına erişilemiyor');
+  const etag=read.headers.get('etag');if(!etag)throw Error('Atomik kayıt desteği gerekli');
+  const record=await read.json();if(record===null)return false;
+  let current=null;try{current=JSON.parse(record.payload);}catch{}
+  if(!shouldRemove(current))return false;
+  const res=await fetcher(url,{method:'DELETE',headers:{...headers,'if-match':etag},signal:AbortSignal.timeout(8000)});
+  if(res.status===412)return false;
+  if(!res.ok)throw Error('Kayıt silinemedi');
+  return true;
+ }
+ return {transaction,keys,remove};
 }

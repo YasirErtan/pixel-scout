@@ -16,9 +16,17 @@ Tek devre ligde galibiyet 3, beraberlik 1 puandır; iç saha/deplasman dengeleni
 
 ## Sunucu sözleşmesi
 
-`POST /api/transfer-arena`, aynı kaynaklı JSON istekleri kabul eder. Tarayıcı rastgele, HttpOnly ve Secure oturum çerezi alır; sunucu bundan üye kimliği üretir. İstek türleri create/join/poll/ready/start/bid/pass/plan/formation/bonusCard/leave/close/speed/logo. Her komutta benzersiz requestId gerekir. bid/pass için lotId; plan için phaseVersion gerekir. Taktik sürümü ağ yoklamalarından bağımsızdır. Oda 24 saat sonra kullanıma kapanır. IP başına istek ve oda oluşturma sınırı uygulanır. Kapanan kayıtların fiziksel temizliği ayrıca bakım görevi gerektirir.
+`POST /api/transfer-arena`, aynı kaynaklı JSON istekleri kabul eder. Tarayıcı rastgele, HttpOnly ve Secure oturum çerezi alır; sunucu bundan üye kimliği üretir. İstek türleri create/join/poll/ready/start/bid/pass/plan/formation/bonusCard/leave/close/speed/logo. Her komutta benzersiz requestId gerekir. bid/pass için lotId; plan için phaseVersion gerekir. Taktik sürümü ağ yoklamalarından bağımsızdır. Oda 24 saat sonra kullanıma kapanır.
 
-Üretim ortamı değişkenleri yalnız sunucuda: `ARENA_SERVICE_ACCOUNT`, `ARENA_FIREBASE_API_KEY`, `ARENA_DATABASE_URL`. Kimlik, proje IAM rolü olmayan özel bir servis hesabının imzaladığı Firebase Auth custom token ile `transfer-arena-server` kullanıcısına giriş yapar. Bu kimlik yalnız `transfer_arena_v1` altında yetkilendirilmelidir. Mevcut oyunların kuralları korunur. Kimlik dosyasını veya özel anahtarı depoya koyma. Ayrıntılar: [custom tokens](https://firebase.google.com/docs/auth/admin/create-custom-tokens), [REST auth](https://firebase.google.com/docs/reference/rest/auth), [ETag kayıtları](https://firebase.google.com/docs/database/rest/save-data#section-conditional-requests).
+İstek sınırı: genel sınır sunucu örneğinin belleğinde tutulur, IP başına dakikada 1.200 ve oturum başına dakikada 300 istektir. Aynı Wi-Fi'daki cihazlar artık veritabanında tek bir sayaç kaydını paylaşmaz; bu yüzden ETag çakışması ve "Oda meşgul" hatası doğmaz, her istek de bir veritabanı gidiş-dönüşünden kurtulur. Sınır örnekler arasında paylaşılmaz; en iyi çaba korumasıdır. Oda oluşturma sınırı (IP başına saatte 5) veritabanında kalır.
+
+Yoklama yanıtı: her yanıt `viewHash` (görünüm özeti) taşır. İstemci `poll` isteğinde son özeti `since` olarak gönderir; görünüm değişmediyse sunucu yalnız `{unchanged, viewHash, serverNow}` döner. İhale ve taktik beklemelerinde yanıt birkaç yüz bayta iner. Komutlar her zaman tam görünüm döner.
+
+Oda kaydı: biten lig haftaları yalnız takım golleri ve gol olaylarıyla (atan, asist, dakika) saklanır (`compactResult`). Puan tablosu ve krallıklar yalnız bunları kullanır. 6 takımlı turnuvanın sonundaki kayıt yaklaşık 456 KB'tan 130 KB'a indi.
+
+Temizlik: Vercel Cron her gün 04:00 UTC'de `GET /api/transfer-arena-cleanup` çağırır. Oluşturulmasının üzerinden 25 saat geçen odalar ve süresi biten sınır kayıtları, okunduğu andaki ETag ile koşullu silinir. Arada değişen kayıt (ör. aynı kodla açılan yeni oda) silinmez. Şampiyon listesi korunur. Bir çalıştırma en çok 600 kayda ve 45 saniyeye bakar; kalanlar ertesi güne kalır. Uç nokta `CRON_SECRET` ortam değişkeni olmadan 503, yanlış anahtarla 401 döner.
+
+Üretim ortamı değişkenleri yalnız sunucuda: `ARENA_SERVICE_ACCOUNT`, `ARENA_FIREBASE_API_KEY`, `ARENA_DATABASE_URL` ve temizlik görevi için en az 16 karakterlik rastgele `CRON_SECRET`. Kimlik, proje IAM rolü olmayan özel bir servis hesabının imzaladığı Firebase Auth custom token ile `transfer-arena-server` kullanıcısına giriş yapar. Bu kimlik yalnız `transfer_arena_v1` altında yetkilendirilmelidir. Mevcut oyunların kuralları korunur. Kimlik dosyasını veya özel anahtarı depoya koyma. Ayrıntılar: [custom tokens](https://firebase.google.com/docs/auth/admin/create-custom-tokens), [REST auth](https://firebase.google.com/docs/reference/rest/auth), [ETag kayıtları](https://firebase.google.com/docs/database/rest/save-data#section-conditional-requests).
 
 Depolama bütün odayı ETag koşullu yazmayla atomik günceller. Çakışma taze durumla yeniden denenir. Açılmamış pazar, simülasyon tohumu ve rakibin taktikleri publicView dışındadır. İstemci bütçe, maç sonucu veya futbolcu özelliği göndermez; bunları sunucu belirler. Süreler istemci saatine güvenmez. Poll yalnız kalan olayları gösterir; gelecek golleri ve penaltı sonuçlarını açıklamaz.
 
@@ -127,3 +135,54 @@ Yeni odalar rulesVersion 6 ve maç modeli 6 kullanır. Başlamış eski odalar k
 - Pencere oyunun seçili hızında akar: 1× hızda yaklaşık 6,7 saniye, 8× hızda bir saniyeden kısa (kullanıcı kararı; yavaşlatma yok).
 
 **Maç ekranı (mobil öncelikli, `match-screen.js`):** Kendi maçın için büyük skor tabelası (logo, skor, dakika, gol atanlar), canlı istatistik şeridi ve son 6 olayın Türkçe anlatımı gösterilir. Şut, isabetli şut ve xG görünen olaylardan hesaplanır; topa sahip olma ve pas yüzdesi son dilim kaydından gelir. Diğer maçlar sade satırlardır. Devre arasında ve maç sonunda maç raporu (`match-report.js`) açılır: oyuncu notları 6,0–10,0 ve maçın adamı. Anlatım (`commentary.js`) deterministiktir; direk, büyük fırsat kurtarışı ve kıl payı kaçan şut gibi gerilim anlarını vurgular.
+
+## Model 7 (rulesVersion 7): tarz eşleşmeleri, hazır taktikler, güçlü hocalar
+
+Yeni odalar rulesVersion 7 ve maç modeli 7 kullanır. Model 6 ve öncesi birebir aynı sonucu üretir. Model 6 için 20 sabit tohumlu maç `tests/fixtures/arena-model6-golden.json` ile kilitlidir. Ortak değerler `dist/games/transfer-arenasi/tactic-presets.js` içindedir. Sunucu ve arayüz bu değerleri aynı dosyadan okur.
+
+**Tarz döngüsü:** Kontra atak > Kısa pas > Kanat oyunu > Direkt oyun > Kontra atak. Üstün tarz atakta ve savunmada şu avantajları alır:
+
+| Etki | Değer (`STYLE_EDGE`) |
+|---|---|
+| Pas isabeti | +2,1 puan |
+| İlerleme | +2,8 puan |
+| Top kapma | +1,75 puan |
+| xG | +0,0085 |
+
+Zayıf taraf aynı miktarda kaybeder. Rakibin tarzı gizli kalır. Ekranda yalnız kendi tarzının hangi tarza üstün, hangisine zayıf olduğu yazar.
+
+**Hazır taktikler:** Taktik ekranında dört kart vardır. Seçilen kart tarzı ve beş ayarı tek seferde kurar. Diziliş ve kaptan korunur. Ayrıntılar varsayılan olarak kapalı "Gelişmiş" bölümündedir. Elle yapılan değişiklik "Özel" olarak görünür.
+
+| Profil | Tarz | Ayarlar |
+|---|---|---|
+| Gegenpress | Kanat oyunu | Pres yoğun, risk hücum, tempo yüksek, geniş, sert |
+| Katenaçyo | Kontra atak | Geri çekil, temkinli, sakin, dar, sert |
+| Tiki-taka | Kısa pas | Dengeli pres, dengeli risk, sakin, dar, normal |
+| Kontra | Direkt oyun | Dengeli pres, dengeli risk, yüksek tempo, dengeli genişlik, normal |
+
+Her profil birini yener, birine yenilir: Katenaçyo > Tiki-taka > Gegenpress > Kontra > Katenaçyo.
+
+**Hoca etkisi:**
+- Uzmanlık katsayısı yıldız başına %2'den %3'e çıktı.
+- Uzmanlık koşulu seçilen planla sağlanırsa ("taktik uyumu"), bütün futbolcuların maç özelliklerine yıldız başına %0,3 ek çarpan gelir.
+- Uyum her maç diliminde yeniden hesaplanır. Devrede plan değişirse uyum da değişir.
+- Profil kartları hocanın uyduğu profili "Hoca uyumu" rozetiyle gösterir.
+
+**Model 7 düzeltmeleri (`MODEL7`):** Model 6'da yüksek tempo ve yüksek risk, tarzdan bağımsız olarak fazla cezalıydı. Bu yüzden pres ağırlıklı profiller her zaman kaybediyordu. Model 7'de üç düzeltme vardır:
+- Tempo başına pas cezası kaldırıldı. Yoğun oyunun bedeli yalnız enerjidir.
+- Risk 2 ile oynayan takım topu kaybettiğinde rakip orta sahadan yalnız %30 ihtimalle başlar.
+- Direkt oyunun pas cezası 0,12'den 0,065'e indi.
+
+**Kalibrasyon:** Ölçüm komutu `node scripts/calibrate-arena.mjs --model 7 --tactics`. Ölçümler eşit kadrolarla yapıldı:
+
+| Ölçüm | Sonuç (G/B/M) |
+|---|---|
+| Üstün tarz | %46 / %29 / %24 |
+| Nötr tarz çifti | %36 / %29 / %35 |
+| Uyumlu 5★ hoca, uyumsuz 5★ hocaya karşı | %45 / %31 / %24 |
+
+- Hiçbir profilin ortalama galibiyeti %37'yi geçmez.
+- Maç başı gol 2,87, 6+ gollü maç oranı %0,85.
+- Belirgin favori %66,5 kazanır.
+
+Hedef aralıkları `tests/transfer-arena-model7-calibration.test.mjs` ile korunur.
