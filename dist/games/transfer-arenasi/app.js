@@ -1,7 +1,7 @@
 import {auctionResult} from './auction-result.js';
 import {coachTactics,presetPanel} from './coach-tactics.js';
 import {TACTIC_PRESETS} from './tactic-presets.js';
-import {pitch,minuteLabel,displayMinute} from './pitch.js';
+import {pitch} from './pitch.js';
 import {playerCard,escapeHTML as esc} from './cards.js';
 import {coachCard} from './coach-card.js';
 import {CAPTAIN_BOOST} from './bonus-player.js';
@@ -59,13 +59,19 @@ function bonusSummary(next=room.nextMatch){
  const active=card.id==='president'?'Bütçeye uygulandı':card.id==='fan'?(next&&!next.bye&&!next.neutral&&!next.final&&next.home?'Bu iç saha maçında etkin':'Bu maçta etkin değil'):'Etkin';
  return `<div class="bonus-callout"><strong>${esc(bonusNames[card.id]||card.name)}</strong><small>${esc(card.description)}</small><span>${active}</span></div>`;
 }
+// Kırmızı kartlı olmayan seçili kaptanı, yoksa mevcut en yüksek puanlı oyuncuyu döndürür.
+function resolvedCaptainId(team,captainId,sentOff){
+ const blocked=new Set(sentOff),available=team.players.filter(p=>!blocked.has(p.id));
+ const chosen=available.find(p=>String(p.id)===String(captainId))||available.toSorted((a,b)=>b.overall-a.overall)[0];
+ return chosen?.id??null;
+}
 function tactics(){
  const me=room.teams.find(t=>t.id===room.uid),p=room.myPlan;
- const sentOff=new Set(sentOffIds(me.id));
- const available=me.players.filter(p=>!sentOff.has(p.id));
- const selected=available.find(player=>String(player.id)===String(p.captainId))||available.toSorted((a,b)=>b.overall-a.overall)[0];
- if(room.rulesVersion>=7){const opts={rulesVersion:room.rulesVersion},sel=(k,label,o)=>select(k,label,o.map((l,i)=>[i,l]),p[k]);return `<div id="tactic-coach">${coachTactics(me.coach,p,available,opts)}</div><div id="tactic-pitch">${pitch(me,p.formation,selected?.id,[...sentOff])}</div><form id="plan-form" class="tactics-grid"><section id="tactic-presets" class="presets" aria-label="Hazır taktikler">${presetPanel(p,me.coach,available)}</section>${select('formation','Diziliş',formations.map(([v,l])=>[v,l]),p.formation)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),selected?.id)}<details class="advanced"><summary>Gelişmiş</summary><div class="advanced-grid">${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${sel('press','Pres',['Geri çekil','Dengeli','Yoğun pres'])}${sel('risk','Risk',['Temkinli','Dengeli','Hücum'])}${sel('tempo','Tempo',['Sakin','Normal','Yüksek'])}${sel('width','Genişlik',['Dar','Dengeli','Geniş'])}${sel('tackle','Müdahale',['Temiz','Normal','Sert','Çok sert'])}</div></details><button>Taktiği kilitle</button></form>`;}
- return `<div id="tactic-coach">${coachTactics(me.coach,p,available)}</div><div id="tactic-pitch">${pitch(me,p.formation,selected?.id,[...sentOff])}</div><form id="plan-form" class="tactics-grid">${select('formation','Diziliş',[['2-2-2','2-2-2 Dengeli'],['2-3-1','2-3-1 Orta saha'],['3-2-1','3-2-1 Savunma'],['1-3-2','1-3-2 Hücum']],p.formation)}${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),selected?.id)}${[['press','Pres',['Geri çekil','Dengeli','Yoğun pres']],['risk','Risk',['Temkinli','Dengeli','Hücum']],['tempo','Tempo',['Sakin','Normal','Yüksek']],['width','Genişlik',['Dar','Dengeli','Geniş']],['tackle','Müdahale',['Temiz','Normal','Sert','Çok sert']]].map(([k,label,opts])=>select(k,label,opts.map((l,i)=>[i,l]),p[k])).join('')}<button>Taktiği kilitle</button></form>`;
+ const off=sentOffIds(me.id),blocked=new Set(off);
+ const available=me.players.filter(p=>!blocked.has(p.id));
+ const captainId=resolvedCaptainId(me,p.captainId,off);
+ if(room.rulesVersion>=7){const opts={rulesVersion:room.rulesVersion},sel=(k,label,o)=>select(k,label,o.map((l,i)=>[i,l]),p[k]);return `<div id="tactic-coach">${coachTactics(me.coach,p,available,opts)}</div><div id="tactic-pitch">${pitch(me,p.formation,captainId,off)}</div><form id="plan-form" class="tactics-grid"><section id="tactic-presets" class="presets" aria-label="Hazır taktikler">${presetPanel(p,me.coach,available)}</section>${select('formation','Diziliş',formations.map(([v,l])=>[v,l]),p.formation)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),captainId)}<details class="advanced"><summary>Gelişmiş</summary><div class="advanced-grid">${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${sel('press','Pres',['Geri çekil','Dengeli','Yoğun pres'])}${sel('risk','Risk',['Temkinli','Dengeli','Hücum'])}${sel('tempo','Tempo',['Sakin','Normal','Yüksek'])}${sel('width','Genişlik',['Dar','Dengeli','Geniş'])}${sel('tackle','Müdahale',['Temiz','Normal','Sert','Çok sert'])}</div></details><button>Taktiği kilitle</button></form>`;}
+ return `<div id="tactic-coach">${coachTactics(me.coach,p,available)}</div><div id="tactic-pitch">${pitch(me,p.formation,captainId,off)}</div><form id="plan-form" class="tactics-grid">${select('formation','Diziliş',[['2-2-2','2-2-2 Dengeli'],['2-3-1','2-3-1 Orta saha'],['3-2-1','3-2-1 Savunma'],['1-3-2','1-3-2 Hücum']],p.formation)}${select('style','Oyun tarzı',[['short','Kısa pas'],['wide','Kanat oyunu'],['direct','Direkt oyun'],['counter','Kontra atak']],p.style)}${select('captainId','Kaptan · +%'+Math.round(CAPTAIN_BOOST*100),available.map(player=>[player.id,player.name+' · '+player.overall]),captainId)}${[['press','Pres',['Geri çekil','Dengeli','Yoğun pres']],['risk','Risk',['Temkinli','Dengeli','Hücum']],['tempo','Tempo',['Sakin','Normal','Yüksek']],['width','Genişlik',['Dar','Dengeli','Geniş']],['tackle','Müdahale',['Temiz','Normal','Sert','Çok sert']]].map(([k,label,opts])=>select(k,label,opts.map((l,i)=>[i,l]),p[k])).join('')}<button>Taktiği kilitle</button></form>`;
 }
 function stage(){
  const me=room.teams.find(t=>t.id===room.uid);
@@ -83,9 +89,10 @@ function stage(){
 
  }
  if(['squadReview','prepare','halftime'].includes(room.phase)){
-  const playing=room.phase==='squadReview'||room.pairs.flat().includes(me.id),referee=room.referees?.find(r=>r.teams.includes(me.id));
+  const playing=room.phase==='squadReview'||(!room.nextMatch?.bye&&room.pairs.flat().includes(me.id)),referee=room.referees?.find(r=>r.teams.includes(me.id));
   const next=room.nextMatch,nextLabel=next?.bye?'Bu hafta bay':next?.neutral?(next.final?'Final · Tarafsız saha':'Tarafsız saha'):next?.home?'İç saha':'Deplasman';const matchup=next?`<div class="next-match"><strong>${nextLabel}</strong>${next.opponentId?` · ${names(next.opponentId)}`:''}</div>`:'';
-  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${matchup}${bonusSummary(next)}${referee?'<p class="referee">Hakem: '+['Toleranslı','Normal','Katı'][referee.strictness]+'</p>':''}${!playing?'<p>Bu hafta maçın yok.</p>':room.locked.includes(me.id)?coachTactics(me.coach,room.myPlan,me.players.filter(p=>!sentOffIds(me.id).includes(p.id)),{rulesVersion:room.rulesVersion})+pitch(me,room.myPlan.formation,room.myPlan.captainId,sentOffIds(me.id))+'<p>✓ Hazırsın. Diğer takımlar bekleniyor.</p>':tactics()}`;
+  const off=sentOffIds(me.id);
+  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>${matchup}${bonusSummary(next)}${referee?'<p class="referee">Hakem: '+['Toleranslı','Normal','Katı'][referee.strictness]+'</p>':''}${!playing?'<p>Bu hafta maçın yok.</p>':room.locked.includes(me.id)?coachTactics(me.coach,room.myPlan,me.players.filter(p=>!off.includes(p.id)),{rulesVersion:room.rulesVersion})+pitch(me,room.myPlan.formation,resolvedCaptainId(me,room.myPlan.captainId,off),off)+'<p>✓ Hazırsın. Diğer takımlar bekleniyor.</p>':tactics()}`;
  }
  if(room.phase==='finished')return `<p class="eyebrow">KUPANIN SAHİBİ</p><h2 class="champion-title">🏆 ${names(room.champion)}</h2><div class="actions"><button id="replay-ceremony" class="secondary">Töreni izle</button><button id="leave">Yeni oyun</button></div>`;
  return `<h2>${room.final?'Final · ':''}${phases[room.phase]}</h2>`;
@@ -106,7 +113,11 @@ function render(){
  const nextKey=[room.phase,room.phaseVersion,room.lot?.id,room.lot?.amount,room.lot?.bidder,room.lot?.myBid,room.lot?.myLocked,room.lot?.passed.includes(room.uid),room.locked.includes(room.uid),room.teams.map(t=>t.id+t.ready+':'+t.formation+':'+t.logo).join(),room.lotNumber,room.bonusCardSelected?.join(','),room.myBonusCard,room.champion].join('|');
  if(nextKey!==key){key=nextKey;$('#stage').innerHTML=stage();bindStage();}
  $('#table').innerHTML='<table><thead><tr><th>Takım</th><th>P</th><th>G</th><th>Av.</th><th>Gol</th></tr></thead><tbody>'+room.table.map(id=>{const t=room.teams.find(t=>t.id===id);return `<tr ${id===room.uid?'class="my-team"':''}><th>${teamName(t)}</th><td>${t.points}</td><td>${t.wins}</td><td>${t.gf-t.ga}</td><td>${t.gf}:${t.ga}</td></tr>`;}).join('')+'</tbody></table>'+(room.draws.length?'<p class="small">Kura sırası: '+room.draws.map(group=>group.map(names).join(' → ')).join(' / ')+'</p>':'');
- const board=room.leaderboard||[];$('#table').insertAdjacentHTML('beforeend',board.length?'<section class="leaderboards"><div><h3>Gol krallığı</h3><ol>'+board.slice().sort((a,b)=>b.goals-a.goals||a.name.localeCompare(b.name,'tr')).slice(0,5).map(x=>`<li>${logoSVG(room.teams.find(t=>t.id===x.team)?.logo,14)} ${esc(x.name)} <span>${x.goals}</span></li>`).join('')+'</ol></div><div><h3>Asist krallığı</h3><ol>'+board.slice().sort((a,b)=>b.assists-a.assists||a.name.localeCompare(b.name,'tr')).slice(0,5).map(x=>`<li>${logoSVG(room.teams.find(t=>t.id===x.team)?.logo,14)} ${esc(x.name)} <span>${x.assists}</span></li>`).join('')+'</ol></div></section>':'');
+ const board=room.leaderboard||[];
+ const goalLeaders=board.filter(x=>x.goals>0).sort((a,b)=>b.goals-a.goals||a.name.localeCompare(b.name,'tr')).slice(0,5);
+ const assistLeaders=board.filter(x=>x.assists>0).sort((a,b)=>b.assists-a.assists||a.name.localeCompare(b.name,'tr')).slice(0,5);
+ const leaderList=(items,key)=>items.length?'<ol>'+items.map(x=>`<li>${logoSVG(room.teams.find(t=>t.id===x.team)?.logo,14)} ${esc(x.name)} <span>${x[key]}</span></li>`).join('')+'</ol>':'<p class="small muted">Henüz yok</p>';
+ if(goalLeaders.length||assistLeaders.length)$('#table').insertAdjacentHTML('beforeend',`<section class="leaderboards"><div><h3>Gol krallığı</h3>${leaderList(goalLeaders,'goals')}</div><div><h3>Asist krallığı</h3>${leaderList(assistLeaders,'assists')}</div></section>`);
  // Mobil öncelikli maç ekranı: yalnız içerik değişince çizilir, açık rapor bölümü korunur.
  const disciplineHTML=(['prepare','lobby'].includes(room.phase)?[]:room.discipline||[]).map(m=>'<div class="panel small">'+m.teams.map(t=>{const cards=t.players.filter(p=>p.red||p.yellow);return cards.length?'<p>'+names(t.id)+': '+cards.map(p=>esc(p.name)+' '+(p.red?'🟥 Oyun dışında':'🟨 '+p.yellow)).join(' · ')+'</p>':'';}).filter(Boolean).join('')+'</div>').filter(s=>s!=='<div class="panel small"></div>').join('');
  const matchHTML=(room.matches.length?matchScreen(room,names):'')+disciplineHTML;
@@ -123,7 +134,7 @@ function render(){
 }
 function bindStage(){
  $('#stage').querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();const action=b.dataset.action;if(action==='unready')return send('ready',{ready:false});send(action,{lotId:room.lot?.id});}));
- $('#lobby-choice')?.addEventListener('change',e=>{const f=e.target;if(f.name==='formation')send('formation',{formation:f.value});if(f.name==='bonusCard'){const card=BONUS_CARDS.find(item=>item.id===f.value);$('#bonus-description').textContent=card?.description||'Kartın etkisi burada görünür.';if(f.value)send('bonusCard',{cardId:f.value});}});
+ $('#lobby-choice')?.addEventListener('change',e=>{const f=e.target;if(f.name==='formation'&&f.value)send('formation',{formation:f.value});if(f.name==='bonusCard'){const card=BONUS_CARDS.find(item=>item.id===f.value);$('#bonus-description').textContent=card?.description||'Kartın etkisi burada görünür.';if(f.value)send('bonusCard',{cardId:f.value});}});
  $('#bid-form')?.addEventListener('submit',e=>{e.preventDefault();send('bid',{amount:Number($('#amount').value),lotId:room.lot.id});});
  const planChanged=focusPreset=>{const form=$('#plan-form'),me=room.teams.find(t=>t.id===room.uid),reds=room.phase==='halftime'?(room.discipline||[]).flatMap(m=>m.teams.filter(t=>t.id===me.id).flatMap(t=>t.players.filter(p=>p.red).map(p=>p.id))):[],plan=Object.fromEntries(new FormData(form)),avail=me.players.filter(p=>!reds.includes(p.id));$('#tactic-pitch').innerHTML=pitch(me,form.elements.formation.value,form.elements.captainId.value,reds);$('#tactic-coach').innerHTML=coachTactics(me.coach,plan,avail,{rulesVersion:room.rulesVersion});if($('#tactic-presets')){$('#tactic-presets').innerHTML=presetPanel(plan,me.coach,avail);if(focusPreset)$('#tactic-presets').querySelector(`[data-preset="${focusPreset}"]`)?.focus();}};
  $('#plan-form')?.addEventListener('change',()=>planChanged());

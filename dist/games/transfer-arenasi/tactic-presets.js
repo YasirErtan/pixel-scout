@@ -32,9 +32,9 @@ export const COACH_FIT_PER_STAR=.003;
 // Hazır profiller: tek dokunuşla tarz ve kaydırıcılar. Kaptan ve diziliş korunur.
 export const TACTIC_PRESETS=Object.freeze([
  {id:'gegenpress',name:'Gegenpress',summary:'Yoğun pres, yüksek tempo, geniş hücum. Çok enerji harcar.',plan:{style:'wide',press:2,risk:2,tempo:2,width:2,tackle:2}},
- {id:'katenacyo',name:'Katenaçyo',summary:'Derin ve dar blok, temkinli oyun, top kazanınca kontra.',plan:{style:'counter',press:0,risk:0,tempo:0,width:0,tackle:2}},
+ {id:'katenacyo',name:'Katenaçyo',summary:'Derin ve dar savunma bloğu; top kazanınca kontra atak.',plan:{style:'counter',press:0,risk:0,tempo:0,width:0,tackle:2}},
  {id:'tikitaka',name:'Tiki-taka',summary:'Kısa paslarla topa sahip olma, sakin tempo, dar oyun.',plan:{style:'short',press:1,risk:1,tempo:0,width:0,tackle:1}},
- {id:'kontra',name:'Kontra',summary:'Topu kazanınca hızlı ve dikine; uzun toplarla arkaya.',plan:{style:'direct',press:1,risk:1,tempo:2,width:1,tackle:1}}
+ {id:'kontra',name:'Direkt futbol',summary:'Hızlı ve dikine; uzun toplarla savunma arkasına.',plan:{style:'direct',press:1,risk:1,tempo:2,width:1,tackle:1}}
 ].map(preset=>Object.freeze({...preset,plan:Object.freeze(preset.plan)})));
 export const PRESET_KEYS=Object.freeze(['style','press','risk','tempo','width','tackle']);
 // Plan bir profille birebir eşleşiyorsa onun kimliği, yoksa null ("Özel").

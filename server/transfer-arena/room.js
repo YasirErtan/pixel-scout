@@ -4,10 +4,11 @@ import {formationLimits} from '../../dist/games/transfer-arenasi/formation.js';
 import {bonusCardById} from '../../dist/games/transfer-arenasi/bonus-cards.js';
 import {standings} from './standings.js';
 import {LOGO_IDS} from '../../dist/games/transfer-arenasi/logos.js';
+import {arenaError} from './errors.js';
 
 export function createRoom(id,owner,name,seed,now,options={}){return {id,owner,seed,rulesVersion:7,playbackSpeed:1,assignments:[],createdAt:now,options:{bonusEnabled:options.bonusEnabled===true,bonusCardsEnabled:options.bonusCardsEnabled===true},phase:'lobby',version:0,phaseVersion:0,teams:[member(owner,name,LOGO_IDS[0])],requests:[],history:[],pool:[],lotIndex:0,plans:{},matches:[],round:0};}
 function freeLogo(teams){return LOGO_IDS.find(id=>!teams.some(team=>team.logo===id))||null;}
-function member(id,name,logo=null){const clean=String(name||'').trim().slice(0,18);if(!clean)throw Error('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,logo,ready:false,points:0,gf:0,ga:0,wins:0};}
+function member(id,name,logo=null){const clean=String(name||'').trim().slice(0,18);if(!clean)throw arenaError('Takım adı gerekli');return {id,name:clean,balance:200,players:[],coach:null,formation:null,logo,ready:false,points:0,gf:0,ga:0,wins:0};}
 function deadline(room,phase,now,ms){if(room.rulesVersion===2&&['squadReview','prepare','halftime'].includes(phase)){room.rulesVersion=3;ms=180000;}room.phase=phase;room.phaseVersion++;room.deadline=now+ms;room.plans={};}
 function nextLot(room,now){
  const market=room.phase==='players'?room.market.players:room.market.coaches;
@@ -27,6 +28,12 @@ function allOffersLocked(room){return room.lot?.single&&room.teams.every(t=>!eli
 function clockRate(room){return (room.rulesVersion>=3?1.5:1)*(room.playbackSpeed||1);}
 
 function activePairs(room){return room.final?[[room.finalists[0],room.finalists[1]]]:room.schedule[room.round];}
+// Aktif plan kilitlemesi gereken takımlar: hükmen biten maçın takımları devre arasında plan göndermez.
+function activePlanTeams(room){
+ if(room.phase==='squadReview')return room.teams.map(t=>t.id);
+ if(room.phase==='halftime'&&room.rulesVersion>=6)return room.matches.filter(m=>!m.finished).flatMap(m=>m.teams.map(t=>t.id));
+ return activePairs(room).flat();
+}
 function matchSeed(room,i){return room.seed+room.round*719+i*31+(room.final?100003:0);}
 function startPlayback(room,phase,now,start,end){
  if(room.rulesVersion<2||!room.rulesVersion){room.playbackStart=now;deadline(room,phase,now,(end-start)*3000);return;}
@@ -64,8 +71,10 @@ function startSegmentedHalf(room,now,half,pairs){
   return previous.finished?previous:simulateSegment(previous,plans,{start:45,end:70});
  });
  room.lastPlans={...room.lastPlans,...room.plans};
- room.nextSegment=half===2?{start:70,end:90}:null;
- startPlayback(room,half===1?'firstHalf':'secondHalf',now,(half-1)*45,half*45);
+ const allDone=room.matches.every(m=>m.finished);
+ room.nextSegment=half===2&&!allDone?{start:70,end:90}:null;
+ const end=half===1?(allDone?Math.max(...room.matches.map(m=>m.minute)):45):(allDone?Math.max(45,...room.matches.map(m=>m.minute)):90);
+ startPlayback(room,half===1?'firstHalf':'secondHalf',now,(half-1)*45,end);
 }
 const segmentPlans=(room,match)=>match.teams.map(t=>room.lastPlans?.[t.id]||initialPlan(room,t.id));
 // Oynatma imleci bekleyen dilimin başına (kilit dakikasına) ulaştıysa dilimi hesaplar. Oynatma durmaz:
@@ -77,13 +86,21 @@ function runPendingSegment(room,now){
  room.nextSegment=null;
  const picks=room.allInPicks?.[segment.start]||[];
  room.matches=room.matches.map(m=>m.finished?m:simulateSegment(m,segmentPlans(room,m),{start:segment.start,end:segment.end,allIn:m.teams.map(t=>picks.includes(t.id))}));
+ if(room.phase==='secondHalf'&&room.matches.every(m=>m.finished)){
+  const maxMin=Math.max(...room.matches.map(m=>m.minute));
+  if(maxMin<90){
+   const cur=currentMinute(room,now),end=Math.max(cur,Math.min(90,maxMin));
+   room.playbackCursor=cur;room.playbackStart=now;room.playbackEnd=end;
+   room.deadline=now+(end-cur)*1000/clockRate(room);
+  }
+ }
  if(room.phase==='finalResolution'){
   room.matches[0]=finishFinal(room.matches[0]);
   // Hükmen biten uzatmada oynatma erken biter. Penaltılar 120'ye gelince ayrıca açılır (advance);
   // böylece bitiş saati penaltı olup olmayacağını önceden ele vermez.
-  const end=Math.max(currentMinute(room,now),Math.min(120,room.matches[0].minute));
-  room.playbackCursor=currentMinute(room,now);room.playbackStart=now;room.playbackEnd=end;
-  room.deadline=now+(end-room.playbackCursor)*1000/clockRate(room);
+  const cur=currentMinute(room,now),end=Math.max(cur,Math.min(120,room.matches[0].minute));
+  room.playbackCursor=cur;room.playbackStart=now;room.playbackEnd=end;
+  room.deadline=now+(end-cur)*1000/clockRate(room);
  }
 }
 // Biten lig haftaları yalnız puan tablosu (takım golleri) ve krallıklar (gol olayları) için gereken
@@ -98,6 +115,12 @@ function finishRound(room,now){
   const match=room.matches[0];
   if(match.teams[0].goals===match.teams[1].goals&&!match.forfeit){
    room.matches[0]=simulateSegment(match,segmentPlans(room,match),{start:90,end:105});
+   if(room.matches[0].finished){
+    room.matches[0]=finishFinal(room.matches[0]);
+    room.nextSegment=null;
+    startPlayback(room,'finalResolution',now,90,room.matches[0].minute);
+    return;
+   }
    startPlayback(room,'finalResolution',now,90,120);
    room.allInPicks={...room.allInPicks,105:[]};room.nextSegment={start:105,end:120};return;
   }
@@ -122,7 +145,10 @@ export function advance(room,now){
  else if(room.phase==='auctionResult'&&now>=room.deadline){room.phase=room.auctionKind;room.auctionResult=null;nextLot(room,now);}
  else if(room.phase==='squadReview'&&now>=room.deadline)finishReview(room,now);
  else if(room.phase==='prepare'&&now>=room.deadline)startHalf(room,now,1);
- else if(room.phase==='firstHalf'&&now>=room.deadline)deadline(room,'halftime',now,room.rulesVersion>=3?180000:25000);
+ else if(room.phase==='firstHalf'&&now>=room.deadline){
+  if(room.rulesVersion>=6&&room.matches.every(m=>m.finished))finishRound(room,now);
+  else deadline(room,'halftime',now,room.rulesVersion>=3?180000:25000);
+ }
  else if(room.phase==='halftime'&&now>=room.deadline)startHalf(room,now,2);
  else if(room.phase==='secondHalf'&&now>=room.deadline)finishRound(room,now);
  else if(room.phase==='finalResolution'&&now>=room.deadline){
@@ -136,7 +162,7 @@ export function advance(room,now){
  return room;
 }
 export function command(input,uid,action,now,data){
- const r=structuredClone(input);if(!uid||!action.requestId)throw Error('Oturum ve istek kimliği gerekli');
+ const r=structuredClone(input);if(!uid||!action.requestId)throw arenaError('Oturum ve istek kimliği gerekli');
  if(r.requests.includes(`${uid}:${action.requestId}`))return r;
  if(r.rulesVersion===2){
   if(['players','coaches'].includes(r.phase)){r.rulesVersion=3;r.lot.single=true;r.lot.deadline=now+60000;r.lot.hardDeadline=r.lot.deadline;if(allOffersLocked(r))finishLot(r,now);}
@@ -147,48 +173,48 @@ export function command(input,uid,action,now,data){
  if(r.phase==='closed'){
   if(t&&(action.type==='poll'||action.type==='close'&&uid===r.owner))return r;
   if(!t&&action.type==='poll'&&r.departed?.includes(uid))return r;
-  throw Error('Oda kapatıldı');
+  throw arenaError('Oda kapatıldı');
  }
  if(action.type==='join'){
-  if(!t){if(r.phase!=='lobby'||r.teams.length>=6)throw Error('Oda katılıma kapalı');r.teams.push(member(uid,action.name,freeLogo(r.teams)));if(r.departed)r.departed=r.departed.filter(id=>id!==uid);}
+  if(!t){if(r.phase!=='lobby'||r.teams.length>=6)throw arenaError('Oda katılıma kapalı');r.teams.push(member(uid,action.name,freeLogo(r.teams)));if(r.departed)r.departed=r.departed.filter(id=>id!==uid);}
  }else{
-  if(!t){if(['leave','poll'].includes(action.type)&&r.departed?.includes(uid))return r;throw Error('Oda üyesi değilsin');}
+  if(!t){if(['leave','poll'].includes(action.type)&&r.departed?.includes(uid))return r;throw arenaError('Oda üyesi değilsin');}
   switch(action.type){
    case 'poll':break;
    case 'formation':
-    if(r.phase!=='lobby'||r.rulesVersion<4||t.ready)throw Error('Diziliş seçimi kapalı');
+    if(r.phase!=='lobby'||r.rulesVersion<4||t.ready)throw arenaError('Diziliş seçimi kapalı');
     formationLimits(action.formation);
     t.formation=action.formation;
     break;
    case 'logo':
-    if(r.phase!=='lobby'||t.ready)throw Error('Logo seçimi kapalı');
-    if(!LOGO_IDS.includes(action.logo))throw Error('Geçersiz logo');
-    if(r.teams.some(team=>team.id!==uid&&team.logo===action.logo))throw Error('Bu logo başka bir takımda');
+    if(r.phase!=='lobby'||t.ready)throw arenaError('Logo seçimi kapalı');
+    if(!LOGO_IDS.includes(action.logo))throw arenaError('Geçersiz logo');
+    if(r.teams.some(team=>team.id!==uid&&team.logo===action.logo))throw arenaError('Bu logo başka bir takımda');
     t.logo=action.logo;
     break;
    case 'bonusCard':
-    if(r.phase!=='lobby'||r.rulesVersion<4||!r.options.bonusCardsEnabled||t.ready)throw Error('Bonus kartı seçimi kapalı');
-    if(!bonusCardById(action.cardId))throw Error('Geçersiz bonus kartı');
+    if(r.phase!=='lobby'||r.rulesVersion<4||!r.options.bonusCardsEnabled||t.ready)throw arenaError('Bonus kartı seçimi kapalı');
+    if(!bonusCardById(action.cardId))throw arenaError('Geçersiz bonus kartı');
     t.bonusCard=action.cardId;
     break;
    case 'ready':
-    if(r.phase!=='lobby')throw Error('Lobi kapandı');
+    if(r.phase!=='lobby')throw arenaError('Lobi kapandı');
     if(action.ready===false){t.ready=false;break;}
-    if(r.rulesVersion>=4&&!t.formation)throw Error('Önce diziliş seç');
-    if(r.rulesVersion>=4&&r.options.bonusCardsEnabled&&!t.bonusCard)throw Error('Önce bonus kartı seç');
+    if(r.rulesVersion>=4&&!t.formation)throw arenaError('Önce diziliş seç');
+    if(r.rulesVersion>=4&&r.options.bonusCardsEnabled&&!t.bonusCard)throw arenaError('Önce bonus kartı seç');
     t.ready=true;
     break;
    case 'close':
-    if(uid!==r.owner)throw Error('Yalnızca kurucu odayı kapatabilir');
+    if(uid!==r.owner)throw arenaError('Yalnızca kurucu odayı kapatabilir');
     r.phase='closed';r.phaseVersion++;r.deadline=null;
     break;
    case 'leave':
-    if(uid===r.owner||r.phase!=='lobby')throw Error('Bu odadan ayrılamazsın');
+    if(uid===r.owner||r.phase!=='lobby')throw arenaError('Bu odadan ayrılamazsın');
     r.teams=r.teams.filter(team=>team.id!==uid);
     r.departed??=[];r.departed.push(uid);r.departed=r.departed.slice(-32);
     break;
    case 'start':{
-    if(uid!==r.owner||r.phase!=='lobby'||r.teams.length<3||!r.teams.every(x=>x.ready))throw Error('En az üç hazır takım ve kurucu gerekli');
+    if(uid!==r.owner||r.phase!=='lobby'||r.teams.length<3||!r.teams.every(x=>x.ready))throw arenaError('En az üç hazır takım ve kurucu gerekli');
     if(r.rulesVersion>=4){
      const formations=r.teams.map(team=>team.formation);
      r.market=makeMarket(data.players,data.coaches,r.teams.length,random(r.seed),{...r.options,formations,randomBonus:true});
@@ -200,50 +226,51 @@ export function command(input,uid,action,now,data){
     r.phase='players';nextLot(r,now);break;
    }
    case 'speed':{
-    if(uid!==r.owner||![1,2,4,8].includes(action.speed))throw Error('Geçersiz hız seçimi');
+    if(uid!==r.owner||![1,2,4,8].includes(action.speed))throw arenaError('Geçersiz hız seçimi');
     if(['firstHalf','secondHalf','finalResolution'].includes(r.phase)&&r.rulesVersion>=2){r.playbackCursor=currentMinute(r,now);r.playbackStart=now;r.deadline=now+(r.playbackEnd-r.playbackCursor)*1000/(action.speed*(r.rulesVersion>=3?1.5:1));}
     r.playbackSpeed=action.speed;break;
    }
-   case 'bid':if(!['players','coaches'].includes(r.phase))throw Error('İhale açık değil');bid(r.lot,t,action.amount,now,action.lotId);if(allOffersLocked(r))finishLot(r,now);break;
+   case 'bid':if(!['players','coaches'].includes(r.phase))throw arenaError('İhale açık değil');bid(r.lot,t,action.amount,now,action.lotId);if(allOffersLocked(r))finishLot(r,now);break;
    case 'pass':{
-    if(!['players','coaches'].includes(r.phase)||action.lotId!==r.lot.id)throw Error('İhale kapandı');
-    if(r.lot.single&&(Object.hasOwn(r.lot.bids,uid)||r.lot.passed.includes(uid)))throw Error('Bu teklif zaten kilitli');
+    if(!['players','coaches'].includes(r.phase)||action.lotId!==r.lot.id)throw arenaError('İhale kapandı');
+    if(r.lot.single&&(Object.hasOwn(r.lot.bids,uid)||r.lot.passed.includes(uid)))throw arenaError('Bu teklif zaten kilitli');
     if(r.lot.sealed)delete r.lot.bids[uid];
     if(!r.lot.passed.includes(uid))r.lot.passed.push(uid);
     const buyers=r.teams.filter(x=>eligible(x,r.lot.card)&&x.id!==r.lot.bidder);
     if(allOffersLocked(r)||(!r.lot.sealed&&buyers.every(x=>r.lot.passed.includes(x.id))))finishLot(r,now);break;
    }
    case 'plan':{
-    if(!['squadReview','prepare','halftime'].includes(r.phase)||action.phaseVersion!==r.phaseVersion)throw Error('Taktik süresi değişti');
-    if(r.phase!=='squadReview'&&!activePairs(r).flat().includes(uid))throw Error('Bu hafta maçın yok');
-    if(r.plans[uid])throw Error('Taktik zaten kilitli');
+    if(!['squadReview','prepare','halftime'].includes(r.phase)||action.phaseVersion!==r.phaseVersion)throw arenaError('Taktik süresi değişti');
+    const requiredTeams=activePlanTeams(r);
+    if(!requiredTeams.includes(uid))throw arenaError('Bu hafta maçın yok');
+    if(r.plans[uid])throw arenaError('Taktik zaten kilitli');
     const plan=validatePlan(action.plan);
     if(plan.captainId!==null){
      const player=t.players.find(p=>String(p.id)===String(plan.captainId));
      const sentOff=r.phase==='halftime'&&r.matches.some(m=>m.teams.some(team=>team.id===uid&&team.players.some(p=>p.id===player?.id&&p.red)));
-     if(!player||sentOff)throw Error('Geçersiz kaptan seçimi');plan.captainId=player.id;
+     if(!player||sentOff)throw arenaError('Geçersiz kaptan seçimi');plan.captainId=player.id;
     }
     r.plans[uid]=plan;
-    if(r.phase==='squadReview'){if(r.teams.every(t=>r.plans[t.id]))finishReview(r,now);break;}
-    if(activePairs(r).flat().every(id=>r.plans[id]))startHalf(r,now,r.phase==='prepare'?1:2);break;
+    if(r.phase==='squadReview'){if(requiredTeams.every(id=>r.plans[id]))finishReview(r,now);break;}
+    if(requiredTeams.every(id=>r.plans[id]))startHalf(r,now,r.phase==='prepare'?1:2);break;
    }
    case 'allIn':{
-    if(!(r.rulesVersion>=6))throw Error('Bu odada "Tüm riskleri al!" yok');
+    if(!(r.rulesVersion>=6))throw arenaError('Bu odada "Tüm riskleri al!" yok');
     const lock=allInLock(r);
-    if(!lock||action.lock!==lock||action.phaseVersion!==r.phaseVersion||r.nextSegment?.start!==lock)throw Error('"Tüm riskleri al!" süresi doldu');
+    if(!lock||action.lock!==lock||action.phaseVersion!==r.phaseVersion||r.nextSegment?.start!==lock)throw arenaError('"Tüm riskleri al!" süresi doldu');
     const match=r.matches.find(m=>m.teams.some(team=>team.id===uid));
-    if(!match)throw Error('Bu maçta oynamıyorsun');
+    if(!match)throw arenaError('Bu maçta oynamıyorsun');
     const minute=currentMinute(r,now);
-    if(minute<lock-ALL_IN_WINDOW||minute>=lock)throw Error('"Tüm riskleri al!" penceresi kapalı');
+    if(minute<lock-ALL_IN_WINDOW||minute>=lock)throw arenaError('"Tüm riskleri al!" penceresi kapalı');
     const visible=visibleScore(match,minute,uid);
-    if(visible.forfeit)throw Error('Maç hükmen sonuçlandı');
-    if(visible.own>visible.opponent)throw Error('Önde olan takım tüm riskleri alamaz');
+    if(visible.forfeit)throw arenaError('Maç hükmen sonuçlandı');
+    if(visible.own>visible.opponent)throw arenaError('Önde olan takım tüm riskleri alamaz');
     // Seçim geri alınamaz; tekrar basmak bir şey değiştirmez. Kesin uygunluk kilitte allInEligible ile belirlenir.
     r.allInPicks??={};r.allInPicks[lock]??=[];
     if(!r.allInPicks[lock].includes(uid))r.allInPicks[lock].push(uid);
     break;
    }
-   default:throw Error('Bilinmeyen komut');
+   default:throw arenaError('Bilinmeyen komut');
   }
  }
  if(action.type==='poll'){
@@ -280,7 +307,8 @@ function upcomingMatch(room,uid){
  if(!room.schedule||!['squadReview','prepare','halftime'].includes(room.phase))return null;
  const pairs=activePairs(room),index=pairs.findIndex(pair=>pair.includes(uid));
  const neutral=!(room.rulesVersion>=4)||!!room.final;
- if(index===-1)return {opponentId:null,home:null,neutral,round:room.round,final:!!room.final,referee:null,bye:true};
+ const finishedForfeit=room.phase==='halftime'&&room.rulesVersion>=6&&room.matches.some(m=>m.finished&&m.teams.some(t=>t.id===uid));
+ if(index===-1||finishedForfeit)return {opponentId:null,home:null,neutral,round:room.round,final:!!room.final,referee:null,bye:true};
  const [home,away]=pairs[index];
  return {opponentId:home===uid?away:home,home:neutral?null:home===uid,neutral,round:room.round,final:!!room.final,referee:matchSeed(room,index)%3,bye:false};
 }
@@ -317,7 +345,7 @@ export function publicView(r,uid,now){
  const member=r.teams.find(t=>t.id===uid);
  if(!member){
   if(r.departed?.includes(uid))return {id:r.id,owner:r.owner,phase:'left',version:r.version};
-  throw Error('Oda üyesi değilsin');
+  throw arenaError('Oda üyesi değilsin');
  }
  if(r.phase==='closed')return {id:r.id,owner:r.owner,phase:'closed',version:r.version};
  const live=['firstHalf','secondHalf','finalResolution'].includes(r.phase);
